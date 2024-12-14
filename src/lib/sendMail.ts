@@ -15,7 +15,7 @@ async function sendMail(email: string, OTP: string) {
 	const mailOptions = {
 		from: process.env.EMAIL,
 		to: email,
-		subject: "Verify your Wordplay account",
+		subject: "Verify your Keypup account",
 		text: `Hey there,
 
 Your OTP for verification is ${OTP}.
@@ -23,7 +23,7 @@ Your OTP for verification is ${OTP}.
 If you didn't request this, please ignore this email.
 
 Best,
-The Wordplay Team
+The Keypup Team
 `,
 	}
 
