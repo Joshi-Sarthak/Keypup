@@ -10,20 +10,17 @@ import DarkModeIcon from "@mui/icons-material/DarkMode"
 import Link from "next/link"
 
 function Navbar() {
-	const [darkMode, setDarkMode] = useState(() => {
-		// Check localStorage for theme on initial render
-		if (typeof window !== "undefined") {
-			// Explicitly get the stored theme or default to light
-			const storedTheme = localStorage.getItem("theme")
-			return storedTheme === "dark"
-		}
-		return true // Default to light mode if no theme is stored
-	})
+	const [darkMode, setDarkMode] = useState<boolean | null>(null) // Start with null
 
 	useEffect(() => {
-		// Ensure this only runs on client-side
-		if (typeof window !== "undefined") {
-			// Apply the correct theme based on the state
+		// This will run only in the browser
+		const storedTheme = localStorage.getItem("theme")
+		setDarkMode(storedTheme === "dark") // Update darkMode state after checking localStorage
+	}, [])
+
+	useEffect(() => {
+		if (darkMode !== null) {
+			// Apply theme only when darkMode is not null
 			if (darkMode) {
 				document.documentElement.classList.add("dark")
 				localStorage.setItem("theme", "dark")
