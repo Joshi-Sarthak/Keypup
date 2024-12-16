@@ -1,9 +1,5 @@
-import { auth } from "@/auth"
-import { redirect } from "next/navigation"
+import Main from "@/components/Main/Main"
 
 export default async function Home() {
-	const session = await auth()
-	if (!session) redirect("/login")
-
-	return <div>Home</div>
+	return <Main />
 }
