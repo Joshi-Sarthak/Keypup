@@ -6,7 +6,7 @@ import { credentialsLogin } from "@/actions/login"
 import { useRouter } from "next/navigation"
 import googleSignin from "@/google/signin"
 import validator from "validator"
-import GoogleIcon from "@mui/icons-material/Google"
+import { FaGoogle } from "react-icons/fa"
 
 const LoginForm = () => {
 	const router = useRouter()
@@ -53,7 +53,7 @@ const LoginForm = () => {
 						className="text-stone-500 py-3 px-32 rounded-2xl flex items-center tracking-wide font-semibold bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 						type="submit"
 					>
-						<GoogleIcon />
+						<FaGoogle />
 						<span className="ml-4">Login with Google</span>
 					</button>
 				</form>

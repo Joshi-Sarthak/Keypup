@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react"
 import Image from "next/image"
 import Logo from "../../../public/logo_purple.svg"
-import LeaderboardIcon from "@mui/icons-material/Leaderboard"
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"
-import LightModeIcon from "@mui/icons-material/LightMode"
-import DarkModeIcon from "@mui/icons-material/DarkMode"
+import { MdLeaderboard } from "react-icons/md"
+import { MdAccountCircle } from "react-icons/md"
+import { MdOutlineLightMode } from "react-icons/md"
+import { MdOutlineDarkMode } from "react-icons/md"
 import Link from "next/link"
 
 function Navbar() {
@@ -58,9 +58,9 @@ function Navbar() {
 						className="group cursor-pointer flex items-center transition-all duration-200"
 					>
 						{darkMode ? (
-							<LightModeIcon className="text-neutral-500 group-hover:text-neutral-100 transition-all duration-200" />
+							<MdOutlineLightMode className="text-neutral-500 group-hover:text-neutral-100 transition-all duration-200" />
 						) : (
-							<DarkModeIcon className="text-stone-500 group-hover:text-stone-800 transition-all duration-200" />
+							<MdOutlineDarkMode className="text-stone-500 group-hover:text-stone-800 transition-all duration-200" />
 						)}
 						<span className="ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
 							Theme
@@ -68,7 +68,7 @@ function Navbar() {
 					</li>
 					<Link href="/leaderboard">
 						<li className="group ml-4 flex items-center transition-all duration-200">
-							<LeaderboardIcon className="text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200" />
+							<MdLeaderboard className="text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200" />
 							<span className="ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
 								Leaderboards
 							</span>
@@ -76,7 +76,7 @@ function Navbar() {
 					</Link>
 					<Link href="/profile">
 						<li className="group ml-4 flex items-center transition-all duration-200">
-							<AccountCircleIcon className="text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200" />
+							<MdAccountCircle className="text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200" />
 							<span className="ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
 								Profile
 							</span>
