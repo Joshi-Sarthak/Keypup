@@ -47,7 +47,9 @@ const SignupForm = () => {
 		}
 
 		if (!validator.isStrongPassword(password)) {
-			return setError("Please enter a strong password")
+			return setError(
+				"Please enter a strong password,\n Password must contain atleast 1 uppercase alphabet, 1 lowercase alphabet,1 number and 1 special character"
+			)
 		}
 
 		try {

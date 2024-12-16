@@ -21,7 +21,7 @@ const LoginForm = () => {
 
 		// Check if email and password fields are filled
 		if (!email || !password) {
-			setError("Fields cannot be empty")
+			setError("Please fill all the details.")
 			return // Prevent form submission
 		}
 
@@ -34,9 +34,8 @@ const LoginForm = () => {
 
 		if (loginError) {
 			console.log(loginError)
-			setError("Invalid Credentials")
+			setError("Invalid Credentials, please try again")
 		} else {
-			console.log("tt")
 			router.refresh()
 		}
 	}
