@@ -50,7 +50,7 @@ const LoginForm = () => {
 			<div className="flex flex-row justify-center mb-4 mt-4">
 				<form action={googleSignin}>
 					<button
-						className="text-stone-500 py-3 px-32 rounded-2xl flex items-center tracking-wide font-semibold bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
+						className="text-stone-500 py-3 px-32 rounded-2xl flex items-center tracking-wide font-medium bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 						type="submit"
 					>
 						<FaGoogle />
@@ -111,7 +111,7 @@ const LoginForm = () => {
 
 				<button
 					type="submit"
-					className="text-stone-500 w-full mt-4 py-2 px-32 rounded-2xl flex justify-center items-center tracking-wide font-semibold bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
+					className="font-medium text-stone-500 w-full mt-4 py-2 px-32 rounded-2xl flex justify-center items-center tracking-wide bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 				>
 					Sign In
 				</button>

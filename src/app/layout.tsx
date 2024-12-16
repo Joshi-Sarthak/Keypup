@@ -1,10 +1,38 @@
 import type { Metadata } from "next"
-import { Ubuntu } from "next/font/google"
+import localFont from "next/font/local"
 import "./globals.css"
 import Navbar from "@/components/Navbar/Navbar"
 import { Providers } from "./providers"
 
-const ubuntu = Ubuntu({ subsets: ["latin"], weight: ["300", "400", "500", "700"] })
+const ubuntu = localFont({
+	src: [
+		{
+			path: "../../public/fonts/Ubuntu-Regular.ttf",
+			weight: "400",
+			style: "normal",
+		},
+		{
+			path: "../../public/fonts/Ubuntu-Italic.ttf",
+			weight: "400",
+			style: "italic",
+		},
+		{
+			path: "../../public/fonts/Ubuntu-Bold.ttf",
+			weight: "700",
+			style: "normal",
+		},
+		{
+			path: "../../public/fonts/Ubuntu-Medium.ttf",
+			weight: "500",
+			style: "normal",
+		},
+		{
+			path: "../../public/fonts/Ubuntu-Light.ttf",
+			weight: "300",
+			style: "normal",
+		},
+	],
+})
 
 export const metadata: Metadata = {
 	title: "Create Next App",
