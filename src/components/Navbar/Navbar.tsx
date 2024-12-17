@@ -36,7 +36,7 @@ function Navbar() {
 	}
 
 	return (
-		<nav className="flex flex-row items-center justify-between py-4 px-16">
+		<nav className="flex flex-row items-center justify-between pt-2 px-16">
 			<Link href="/">
 				<div className="group flex flex-row items-center">
 					<Image
@@ -45,6 +45,7 @@ function Navbar() {
 						width={75}
 						height={75}
 						className="transition-all duration-200 group-hover:scale-105"
+						priority
 					/>
 					<h2 className="font-medium text-3xl text-stone-700 dark:text-neutral-400 ml-[-10px] transition-all duration-200 group-hover:text-stone-800 dark:group-hover:text-neutral-100">
 						Keypup
