@@ -135,7 +135,7 @@ const SignupForm = () => {
 			<h2 className="flex justify-center tracking-widest text-3xl mb-4 text-stone-500 dark:text-neutral-500">
 				SIGN UP
 			</h2>
-			<div className="border border-b-stone-400 max-w-lg mx-auto"></div>
+
 			<form
 				action={googleSignin}
 				className="flex flex-row justify-center mb-4 mt-4"

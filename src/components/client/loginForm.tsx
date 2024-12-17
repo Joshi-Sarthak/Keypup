@@ -45,7 +45,7 @@ const LoginForm = () => {
 			<h2 className="flex justify-center tracking-widest text-3xl mb-4 text-stone-500 dark:text-neutral-500">
 				LOG IN
 			</h2>
-			<div className="border border-b-stone-400 max-w-lg mx-auto"></div>
+
 			<div className="flex flex-row justify-center mb-4 mt-4">
 				<form action={googleSignin}>
 					<button
