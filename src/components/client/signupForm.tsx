@@ -131,7 +131,7 @@ const SignupForm = () => {
 	}
 
 	return (
-		<div className="flex-col items-center justify-center h-dvh">
+		<div className="flex-col items-center justify-center h-full">
 			<h2 className="flex justify-center tracking-widest text-3xl mb-4 text-stone-500 dark:text-neutral-500">
 				SIGN UP
 			</h2>
