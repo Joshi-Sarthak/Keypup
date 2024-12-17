@@ -41,7 +41,7 @@ const LoginForm = () => {
 	}
 
 	return (
-		<div className="flex-col items-center justify-center h-dvh mt-2">
+		<div className="flex-col items-center justify-center h-full mt-2">
 			<h2 className="flex justify-center tracking-widest text-3xl mb-4 text-stone-500 dark:text-neutral-500">
 				LOG IN
 			</h2>

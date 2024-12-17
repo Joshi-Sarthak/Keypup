@@ -1,8 +1,9 @@
-import type { Metadata } from "next"
+import type {Metadata} from "next"
 import localFont from "next/font/local"
 import "./globals.css"
 import Navbar from "@/components/Navbar/Navbar"
-import { Providers } from "./providers"
+import Footer from "@/components/Footer/Footer"
+import {Providers} from "./providers"
 
 const ubuntu = localFont({
 	src: [
@@ -46,10 +47,15 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={`${ubuntu.className} bg-neutral-100 dark:bg-stone-800`}>
+			<body
+				className={`${ubuntu.className} bg-neutral-100 dark:bg-stone-800 flex flex-col min-h-screen`}
+			>
 				<Providers>
-					<Navbar />
-					{children}
+					<div className="flex flex-col min-h-screen">
+						<Navbar />
+						<main className="flex-grow">{children}</main>
+						<Footer />
+					</div>
 				</Providers>
 			</body>
 		</html>
