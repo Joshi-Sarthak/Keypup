@@ -10,6 +10,7 @@ type testStore = {
 	seedWords: () => void
 	setChar: (typedWordandChar: string) => void
 	changeWord: () => void
+	reset: () => void // Add the reset function
 }
 
 export const useTestStore = create<testStore>((set) => ({
@@ -18,6 +19,7 @@ export const useTestStore = create<testStore>((set) => ({
 	currWord: "",
 	typedWord: "",
 	currWordIndex: 0,
+
 	seedWords: () => {
 		const { words } = english
 		const seedWords = []
@@ -27,9 +29,11 @@ export const useTestStore = create<testStore>((set) => ({
 		}
 		set({ initialWords: seedWords, currWord: seedWords[0] })
 	},
+
 	setChar: (typedWordandChar) => {
 		set({ typedWord: typedWordandChar })
 	},
+
 	changeWord: () => {
 		set((state) => {
 			const nextIndex = state.typedWords.length + 1
@@ -39,6 +43,28 @@ export const useTestStore = create<testStore>((set) => ({
 				currWord: state.initialWords[nextIndex] || "",
 				currWordIndex: state.currWordIndex + 1,
 			}
+		})
+	},
+
+	// Reset function
+	reset: () => {
+		const { words } = english
+		const seedWords = []
+		for (let i = 0; i < 50; i++) {
+			const index = Math.floor(Math.random() * words.length)
+			seedWords.push(words[index])
+		}
+		set({
+			initialWords: seedWords,
+			typedWords: [],
+			currWord: seedWords[0],
+			typedWord: "",
+			currWordIndex: 0,
+		})
+
+		const resetableDivs = document.querySelectorAll("#resetable")
+		resetableDivs.forEach((span) => {
+			span.classList.remove("correct", "wrong") // Remove specific classes (or more if needed)
 		})
 	},
 }))

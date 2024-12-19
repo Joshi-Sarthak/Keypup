@@ -10,6 +10,7 @@ function Main() {
 	const currWord = useTestStore((state) => state.currWord)
 	const currWordIndex = useTestStore((state) => state.currWordIndex)
 	const seedWords = useTestStore((state) => state.seedWords)
+	const reset = useTestStore((state) => state.reset)
 
 	const activeWord = useRef<HTMLDivElement>(null)
 	const activeLetter = useRef<HTMLSpanElement>(null)
@@ -20,9 +21,11 @@ function Main() {
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === " ") {
-				RecordTest(e.key)
-			} else {
+			if (e.ctrlKey && e.key === "b") {
+				//restart logic
+				e.preventDefault()
+				reset()
+			} else if (e.key.length === 1 || e.key === "Backspace") {
 				RecordTest(e.key)
 			}
 		}
@@ -62,6 +65,7 @@ function Main() {
 							{word.split("").map((letter, key) => {
 								return (
 									<span
+										id="resetable"
 										key={key}
 										ref={
 											isActive && typedWord.length - 1 == key

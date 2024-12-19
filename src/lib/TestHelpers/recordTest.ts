@@ -12,7 +12,9 @@ export const RecordTest = (key: string) => {
 			handleBackspace()
 			break
 		case " ":
-			changeWord()
+			if (typedWord !== "") {
+				changeWord()
+			}
 			break
 		default:
 			setChar(typedWord + key)
