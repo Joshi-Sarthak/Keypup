@@ -1,41 +1,79 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import english from "@/lib/Languages/english.json"
+import React, { useEffect, useRef, useState } from "react"
+import { useTestStore } from "@/lib/store"
+import { RecordTest } from "@/lib/TestHelpers/recordTest"
 
 function Main() {
-	const { words } = english
-	const [initalWords, setInitialWords] = useState<string[]>([])
+	const initialWords = useTestStore((state) => state.initialWords)
+	const typedWord = useTestStore((state) => state.typedWord)
+	const currWord = useTestStore((state) => state.currWord)
+	const currWordIndex = useTestStore((state) => state.currWordIndex)
+	const seedWords = useTestStore((state) => state.seedWords)
+
+	const activeWord = useRef<HTMLDivElement>(null)
+	const activeLetter = useRef<HTMLSpanElement>(null)
 
 	useEffect(() => {
-		const seedWords = []
-		for (let i = 0; i < 50; i++) {
-			const index = Math.floor(Math.random() * words.length)
-			seedWords.push(words[index])
+		seedWords()
+	}, [seedWords])
+
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === " ") {
+				RecordTest(e.key)
+			} else {
+				RecordTest(e.key)
+			}
 		}
-		setInitialWords(seedWords)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+
+		document.addEventListener("keydown", handleKeyDown)
+
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown)
+		}
 	}, [])
 
 	useEffect(() => {
-		document.onkeydown = (e) => {
-			console.log(e.key)
-		}
-	})
+		const index = typedWord.length - 1
+		const currWordRef = activeWord.current
 
-	const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		console.log(e.target.value)
-	}
+		if (currWordRef && index >= 0) {
+			if (currWord[index] === typedWord[index]) {
+				activeLetter.current?.classList.add("correct")
+			} else {
+				activeLetter.current?.classList.add("wrong")
+			}
+		}
+	}, [currWord, typedWord])
 
 	return (
-		<div className="flex flex-row justify-center ">
-			<div className="w-3/4 bg-transparent mt-64">
-				{initalWords.map((currWord, id) => {
+		<div className="flex justify-center w-full mt-64">
+			<div className="w-3/4 max-w-full flex flex-wrap">
+				{initialWords.map((word, id) => {
+					const isActive = id === currWordIndex
+
 					return (
-						<span
+						<div
 							key={id}
-							className="text-3xl text-stone-500 dark:text-neutral-500 tracking-wide mx-2"
-						>{`${currWord} `}</span>
+							ref={isActive ? activeWord : null}
+							className="text-3xl text-stone-500 dark:text-neutral-500 tracking-wide mx-2 my-1 inline-block"
+						>
+							{word.split("").map((letter, key) => {
+								return (
+									<span
+										key={key}
+										ref={
+											isActive && typedWord.length - 1 == key
+												? activeLetter
+												: null
+										}
+									>
+										{letter}
+									</span>
+								)
+							})}
+						</div>
 					)
 				})}
 			</div>
