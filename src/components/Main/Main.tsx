@@ -1,8 +1,9 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef } from "react"
 import { useTestStore } from "@/lib/store"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
+import { VscDebugRestart } from "react-icons/vsc"
 
 function Main() {
 	const initialWords = useTestStore((state) => state.initialWords)
@@ -37,6 +38,7 @@ function Main() {
 		return () => {
 			document.removeEventListener("keydown", handleKeyDown)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
@@ -70,9 +72,10 @@ function Main() {
 										<span
 											id="resetable"
 											key={key}
-											ref={isActive && typedWord.length - 1 == key
-												? activeLetter
-												: null
+											ref={
+												isActive && typedWord.length - 1 == key
+													? activeLetter
+													: null
 											}
 										>
 											{letter}
@@ -85,39 +88,11 @@ function Main() {
 				</div>
 			</div>
 			{/* Restart SVG Icon */}
-			<div onClick={Restart} className="cursor-pointer mt-2">
-				<svg
-					width="24px"    
-					height="24px"   
-					viewBox="0 0 24 24"  
-					className="w-6 h-6 text-stone-500 dark:text-neutral-500 mx-auto"  
-				>
-					<title>Reload</title>
-					<g
-						id="Page-1"
-						stroke="none"
-						strokeWidth="1"
-						fill="none"
-						fillRule="evenodd"
-					>
-						<g id="Reload">
-							<path
-								d="M4,13 C4,17.4183 7.58172,21 12,21 C16.4183,21 20,17.4183 20,13 C20,8.58172 16.4183,5 12,5 C10.4407,5 8.98566,5.44609 7.75543,6.21762"
-								id="Path"
-								stroke="#787474"
-								strokeWidth="2"
-								strokeLinecap="round"
-							></path>
-							<path
-								d="M9.2384,1.89795 L7.49856,5.83917 C7.27552,6.34441 7.50429,6.9348 8.00954,7.15784 L11.9508,8.89768"
-								id="Path"
-								stroke="#787474"
-								strokeWidth="2"
-								strokeLinecap="round"
-							></path>
-						</g>
-					</g>
-				</svg>
+			<div
+				onClick={Restart}
+				className="cursor-pointer mt-8 flex flex-row justify-center"
+			>
+				<VscDebugRestart className="w-8 h-8 text-stone-400 dark:text-neutral-600 hover:text-stone-500 hover:dark:text-neutral-500 transition-all duration-200 ease-in-out" />
 			</div>
 		</div>
 	)
