@@ -1,9 +1,10 @@
 "use client"
 
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useTestStore } from "@/lib/store"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
 import { MdRefresh } from "react-icons/md"
+import { VscDebugRestart } from "react-icons/vsc"
 
 function Main() {
 	const initialWords = useTestStore((state) => state.initialWords)
@@ -12,6 +13,7 @@ function Main() {
 	const currWordIndex = useTestStore((state) => state.currWordIndex)
 	const seedWords = useTestStore((state) => state.seedWords)
 	const reset = useTestStore((state) => state.reset)
+	const [isHovered, setIsHovered] = useState(false)
 
 	const activeWord = useRef<HTMLDivElement>(null)
 	const activeLetter = useRef<HTMLSpanElement>(null)
@@ -29,7 +31,7 @@ function Main() {
 			if (e.ctrlKey && e.key === "b") {
 				Restart()
 			} else if (e.key.length === 1 || e.key === "Backspace") {
-				RecordTest(e.key,activeLetter.current)
+				RecordTest(e.key, activeLetter.current)
 			}
 		}
 
@@ -87,15 +89,21 @@ function Main() {
 					})}
 				</div>
 			</div>
-			<div className="relative  mt-2 group">
-				<MdRefresh
-					className="mx-auto text-stone-500 dark:text-neutral-500 pointer-events-auto cursor-pointer"
-					size={25}
-				/>
-				<span className="absolute top-full left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 group-hover:top-[110%] transition-all text-xs duration-500 text-stone-500 dark:text-neutral-500 pointer-events-auto ">
+			<VscDebugRestart
+				onClick={Restart}
+				onMouseEnter={() => setIsHovered(true)}
+				onMouseLeave={() => setIsHovered(false)}
+				className="w-8 h-8 text-stone-400 dark:text-neutral-600 hover:text-stone-500 hover:dark:text-neutral-500 transition-all duration-200 ease-in-out mx-auto"
+			/>
+			{isHovered && (
+				<div
+					className={
+						"text-center text-xs text-stone-400 dark:text-neutral-600"
+					}
+				>
 					Restart Test
-				</span>
-			</div>
+				</div>
+			)}
 		</div>
 	)
 }
