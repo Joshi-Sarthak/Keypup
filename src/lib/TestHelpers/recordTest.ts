@@ -1,11 +1,7 @@
 import { useTestStore } from "../store"
 
 const handleBackspace = (activeLetter: HTMLSpanElement | null) => {
-	const {
-		typedWord,
-		currWordIndex,
-		setChar
-	} = useTestStore.getState()
+	const { typedWord, currWordIndex, setChar } = useTestStore.getState()
 
 	if (typedWord.length > 0) {
 		// Remove the last character from the typedWord
@@ -15,7 +11,7 @@ const handleBackspace = (activeLetter: HTMLSpanElement | null) => {
 			const spanElements = activeLetter.parentElement.querySelectorAll("span")
 			const lastSpan = spanElements[typedWord.length]
 			if (lastSpan) {
-				lastSpan.classList.remove("correct", "wrong")
+				lastSpan.classList.remove("correct", "wrong", "semiWrong")
 			}
 		}
 	} else if (currWordIndex > 0) {
@@ -29,14 +25,19 @@ const handleBackspace = (activeLetter: HTMLSpanElement | null) => {
 	}
 
 	if (activeLetter) {
-		activeLetter.classList.remove("correct", "wrong")
+		activeLetter.classList.remove("correct", "wrong", "semiWrong")
 	}
 }
 
-export const RecordTest = (key: string, activeLetter: HTMLSpanElement | null) => {
+export const RecordTest = (
+	key: string,
+	activeLetter: HTMLSpanElement | null,
+	activeWord: HTMLDivElement | null
+) => {
 	const setChar = useTestStore.getState().setChar
 	const changeWord = useTestStore.getState().changeWord
 	const typedWord = useTestStore.getState().typedWord
+	const currWord = useTestStore.getState().currWord
 
 	switch (key) {
 		case "Backspace":
@@ -44,6 +45,9 @@ export const RecordTest = (key: string, activeLetter: HTMLSpanElement | null) =>
 			break
 		case " ":
 			if (typedWord !== "") {
+				if (activeWord && currWord !== typedWord) {
+					activeWord?.classList.add("semiWrong")
+				}
 				changeWord()
 			}
 			break

@@ -10,7 +10,7 @@ type testStore = {
 	seedWords: () => void
 	setChar: (typedWordandChar: string) => void
 	changeWord: () => void
-	reset: () => void 
+	reset: () => void
 }
 
 export const useTestStore = create<testStore>((set) => ({
@@ -62,9 +62,13 @@ export const useTestStore = create<testStore>((set) => ({
 			currWordIndex: 0,
 		})
 
-		const resetableDivs = document.querySelectorAll("#resetable")
-		resetableDivs.forEach((span) => {
-			span.classList.remove("correct", "wrong") // Remove specific classes (or more if needed)
+		const resetableSpans = document.querySelectorAll("#resetable")
+		const resetableDivs = document.querySelectorAll("#resetableDiv")
+		resetableSpans.forEach((span) => {
+			span.classList.remove("correct", "wrong", "semiWrong")
+		})
+		resetableDivs.forEach((div) => {
+			div.classList.remove("correct", "wrong", "semiWrong")
 		})
 	},
 }))
