@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef } from "react"
 import { useTestStore } from "@/lib/store"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
 import { MdRefresh } from "react-icons/md"
@@ -38,6 +38,7 @@ function Main() {
 		return () => {
 			document.removeEventListener("keydown", handleKeyDown)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
