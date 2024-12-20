@@ -10,7 +10,7 @@ type testStore = {
 	seedWords: () => void
 	setChar: (typedWordandChar: string) => void
 	changeWord: () => void
-	reset: () => void // Add the reset function
+	reset: () => void 
 }
 
 export const useTestStore = create<testStore>((set) => ({

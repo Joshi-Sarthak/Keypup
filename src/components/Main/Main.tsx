@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { useTestStore } from "@/lib/store"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
+import { MdRefresh } from "react-icons/md"
 
 function Main() {
 	const initialWords = useTestStore((state) => state.initialWords)
@@ -28,7 +29,7 @@ function Main() {
 			if (e.ctrlKey && e.key === "b") {
 				Restart()
 			} else if (e.key.length === 1 || e.key === "Backspace") {
-				RecordTest(e.key)
+				RecordTest(e.key,activeLetter.current)
 			}
 		}
 
@@ -70,9 +71,10 @@ function Main() {
 										<span
 											id="resetable"
 											key={key}
-											ref={isActive && typedWord.length - 1 == key
-												? activeLetter
-												: null
+											ref={
+												isActive && typedWord.length - 1 == key
+													? activeLetter
+													: null
 											}
 										>
 											{letter}
@@ -84,40 +86,14 @@ function Main() {
 					})}
 				</div>
 			</div>
-			{/* Restart SVG Icon */}
-			<div onClick={Restart} className="cursor-pointer mt-2">
-				<svg
-					width="24px"    
-					height="24px"   
-					viewBox="0 0 24 24"  
-					className="w-6 h-6 text-stone-500 dark:text-neutral-500 mx-auto"  
-				>
-					<title>Reload</title>
-					<g
-						id="Page-1"
-						stroke="none"
-						strokeWidth="1"
-						fill="none"
-						fillRule="evenodd"
-					>
-						<g id="Reload">
-							<path
-								d="M4,13 C4,17.4183 7.58172,21 12,21 C16.4183,21 20,17.4183 20,13 C20,8.58172 16.4183,5 12,5 C10.4407,5 8.98566,5.44609 7.75543,6.21762"
-								id="Path"
-								stroke="#787474"
-								strokeWidth="2"
-								strokeLinecap="round"
-							></path>
-							<path
-								d="M9.2384,1.89795 L7.49856,5.83917 C7.27552,6.34441 7.50429,6.9348 8.00954,7.15784 L11.9508,8.89768"
-								id="Path"
-								stroke="#787474"
-								strokeWidth="2"
-								strokeLinecap="round"
-							></path>
-						</g>
-					</g>
-				</svg>
+			<div className="relative  mt-2 group">
+				<MdRefresh
+					className="mx-auto text-stone-500 dark:text-neutral-500 pointer-events-auto cursor-pointer"
+					size={25}
+				/>
+				<span className="absolute top-full left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 group-hover:top-[110%] transition-all text-xs duration-500 text-stone-500 dark:text-neutral-500 pointer-events-auto ">
+					Restart Test
+				</span>
 			</div>
 		</div>
 	)

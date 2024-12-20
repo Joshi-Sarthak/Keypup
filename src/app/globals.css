@@ -15,3 +15,11 @@
 .wrong {
 	@apply text-red-500 underline !important;
 }
+
+.group {
+	pointer-events: none; /* Disable all pointer events for the parent by default */
+}
+
+.group > .pointer-events-auto {
+	pointer-events: auto; /* Re-enable pointer events for the child elements */
+}
