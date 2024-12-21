@@ -1,6 +1,9 @@
 import { useTestStore } from "../store"
 
-const handleBackspace = (activeLetter: HTMLSpanElement | null) => {
+const handleBackspace = (
+	activeLetter: HTMLSpanElement | null,
+	activeWord: HTMLDivElement | null
+) => {
 	const { typedWord, currWordIndex, setChar } = useTestStore.getState()
 
 	if (typedWord.length > 0) {
@@ -16,6 +19,9 @@ const handleBackspace = (activeLetter: HTMLSpanElement | null) => {
 		}
 	} else if (currWordIndex > 0) {
 		const prevWordIndex = currWordIndex - 1
+		if (activeWord) {
+			activeWord.classList.remove("correct", "wrong", "semiWrong")
+		}
 		useTestStore.setState((state) => ({
 			currWordIndex: prevWordIndex,
 			typedWord: state.typedWords[prevWordIndex] || "",
@@ -41,7 +47,7 @@ export const RecordTest = (
 
 	switch (key) {
 		case "Backspace":
-			handleBackspace(activeLetter)
+			handleBackspace(activeLetter, activeWord)
 			break
 		case " ":
 			if (typedWord !== "") {

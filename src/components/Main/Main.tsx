@@ -8,12 +8,14 @@ import { VscDebugRestart } from "react-icons/vsc"
 function Main() {
 	const initialWords = useTestStore((state) => state.initialWords)
 	const typedWord = useTestStore((state) => state.typedWord)
+	const typedWords = useTestStore((state) => state.typedWords)
 	const currWord = useTestStore((state) => state.currWord)
 	const currWordIndex = useTestStore((state) => state.currWordIndex)
 	const seedWords = useTestStore((state) => state.seedWords)
 	const reset = useTestStore((state) => state.reset)
 	const [isHovered, setIsHovered] = useState(false)
 	const [isBlinking, setIsBlinking] = useState(false)
+	const [isBackspacing, setIsBackspacing] = useState(false)
 
 	const activeWord = useRef<HTMLDivElement>(null)
 	const activeLetter = useRef<HTMLSpanElement>(null)
@@ -35,8 +37,9 @@ function Main() {
 			if (e.ctrlKey && e.key === "b") {
 				Restart()
 			} else if (e.key.length === 1 || e.key === "Backspace") {
+				setIsBackspacing(e.key === "Backspace")
 				RecordTest(e.key, activeLetter.current, activeWord.current)
-				setIsBlinking(false) // Stop blinking when a key is pressed
+				setIsBlinking(false)
 
 				if (timeoutId.current) {
 					clearTimeout(timeoutId.current)
@@ -62,9 +65,11 @@ function Main() {
 			measureRef.current.textContent = typedWord
 			const typedWidth = measureRef.current.getBoundingClientRect().width
 			cursorRef.current.style.transform = `translateX(${typedWidth + 3}px)`
-			cursorRef.current.style.transition = "transform 0.1s ease"
+			cursorRef.current.style.transition = isBackspacing
+				? "none"
+				: "transform 0.1s ease"
 		}
-	}, [typedWord])
+	}, [typedWord, isBackspacing])
 
 	useEffect(() => {
 		const index = typedWord.length - 1
@@ -78,6 +83,9 @@ function Main() {
 			}
 		}
 	}, [currWord, typedWord])
+
+	// Calculate extra letters
+	const extraLetters = typedWord.slice(currWord.length).split("")
 
 	return (
 		<div>
@@ -105,9 +113,6 @@ function Main() {
 										className={`absolute ml-[-10px] select-none text-purple-700 text-4xl bottom-0 ${
 											isBlinking ? "blink" : ""
 										}`}
-										style={{
-											transition: "transform 0.1s ease",
-										}}
 									>
 										|
 									</span>
@@ -128,6 +133,25 @@ function Main() {
 										</span>
 									)
 								})}
+								{isActive
+									? extraLetters.map((char, charId) => (
+											<span key={charId} className="text-red-500">
+												{char}
+											</span>
+									  ))
+									: typedWords[id]
+									? typedWords[id]
+											.slice(initialWords[id].length)
+											.split("")
+											.map((char, charId) => (
+												<span
+													key={charId}
+													className="text-red-500"
+												>
+													{char}
+												</span>
+											))
+									: null}
 							</div>
 						)
 					})}
