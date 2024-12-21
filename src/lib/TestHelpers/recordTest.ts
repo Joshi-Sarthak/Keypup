@@ -1,4 +1,4 @@
-import { useTestStore } from "../store"
+import { useTestStore } from "../zustand/teststore"
 
 const handleBackspace = (
 	activeLetter: HTMLSpanElement | null,
@@ -22,7 +22,7 @@ const handleBackspace = (
 		}
 	} else if (currWordIndex > 0) {
 		const prevWordIndex = currWordIndex - 1
-		
+
 		useTestStore.setState((state) => ({
 			currWordIndex: prevWordIndex,
 			typedWord: state.typedWords[prevWordIndex] || "",

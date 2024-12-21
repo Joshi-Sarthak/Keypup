@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
-import { useTestStore } from "@/lib/store"
+import React, { use, useEffect, useRef, useState } from "react"
+import { useTestStore } from "@/lib/zustand/teststore"
+import { useTimeStore } from "@/lib/zustand/timestore"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
 import { VscDebugRestart } from "react-icons/vsc"
 
@@ -16,6 +17,8 @@ function Main() {
 	const [isHovered, setIsHovered] = useState(false)
 	const [isBlinking, setIsBlinking] = useState(false)
 	const [isBackspacing, setIsBackspacing] = useState(false)
+	const [loadResults, setLoadResults] = useState(false)
+	const timerStarted = useRef(false)
 
 	const activeWord = useRef<HTMLDivElement>(null)
 	const activeLetter = useRef<HTMLSpanElement>(null)
@@ -25,8 +28,33 @@ function Main() {
 
 	const Restart = () => {
 		setIsBlinking(false)
+		timerStarted.current = false
 		reset()
 	}
+
+	useEffect(() => {
+		let interval: NodeJS.Timeout | null = null
+
+		if (timerStarted.current && useTimeStore.getState().time >= 0) {
+			interval = setInterval(() => {
+				const timeLeft = useTimeStore.getState().time
+
+				if (timeLeft > 0) {
+					useTimeStore.getState().decrementTime()
+					console.log("Time decremented: ", timeLeft)
+				} else {
+					clearInterval(interval!)
+					setLoadResults(true)
+				}
+			}, 1000)
+		}
+
+		return () => {
+			if (interval) {
+				clearInterval(interval)
+			}
+		}
+	}, [timerStarted.current]) 
 
 	useEffect(() => {
 		seedWords()
@@ -34,6 +62,12 @@ function Main() {
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
+			if (!timerStarted.current) {
+				timerStarted.current = true
+				useTimeStore.getState().setTime(30)
+				useTimeStore.getState().decrementTime()
+			}
+
 			if (e.ctrlKey && e.key === "b") {
 				Restart()
 			} else if (e.key.length === 1 || e.key === "Backspace") {
@@ -57,7 +91,6 @@ function Main() {
 			document.removeEventListener("keydown", handleKeyDown)
 			if (timeoutId.current) clearTimeout(timeoutId.current)
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
@@ -87,7 +120,7 @@ function Main() {
 	// Calculate extra letters
 	const extraLetters = typedWord.slice(currWord.length).split("")
 
-	return (
+	return !loadResults ? (
 		<div>
 			<div className="flex justify-center w-full mt-64">
 				<div className="w-3/4 max-w-full flex flex-wrap">
@@ -171,7 +204,7 @@ function Main() {
 				Restart Test
 			</div>
 		</div>
-	)
+	):<div>Results</div>
 }
 
 export default Main
