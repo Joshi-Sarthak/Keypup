@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 import React, { use, useEffect, useRef, useState } from "react"
@@ -24,6 +25,7 @@ function Main() {
 	const activeLetter = useRef<HTMLSpanElement>(null)
 	const cursorRef = useRef<HTMLSpanElement>(null)
 	const measureRef = useRef<HTMLSpanElement>(null)
+	const wordsContainerRef = useRef<HTMLDivElement>(null)
 	let timeoutId = useRef<NodeJS.Timeout | null>(null)
 
 	const Restart = () => {
@@ -116,13 +118,40 @@ function Main() {
 		}
 	}, [currWord, typedWord])
 
+	useEffect(() => {
+		if (cursorRef.current && wordsContainerRef.current) {
+			const container = wordsContainerRef.current
+			const cursorPosition = cursorRef.current.getBoundingClientRect().top
+			const containerPosition = container.getBoundingClientRect().top
+			const containerHeight = container.getBoundingClientRect().height
+
+			// Calculate the distance from the top of the container to the cursor
+			const cursorDistanceFromTop = cursorPosition - containerPosition
+
+			// Calculate the desired scroll distance based on the cursor's position
+			const desiredScrollDistance = Math.max(
+				0,
+				cursorDistanceFromTop - (1 / 3) * containerHeight
+			)
+
+			// Scroll the container smoothly
+			container.scrollBy({
+				top: desiredScrollDistance,
+				behavior: "smooth",
+			})
+		}
+	}, [typedWord])
+
 	// Calculate extra letters
 	const extraLetters = typedWord.slice(currWord.length).split("")
 
 	return !loadResults ? (
 		<div>
-			<div className="flex justify-center w-full mt-64">
-				<div className="w-3/4 max-w-full flex flex-wrap">
+			<div className="flex justify-center w-full mt-64 items-center">
+				<div
+					className="w-3/4 flex flex-wrap max-h-[120px] overflow-hidden"
+					ref={wordsContainerRef}
+				>
 					<span
 						ref={measureRef}
 						className="absolute opacity-0 text-3xl tracking-wide mx-2 my-1"
