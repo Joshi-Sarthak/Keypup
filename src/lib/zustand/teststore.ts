@@ -15,6 +15,7 @@ type testStore = {
 	reset: () => void
 	loadResult: boolean
 	setLoadResult: (loadResult: boolean) => void
+	correctCharsForEachSecond: number[],
 }
 
 export const useTestStore = create<testStore>((set) => ({
@@ -25,6 +26,7 @@ export const useTestStore = create<testStore>((set) => ({
 	currWordIndex: 0,
 	correctChars: 0,
 	loadResult: false,
+	correctCharsForEachSecond: [],
 
 	setLoadResult: (loadResult) => {
 		set({ loadResult })

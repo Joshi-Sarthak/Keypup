@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-"use client"
-
 import React, { use, useEffect, useRef, useState } from "react"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useTimeStore } from "@/lib/zustand/timestore"
@@ -20,12 +17,19 @@ function Main() {
 	const [isBackspacing, setIsBackspacing] = useState(false)
 	const timerStarted = useRef(false)
 
+	const correctCharsForEachSecond = useTestStore(
+		(state) => state.correctCharsForEachSecond
+	)
+
 	const activeWord = useRef<HTMLDivElement>(null)
 	const activeLetter = useRef<HTMLSpanElement>(null)
 	const cursorRef = useRef<HTMLSpanElement>(null)
 	const measureRef = useRef<HTMLSpanElement>(null)
 	const wordsContainerRef = useRef<HTMLDivElement>(null)
 	let timeoutId = useRef<NodeJS.Timeout | null>(null)
+
+	// Track correct characters typed each second
+	const correctCharsPerSecond = useRef(0)
 
 	const Restart = () => {
 		setIsBlinking(false)
@@ -45,10 +49,10 @@ function Main() {
 					useTimeStore.getState().decrementTime()
 				} else {
 					clearInterval(interval!)
-					console.log("Time's up!")
 					useTestStore.getState().setLoadResult(true)
-					console.log(useTestStore.getState().loadResult)
 				}
+				correctCharsForEachSecond.push(correctCharsPerSecond.current)
+				correctCharsPerSecond.current = 0
 			}, 1000)
 		}
 
@@ -72,6 +76,9 @@ function Main() {
 			if (e.ctrlKey && e.key === "b") {
 				Restart()
 			} else if (e.key.length === 1 || e.key === "Backspace") {
+				if (e.key === " ") {
+					correctCharsPerSecond.current = correctCharsPerSecond.current + 1
+				}
 				setIsBackspacing(e.key === "Backspace")
 				RecordTest(e.key, activeLetter.current, activeWord.current)
 				setIsBlinking(false)
@@ -112,6 +119,7 @@ function Main() {
 		if (currWordRef && index >= 0) {
 			if (currWord[index] === typedWord[index]) {
 				activeLetter.current?.classList.add("correct")
+				correctCharsPerSecond.current = correctCharsPerSecond.current + 1
 			} else {
 				activeLetter.current?.classList.add("wrong")
 			}
@@ -125,16 +133,12 @@ function Main() {
 			const containerPosition = container.getBoundingClientRect().top
 			const containerHeight = container.getBoundingClientRect().height
 
-			// Calculate the distance from the top of the container to the cursor
 			const cursorDistanceFromTop = cursorPosition - containerPosition
-
-			// Calculate the desired scroll distance based on the cursor's position
 			const desiredScrollDistance = Math.max(
 				0,
 				cursorDistanceFromTop - (1 / 3) * containerHeight
 			)
 
-			// Scroll the container smoothly
 			container.scrollBy({
 				top: desiredScrollDistance,
 				behavior: "smooth",
@@ -142,17 +146,15 @@ function Main() {
 		}
 	}, [typedWord])
 
-	// Calculate extra letters
 	const extraLetters = typedWord.slice(currWord.length).split("")
 
 	return (
 		<div>
-			<div className="flex justify-center w-full mt-64 items-center">
+			<div className="flex justify-center w-full mt-44">
 				<div className="w-3/4 flex flex-col">
 					<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">
 						{useTimeStore((state) => state.time)}
 					</span>
-					
 					<div
 						className="w-full flex flex-wrap max-h-[120px] overflow-hidden"
 						ref={wordsContainerRef}
@@ -162,10 +164,9 @@ function Main() {
 							className="absolute opacity-0 text-3xl tracking-wide mx-2 my-1"
 							aria-hidden="true"
 						/>
-	
 						{initialWords.map((word, id) => {
 							const isActive = id === currWordIndex
-	
+
 							return (
 								<div
 									key={id}
@@ -189,7 +190,8 @@ function Main() {
 												id="resetable"
 												key={key}
 												ref={
-													isActive && typedWord.length - 1 === key
+													isActive &&
+													typedWord.length - 1 === key
 														? activeLetter
 														: null
 												}
@@ -201,7 +203,10 @@ function Main() {
 									})}
 									{isActive
 										? extraLetters.map((char, charId) => (
-												<span key={charId} className="text-red-500">
+												<span
+													key={charId}
+													className="text-red-500"
+												>
 													{char}
 												</span>
 										  ))
@@ -239,7 +244,6 @@ function Main() {
 			</div>
 		</div>
 	)
-	
 }
 
 export default Main
