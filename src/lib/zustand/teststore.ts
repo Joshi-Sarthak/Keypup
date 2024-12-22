@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import english from "@/lib/Languages/english.json"
+import { set } from "mongoose"
 
 type testStore = {
 	initialWords: string[]
@@ -12,6 +13,8 @@ type testStore = {
 	setChar: (typedWordandChar: string) => void
 	changeWord: () => void
 	reset: () => void
+	loadResult: boolean
+	setLoadResult: (loadResult: boolean) => void
 }
 
 export const useTestStore = create<testStore>((set) => ({
@@ -21,6 +24,11 @@ export const useTestStore = create<testStore>((set) => ({
 	typedWord: "",
 	currWordIndex: 0,
 	correctChars: 0,
+	loadResult: false,
+
+	setLoadResult: (loadResult) => {
+		set({ loadResult })
+	},
 
 	seedWords: () => {
 		const { words } = english

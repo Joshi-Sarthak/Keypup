@@ -18,7 +18,6 @@ function Main() {
 	const [isHovered, setIsHovered] = useState(false)
 	const [isBlinking, setIsBlinking] = useState(false)
 	const [isBackspacing, setIsBackspacing] = useState(false)
-	const [loadResults, setLoadResults] = useState(false)
 	const timerStarted = useRef(false)
 
 	const activeWord = useRef<HTMLDivElement>(null)
@@ -31,6 +30,7 @@ function Main() {
 	const Restart = () => {
 		setIsBlinking(false)
 		timerStarted.current = false
+		useTimeStore.getState().setTime(0)
 		reset()
 	}
 
@@ -45,7 +45,9 @@ function Main() {
 					useTimeStore.getState().decrementTime()
 				} else {
 					clearInterval(interval!)
-					setLoadResults(true)
+					console.log("Time's up!")
+					useTestStore.getState().setLoadResult(true)
+					console.log(useTestStore.getState().loadResult)
 				}
 			}, 1000)
 		}
@@ -145,77 +147,83 @@ function Main() {
 	// Calculate extra letters
 	const extraLetters = typedWord.slice(currWord.length).split("")
 
-	return !loadResults ? (
+	return (
 		<div>
 			<div className="flex justify-center w-full mt-64 items-center">
-				<div
-					className="w-3/4 flex flex-wrap max-h-[120px] overflow-hidden"
-					ref={wordsContainerRef}
-				>
-					<span
-						ref={measureRef}
-						className="absolute opacity-0 text-3xl tracking-wide mx-2 my-1"
-						aria-hidden="true"
-					/>
-
-					{initialWords.map((word, id) => {
-						const isActive = id === currWordIndex
-
-						return (
-							<div
-								key={id}
-								ref={isActive ? activeWord : null}
-								id="resetableDiv"
-								className="text-3xl text-stone-500 dark:text-neutral-500 tracking-wide mx-2 mb-1 inline-block relative"
-							>
-								{isActive ? (
-									<span
-										ref={cursorRef}
-										className={`absolute ml-[-10px] select-none text-purple-700 text-4xl bottom-0 ${
-											isBlinking ? "blink" : ""
-										}`}
-									>
-										|
-									</span>
-								) : null}
-								{word.split("").map((letter, key) => {
-									return (
+				<div className="w-3/4 flex flex-col">
+					<span className="ml-2 text-2xl font-medium text-purple-700 mb-4 self-start">
+						{useTimeStore((state) => state.time)}
+					</span>
+					
+					<div
+						className="w-full flex flex-wrap max-h-[120px] overflow-hidden"
+						ref={wordsContainerRef}
+					>
+						<span
+							ref={measureRef}
+							className="absolute opacity-0 text-3xl tracking-wide mx-2 my-1"
+							aria-hidden="true"
+						/>
+	
+						{initialWords.map((word, id) => {
+							const isActive = id === currWordIndex
+	
+							return (
+								<div
+									key={id}
+									ref={isActive ? activeWord : null}
+									id="resetableDiv"
+									className="text-3xl text-stone-500 dark:text-neutral-500 tracking-wide mx-2 mb-1 inline-block relative"
+								>
+									{isActive ? (
 										<span
-											id="resetable"
-											key={key}
-											ref={
-												isActive && typedWord.length - 1 === key
-													? activeLetter
-													: null
-											}
-											className="mx-0"
+											ref={cursorRef}
+											className={`absolute ml-[-10px] select-none text-purple-700 text-4xl bottom-0 ${
+												isBlinking ? "blink" : ""
+											}`}
 										>
-											{letter}
+											|
 										</span>
-									)
-								})}
-								{isActive
-									? extraLetters.map((char, charId) => (
-											<span key={charId} className="text-red-500">
-												{char}
+									) : null}
+									{word.split("").map((letter, key) => {
+										return (
+											<span
+												id="resetable"
+												key={key}
+												ref={
+													isActive && typedWord.length - 1 === key
+														? activeLetter
+														: null
+												}
+												className="mx-0"
+											>
+												{letter}
 											</span>
-									  ))
-									: typedWords[id]
-									? typedWords[id]
-											.slice(initialWords[id].length)
-											.split("")
-											.map((char, charId) => (
-												<span
-													key={charId}
-													className="text-red-500"
-												>
+										)
+									})}
+									{isActive
+										? extraLetters.map((char, charId) => (
+												<span key={charId} className="text-red-500">
 													{char}
 												</span>
-											))
-									: null}
-							</div>
-						)
-					})}
+										  ))
+										: typedWords[id]
+										? typedWords[id]
+												.slice(initialWords[id].length)
+												.split("")
+												.map((char, charId) => (
+													<span
+														key={charId}
+														className="text-red-500"
+													>
+														{char}
+													</span>
+												))
+										: null}
+								</div>
+							)
+						})}
+					</div>
 				</div>
 			</div>
 			<VscDebugRestart
@@ -232,13 +240,8 @@ function Main() {
 				Restart Test
 			</div>
 		</div>
-	) : (
-		<div>
-			<h1>Results</h1>
-			<p>WPM : {Math.round((useTestStore.getState().correctChars * 2) / 5)}</p>
-			<p>Correct Chars : {useTestStore.getState().correctChars}</p>
-		</div>
 	)
+	
 }
 
 export default Main
