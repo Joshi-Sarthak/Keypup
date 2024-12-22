@@ -7,7 +7,7 @@ type timestore = {
 }
 
 export const useTimeStore = create<timestore>((set) => ({
-	time: 0,
+	time: 30,
 	setTime: (time: number) => {
 		set({ time })
 	},

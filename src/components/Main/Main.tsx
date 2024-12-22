@@ -67,8 +67,6 @@ function Main() {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (!timerStarted.current) {
 				timerStarted.current = true
-				useTimeStore.getState().setTime(30)
-				useTimeStore.getState().decrementTime()
 			}
 
 			if (e.ctrlKey && e.key === "b") {
@@ -151,7 +149,7 @@ function Main() {
 		<div>
 			<div className="flex justify-center w-full mt-64 items-center">
 				<div className="w-3/4 flex flex-col">
-					<span className="ml-2 text-2xl font-medium text-purple-700 mb-4 self-start">
+					<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">
 						{useTimeStore((state) => state.time)}
 					</span>
 					
