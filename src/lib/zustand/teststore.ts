@@ -7,6 +7,7 @@ type testStore = {
 	currWord: string
 	typedWord: string
 	currWordIndex: number
+	correctChars: number
 	seedWords: () => void
 	setChar: (typedWordandChar: string) => void
 	changeWord: () => void
@@ -19,6 +20,7 @@ export const useTestStore = create<testStore>((set) => ({
 	currWord: "",
 	typedWord: "",
 	currWordIndex: 0,
+	correctChars: 0,
 
 	seedWords: () => {
 		const { words } = english

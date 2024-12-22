@@ -41,7 +41,6 @@ function Main() {
 
 				if (timeLeft > 0) {
 					useTimeStore.getState().decrementTime()
-					console.log("Time decremented: ", timeLeft)
 				} else {
 					clearInterval(interval!)
 					setLoadResults(true)
@@ -54,7 +53,7 @@ function Main() {
 				clearInterval(interval)
 			}
 		}
-	}, [timerStarted.current]) 
+	}, [timerStarted.current])
 
 	useEffect(() => {
 		seedWords()
@@ -204,7 +203,13 @@ function Main() {
 				Restart Test
 			</div>
 		</div>
-	):<div>Results</div>
+	) : (
+		<div>
+			<h1>Results</h1>
+			<p>WPM : {Math.round((useTestStore.getState().correctChars * 2) / 5)}</p>
+			<p>Correct Chars : {useTestStore.getState().correctChars}</p>
+		</div>
+	)
 }
 
 export default Main
