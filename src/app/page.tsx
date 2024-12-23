@@ -1,11 +1,19 @@
 "use client"
 
-import Main from "@/components/Main/Main";
-import Result from "@/components/Result/Result";
-import { useTestStore } from "@/lib/zustand/teststore";
+import Controlbar from "@/components/Controlbar/Controlbar"
+import Main from "@/components/Main/Main"
+import Result from "@/components/Result/Result"
+import { useTestStore } from "@/lib/zustand/teststore"
 
 export default function Home() {
-  const loadResult = useTestStore((state) => state.loadResult);
+	const loadResult = useTestStore((state) => state.loadResult)
 
-  return loadResult ? <Result /> : <Main />;
+	return loadResult ? (
+		<Result />
+	) : (
+		<>
+			<Controlbar />
+			<Main />
+		</>
+	)
 }
