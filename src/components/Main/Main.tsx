@@ -65,7 +65,7 @@ function Main() {
 	}, [timerStarted.current])
 
 	useEffect(() => {
-		seedWords()
+		seedWords(100)
 	}, [seedWords])
 
 	useEffect(() => {

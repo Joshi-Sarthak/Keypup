@@ -1,6 +1,5 @@
 import { create } from "zustand"
 import english from "@/lib/Languages/english.json"
-import { set } from "mongoose"
 
 type testStore = {
 	initialWords: string[]
@@ -9,13 +8,13 @@ type testStore = {
 	typedWord: string
 	currWordIndex: number
 	correctChars: number
-	seedWords: () => void
+	seedWords: (totalWords: number) => void
 	setChar: (typedWordandChar: string) => void
 	changeWord: () => void
 	reset: () => void
 	loadResult: boolean
 	setLoadResult: (loadResult: boolean) => void
-	correctCharsForEachSecond: number[],
+	correctCharsForEachSecond: number[]
 }
 
 export const useTestStore = create<testStore>((set) => ({
@@ -32,10 +31,10 @@ export const useTestStore = create<testStore>((set) => ({
 		set({ loadResult })
 	},
 
-	seedWords: () => {
+	seedWords: (totalWords: number) => {
 		const { words } = english
 		const seedWords = []
-		for (let i = 0; i < 200; i++) {
+		for (let i = 0; i < totalWords; i++) {
 			const index = Math.floor(Math.random() * words.length)
 			seedWords.push(words[index])
 		}
