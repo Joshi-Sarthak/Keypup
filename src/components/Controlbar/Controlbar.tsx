@@ -7,6 +7,7 @@ import { TbNumber1Small } from "react-icons/tb"
 import { FaRegClock } from "react-icons/fa"
 import { BiSolidQuoteAltLeft } from "react-icons/bi"
 import { useGamesStore } from "@/lib/zustand/gamestore"
+import { useTimeStore } from "@/lib/zustand/timestore"
 
 function Controlbar() {
 	const [selected, setSelected] = useState<string | number>(15)
@@ -78,6 +79,7 @@ function Controlbar() {
 					className="flex flex-row mx-4 items-center hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
 					onClick={() => {
 						setWords(true, 10)
+						useTimeStore.getState().setTime(0)
 						setSelected(10)
 					}}
 					style={{ color: words ? "#7e22ce" : "" }}
@@ -183,6 +185,7 @@ function Controlbar() {
 						onClick={() => {
 							handleClick(15)
 							setTime(true, 15)
+							useTimeStore.getState().setTime(15)
 						}}
 						style={{ color: selected === 15 ? "#7e22ce" : "" }}
 					>
@@ -193,6 +196,7 @@ function Controlbar() {
 						onClick={() => {
 							handleClick(30)
 							setTime(true, 30)
+							useTimeStore.getState().setTime(30)
 						}}
 						style={{ color: selected === 30 ? "#7e22ce" : "" }}
 					>
@@ -203,6 +207,7 @@ function Controlbar() {
 						onClick={() => {
 							handleClick(60)
 							setTime(true, 60)
+							useTimeStore.getState().setTime(60)
 						}}
 						style={{ color: selected === 60 ? "#7e22ce" : "" }}
 					>
@@ -213,6 +218,7 @@ function Controlbar() {
 						onClick={() => {
 							handleClick(120)
 							setTime(true, 120)
+							useTimeStore.getState().setTime(120)
 						}}
 						style={{ color: selected === 120 ? "#7e22ce" : "" }}
 					>

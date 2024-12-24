@@ -23,7 +23,7 @@ function Main() {
 	const [isHovered, setIsHovered] = useState(false)
 	const [isBlinking, setIsBlinking] = useState(false)
 	const [isBackspacing, setIsBackspacing] = useState(false)
-	const timerStarted = useRef(false)
+	const [timerStarted, setTimerStarted] = useState(false)
 
 	const correctCharsForEachSecond = useTestStore(
 		(state) => state.correctCharsForEachSecond
@@ -41,8 +41,8 @@ function Main() {
 
 	const Restart = () => {
 		setIsBlinking(false)
-		timerStarted.current = false
-		useTimeStore.getState().setTime(0)
+		setTimerStarted(false)
+		useTimeStore.getState().setTime(useGamesStore.getState().totalTime as number)
 		reset()
 	}
 
@@ -50,7 +50,7 @@ function Main() {
 		if (time) {
 			let interval: NodeJS.Timeout | null = null
 
-			if (timerStarted.current && useTimeStore.getState().timer >= 0) {
+			if (timerStarted && useTimeStore.getState().timer >= 0) {
 				interval = setInterval(() => {
 					const timeLeft = useTimeStore.getState().timer
 
@@ -70,14 +70,19 @@ function Main() {
 					clearInterval(interval)
 				}
 			}
-		} else {
+		}
+	}, [correctCharsForEachSecond, time, timerStarted])
+
+	useEffect(() => {
+		if (!time) {
 			let interval: NodeJS.Timeout | null = null
 
-			if (timerStarted.current && useTimeStore.getState().timer >= 0) {
+			if (timerStarted) {
 				interval = setInterval(() => {
 					const isTestComplete =
-						currWordIndex >= totalWords! - 1 &&
-						typedWord.length === currWord.length
+						useTestStore.getState().currWordIndex >= totalWords! - 1 &&
+						useTestStore.getState().typedWord.length ===
+							useTestStore.getState().currWord.length
 
 					if (isTestComplete) {
 						clearInterval(interval!)
@@ -96,7 +101,7 @@ function Main() {
 				}
 			}
 		}
-	}, [time, currWordIndex, totalWords, typedWord, currWord])
+	}, [correctCharsForEachSecond, time, timerStarted, totalWords])
 
 	useEffect(() => {
 		if (words) {
@@ -108,8 +113,8 @@ function Main() {
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (time && !timerStarted.current) {
-				timerStarted.current = true
+			if (time && !timerStarted) {
+				setTimerStarted(true)
 			}
 
 			if (e.ctrlKey && e.key === "b") {
