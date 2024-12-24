@@ -23,7 +23,6 @@ function Main() {
 	const [isHovered, setIsHovered] = useState(false)
 	const [isBlinking, setIsBlinking] = useState(false)
 	const [isBackspacing, setIsBackspacing] = useState(false)
-	const [timerStarted, setTimerStarted] = useState(false)
 
 	const correctCharsForEachSecond = useTestStore(
 		(state) => state.correctCharsForEachSecond
@@ -41,7 +40,7 @@ function Main() {
 
 	const Restart = () => {
 		setIsBlinking(false)
-		setTimerStarted(false)
+		useTimeStore.getState().setIsTimerRunning(false)
 		useTimeStore.getState().setTime(useGamesStore.getState().totalTime as number)
 		reset()
 	}
@@ -50,11 +49,14 @@ function Main() {
 		if (time) {
 			let interval: NodeJS.Timeout | null = null
 
-			if (timerStarted && useTimeStore.getState().timer >= 0) {
+			if (
+				useTimeStore.getState().isTimerRunning &&
+				useTimeStore.getState().timer >= 1
+			) {
 				interval = setInterval(() => {
 					const timeLeft = useTimeStore.getState().timer
 
-					if (timeLeft > 0) {
+					if (timeLeft > 1) {
 						useTimeStore.getState().decrementTime()
 					} else {
 						clearInterval(interval!)
@@ -71,13 +73,13 @@ function Main() {
 				}
 			}
 		}
-	}, [correctCharsForEachSecond, time, timerStarted])
+	}, [correctCharsForEachSecond, time, useTimeStore.getState().isTimerRunning])
 
 	useEffect(() => {
 		if (!time) {
 			let interval: NodeJS.Timeout | null = null
 
-			if (timerStarted) {
+			if (useTimeStore.getState().isTimerRunning) {
 				interval = setInterval(() => {
 					const isTestComplete =
 						useTestStore.getState().currWordIndex >= totalWords! - 1 &&
@@ -101,7 +103,12 @@ function Main() {
 				}
 			}
 		}
-	}, [correctCharsForEachSecond, time, timerStarted, totalWords])
+	}, [
+		correctCharsForEachSecond,
+		time,
+		totalWords,
+		useTimeStore.getState().isTimerRunning,
+	])
 
 	useEffect(() => {
 		if (words) {
@@ -113,8 +120,8 @@ function Main() {
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (time && !timerStarted) {
-				setTimerStarted(true)
+			if (time && !useTimeStore.getState().isTimerRunning) {
+				useTimeStore.getState().setIsTimerRunning(true)
 			}
 
 			if (e.ctrlKey && e.key === "b") {
