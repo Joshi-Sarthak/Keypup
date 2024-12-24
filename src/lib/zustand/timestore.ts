@@ -1,17 +1,21 @@
 import { create } from "zustand"
 
 type timestore = {
-	time: number
+	timer: number
 	setTime: (time: number) => void
 	decrementTime: () => void
+	incrementTime: () => void
 }
 
 export const useTimeStore = create<timestore>((set) => ({
-	time: 300,
-	setTime: (time: number) => {
-		set({ time })
+	timer: 300,
+	setTime: (timer: number) => {
+		set({ timer })
 	},
 	decrementTime: () => {
-		set((state) => ({ time: state.time - 1 }))
+		set((state) => ({ timer: state.timer - 1 }))
+	},
+	incrementTime: () => {
+		set((state) => ({ timer: state.timer + 1 }))
 	},
 }))

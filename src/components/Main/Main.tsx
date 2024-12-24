@@ -1,9 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { use, useEffect, useRef, useState } from "react"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useTimeStore } from "@/lib/zustand/timestore"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
 import { VscDebugRestart } from "react-icons/vsc"
+import { useGamesStore } from "@/lib/zustand/gamestore"
 
 function Main() {
 	const initialWords = useTestStore((state) => state.initialWords)
@@ -13,6 +13,13 @@ function Main() {
 	const currWordIndex = useTestStore((state) => state.currWordIndex)
 	const seedWords = useTestStore((state) => state.seedWords)
 	const reset = useTestStore((state) => state.reset)
+
+	const timer = useTimeStore((state) => state.timer)
+
+	const time = useGamesStore((state) => state.time)
+	const words = useGamesStore((state) => state.words)
+	const totalWords = useGamesStore((state) => state.totalWords)
+
 	const [isHovered, setIsHovered] = useState(false)
 	const [isBlinking, setIsBlinking] = useState(false)
 	const [isBackspacing, setIsBackspacing] = useState(false)
@@ -40,37 +47,68 @@ function Main() {
 	}
 
 	useEffect(() => {
-		let interval: NodeJS.Timeout | null = null
+		if (time) {
+			let interval: NodeJS.Timeout | null = null
 
-		if (timerStarted.current && useTimeStore.getState().time >= 0) {
-			interval = setInterval(() => {
-				const timeLeft = useTimeStore.getState().time
+			if (timerStarted.current && useTimeStore.getState().timer >= 0) {
+				interval = setInterval(() => {
+					const timeLeft = useTimeStore.getState().timer
 
-				if (timeLeft > 0) {
-					useTimeStore.getState().decrementTime()
-				} else {
-					clearInterval(interval!)
-					useTestStore.getState().setLoadResult(true)
+					if (timeLeft > 0) {
+						useTimeStore.getState().decrementTime()
+					} else {
+						clearInterval(interval!)
+						useTestStore.getState().setLoadResult(true)
+					}
+					correctCharsForEachSecond.push(correctCharsPerSecond.current)
+					correctCharsPerSecond.current = 0
+				}, 1000)
+			}
+
+			return () => {
+				if (interval) {
+					clearInterval(interval)
 				}
-				correctCharsForEachSecond.push(correctCharsPerSecond.current)
-				correctCharsPerSecond.current = 0
-			}, 1000)
-		}
+			}
+		} else {
+			let interval: NodeJS.Timeout | null = null
 
-		return () => {
-			if (interval) {
-				clearInterval(interval)
+			if (timerStarted.current && useTimeStore.getState().timer >= 0) {
+				interval = setInterval(() => {
+					const isTestComplete =
+						currWordIndex >= totalWords! - 1 &&
+						typedWord.length === currWord.length
+
+					if (isTestComplete) {
+						clearInterval(interval!)
+						useTestStore.getState().setLoadResult(true)
+					} else {
+						useTimeStore.getState().incrementTime()
+					}
+					correctCharsForEachSecond.push(correctCharsPerSecond.current)
+					correctCharsPerSecond.current = 0
+				}, 1000)
+			}
+
+			return () => {
+				if (interval) {
+					clearInterval(interval)
+				}
 			}
 		}
-	}, [timerStarted.current])
+	}, [time, currWordIndex, totalWords, typedWord, currWord])
 
 	useEffect(() => {
-		seedWords(100)
-	}, [seedWords])
+		if (words) {
+			seedWords(totalWords as number)
+		} else {
+			seedWords(100)
+		}
+	}, [seedWords, totalWords, words])
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (!timerStarted.current) {
+			if (time && !timerStarted.current) {
 				timerStarted.current = true
 			}
 
@@ -153,9 +191,16 @@ function Main() {
 		<div>
 			<div className="flex justify-center w-full mt-28">
 				<div className="w-3/4 flex flex-col">
-					<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">
-						{useTimeStore((state) => state.time)}
-					</span>
+					{time && (
+						<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">
+							{timer}
+						</span>
+					)}
+					{words && (
+						<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">
+							{currWordIndex}/{totalWords}
+						</span>
+					)}
 					<div
 						className="w-full flex flex-wrap max-h-[120px] overflow-hidden"
 						ref={wordsContainerRef}

@@ -11,16 +11,18 @@ import { useGamesStore } from "@/lib/zustand/gamestore"
 function Controlbar() {
 	const [selected, setSelected] = useState<string | number>(15)
 
-	const setPunctuation = useGamesStore((state) => state.setPunctuation)
-	const setNumbers = useGamesStore((state) => state.setNumbers)
-	const setQuotes = useGamesStore((state) => state.setQuotes)
-	const setWords = useGamesStore((state) => state.setWords)
-	const setTime = useGamesStore((state) => state.setTime)
-	const punctuation = useGamesStore((state) => state.punctuation)
-	const numbers = useGamesStore((state) => state.numbers)
-	const quotes = useGamesStore((state) => state.quotes)
-	const words = useGamesStore((state) => state.words)
-	const time = useGamesStore((state) => state.time)
+	const {
+		setPunctuation,
+		setNumbers,
+		setQuotes,
+		setWords,
+		setTime,
+		punctuation,
+		numbers,
+		quotes,
+		words,
+		time,
+	} = useGamesStore((state) => state)
 
 	const handleClick = (size: string | number) => {
 		setSelected(size)
