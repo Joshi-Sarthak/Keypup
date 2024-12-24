@@ -71,6 +71,8 @@ export const useTestStore = create<testStore>((set) => ({
 			currWord: seedWords[0],
 			typedWord: "",
 			currWordIndex: 0,
+			correctChars: 0,
+			correctCharsForEachSecond: [],
 		})
 
 		const resetableSpans = document.querySelectorAll("#resetable")

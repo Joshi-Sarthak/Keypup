@@ -127,9 +127,7 @@ function Main() {
 			if (e.ctrlKey && e.key === "b") {
 				Restart()
 			} else if (e.key.length === 1 || e.key === "Backspace") {
-				if (e.key === " ") {
-					correctCharsPerSecond.current = correctCharsPerSecond.current + 1
-				}
+
 				setIsBackspacing(e.key === "Backspace")
 				RecordTest(e.key, activeLetter.current, activeWord.current)
 				setIsBlinking(false)
