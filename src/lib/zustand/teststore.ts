@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import english from "@/lib/Languages/english.json"
+import { useGamesStore } from "./gamestore"
 
 type testStore = {
 	initialWords: string[]
@@ -61,7 +62,7 @@ export const useTestStore = create<testStore>((set) => ({
 	reset: () => {
 		const { words } = english
 		const seedWords = []
-		for (let i = 0; i < 200; i++) {
+		for (let i = 0; i < useGamesStore.getState().totalWords!; i++) {
 			const index = Math.floor(Math.random() * words.length)
 			seedWords.push(words[index])
 		}
