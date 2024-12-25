@@ -25,13 +25,14 @@ export default function Result() {
 		setIsClient(true)
 	}, [])
 
-	// Memoize WPM calculations
 	const wpmForEachSecond = useMemo(() => {
+		let cumulativeChars = 0;
 		return correctCharsForEachSecond.map((chars, index) => {
-			const wpm = Math.round((chars * 60) / 5)
-			return { second: index + 1, wpm }
-		})
-	}, [correctCharsForEachSecond])
+			cumulativeChars += chars; // Sum up characters up to the current second
+			const cumulativeWPM = Math.round((cumulativeChars * 60) / (5 * (index + 1)));
+			return { second: index + 1, wpm: cumulativeWPM };
+		});
+	}, [correctCharsForEachSecond]);
 
 	// Calculate overall WPM
 	const overallWPM = Math.round((correctChars * 60) / (5 * totalTime))
