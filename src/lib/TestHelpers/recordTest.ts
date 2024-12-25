@@ -11,6 +11,9 @@ const handleBackspace = (
 			useTestStore.setState((state) => ({
 				correctChars: state.correctChars - state.currWord.length - 1,
 			}))
+			useTestStore.setState((state) => ({
+				rawChars: state.rawChars - state.currWord.length - 1,
+			}))
 		}
 
 		if (activeWord) {
@@ -27,9 +30,11 @@ const handleBackspace = (
 			}
 		}
 	} else if (currWordIndex > 0) {
-		console.log(useTestStore.getState().currWord)
 		useTestStore.setState((state) => ({
 			correctChars: state.correctChars - 1,
+		}))
+		useTestStore.setState((state) => ({
+			rawChars: state.rawChars - 1,
 		}))
 
 		const prevWordIndex = currWordIndex - 1
@@ -63,6 +68,9 @@ export const RecordTest = (
 			break
 		case " ":
 			if (typedWord !== "") {
+				useTestStore.setState((state) => ({
+					rawChars: state.rawChars + typedWord.length + 1,
+				}))
 				if (activeWord && currWord !== typedWord) {
 					activeWord?.classList.add("semiWrong")
 				} else if (activeWord && currWord === typedWord) {

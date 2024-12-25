@@ -20,6 +20,7 @@ type testStore = {
 	loadResult: boolean
 	setLoadResult: (loadResult: boolean) => void
 	correctCharsForEachSecond: number[]
+	rawChars: number
 }
 
 export const useTestStore = create<testStore>((set) => ({
@@ -31,6 +32,7 @@ export const useTestStore = create<testStore>((set) => ({
 	correctChars: 0,
 	loadResult: false,
 	correctCharsForEachSecond: [],
+	rawChars: 0,
 
 	setLoadResult: (loadResult) => {
 		set({ loadResult })
@@ -113,6 +115,7 @@ export const useTestStore = create<testStore>((set) => ({
 				currWordIndex: 0,
 				correctChars: 0,
 				correctCharsForEachSecond: [],
+				rawChars: 0,
 			})
 		} else {
 			const seedArr: string[] = []
@@ -149,6 +152,7 @@ export const useTestStore = create<testStore>((set) => ({
 				currWordIndex: 0,
 				correctChars: 0,
 				correctCharsForEachSecond: [],
+				rawChars: 0,
 			})
 		}
 

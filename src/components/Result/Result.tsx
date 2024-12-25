@@ -26,13 +26,13 @@ export default function Result() {
 	}, [])
 
 	const wpmForEachSecond = useMemo(() => {
-		let cumulativeChars = 0;
+		let cumulativeChars = 0
 		return correctCharsForEachSecond.map((chars, index) => {
-			cumulativeChars += chars; // Sum up characters up to the current second
-			const cumulativeWPM = Math.round((cumulativeChars * 60) / (5 * (index + 1)));
-			return { second: index + 1, wpm: cumulativeWPM };
-		});
-	}, [correctCharsForEachSecond]);
+			cumulativeChars += chars // Sum up characters up to the current second
+			const cumulativeWPM = Math.round((cumulativeChars * 60) / (5 * (index + 1)))
+			return { second: index + 1, wpm: cumulativeWPM }
+		})
+	}, [correctCharsForEachSecond])
 
 	// Calculate overall WPM
 	const overallWPM = Math.round((correctChars * 60) / (5 * totalTime))
@@ -89,9 +89,7 @@ export default function Result() {
 			<h1>Results</h1>
 			<p>Overall Correct Characters: {correctChars}</p>
 			<h2>WPM: {overallWPM}</h2>
-
-			<h3>WPM Breakdown by Second:</h3>
-
+			<h2>Raw Speed : {Math.round((useTestStore.getState().rawChars * 60) / (5 * totalTime))}</h2>
 			<h3>WPM Trend Chart:</h3>
 			<div style={{ width: "900px", height: "500px", margin: "auto" }}>
 				{isClient ? (
