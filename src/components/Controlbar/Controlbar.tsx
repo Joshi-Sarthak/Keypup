@@ -70,6 +70,9 @@ function Controlbar() {
 					onClick={() => {
 						setSelected("small")
 						setQuotes(true, "small")
+						useTimeStore.getState().setIsTimerRunning(false)
+						useTimeStore.getState().setTime(0)
+						useTestStore.getState().reset()
 					}}
 					style={{ color: quotes ? "#7e22ce" : "" }}
 				>
@@ -94,6 +97,7 @@ function Controlbar() {
 					className="flex flex-row ml-4 items-center hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
 					onClick={() => {
 						setTime(true, 15)
+						useTimeStore.getState().setTime(15)
 						setSelected(15)
 					}}
 					style={{ color: time ? "#7e22ce" : "" }}
@@ -110,6 +114,9 @@ function Controlbar() {
 						onClick={() => {
 							handleClick("small")
 							setQuotes(true, "small")
+							useTimeStore.getState().setIsTimerRunning(false)
+							useTimeStore.getState().setTime(0)
+							useTestStore.getState().seedQuotes("small")
 						}}
 						style={{ color: selected === "small" ? "#7e22ce" : "" }}
 					>
@@ -120,6 +127,10 @@ function Controlbar() {
 						onClick={() => {
 							handleClick("medium")
 							setQuotes(true, "medium")
+							useTimeStore.getState().setIsTimerRunning(false)
+							useTimeStore.getState().setTime(0)
+							useTestStore.getState().reset()
+							useTestStore.getState().seedQuotes("medium")
 						}}
 						style={{ color: selected === "medium" ? "#7e22ce" : "" }}
 					>
@@ -130,10 +141,28 @@ function Controlbar() {
 						onClick={() => {
 							handleClick("large")
 							setQuotes(true, "large")
+							useTimeStore.getState().setIsTimerRunning(false)
+							useTimeStore.getState().setTime(0)
+							useTestStore.getState().reset()
+							useTestStore.getState().seedQuotes("large")
 						}}
 						style={{ color: selected === "large" ? "#7e22ce" : "" }}
 					>
 						Large
+					</li>
+					<li
+						className="mr-8 ml-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						onClick={() => {
+							handleClick("xl")
+							setQuotes(true, "xl")
+							useTimeStore.getState().setIsTimerRunning(false)
+							useTimeStore.getState().setTime(0)
+							useTestStore.getState().reset()
+							useTestStore.getState().seedQuotes("xl")
+						}}
+						style={{ color: selected === "large" ? "#7e22ce" : "" }}
+					>
+						Extra large
 					</li>
 				</ul>
 			)}

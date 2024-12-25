@@ -12,12 +12,15 @@ function Main() {
 	const currWord = useTestStore((state) => state.currWord)
 	const currWordIndex = useTestStore((state) => state.currWordIndex)
 	const seedWords = useTestStore((state) => state.seedWords)
+	const seedQuotes = useTestStore((state) => state.seedQuotes)
 	const reset = useTestStore((state) => state.reset)
 
 	const timer = useTimeStore((state) => state.timer)
 
 	const time = useGamesStore((state) => state.time)
 	const words = useGamesStore((state) => state.words)
+	const quotes = useGamesStore((state) => state.quotes)
+	const quoteType = useGamesStore((state) => state.quotesType)
 	const totalWords = useGamesStore((state) => state.totalWords)
 
 	const [isHovered, setIsHovered] = useState(false)
@@ -111,12 +114,17 @@ function Main() {
 	])
 
 	useEffect(() => {
+		console.log("1here", quotes, quoteType)
 		if (words) {
 			seedWords(totalWords as number)
+			console.log("here")
+		} else if (quotes) {
+			seedQuotes(quoteType)
+			console.log("here")
 		} else {
 			seedWords(100)
 		}
-	}, [seedWords, totalWords, words])
+	}, [quoteType, quotes, seedQuotes, seedWords, totalWords, words])
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -127,7 +135,6 @@ function Main() {
 			if (e.ctrlKey && e.key === "b") {
 				Restart()
 			} else if (e.key.length === 1 || e.key === "Backspace") {
-
 				setIsBackspacing(e.key === "Backspace")
 				RecordTest(e.key, activeLetter.current, activeWord.current)
 				setIsBlinking(false)
