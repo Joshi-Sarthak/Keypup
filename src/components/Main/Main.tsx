@@ -114,7 +114,6 @@ function Main() {
 	])
 
 	useEffect(() => {
-		console.log("1here", quotes, quoteType)
 		if (words) {
 			seedWords(totalWords as number)
 			console.log("here")
@@ -124,7 +123,7 @@ function Main() {
 		} else {
 			seedWords(100)
 		}
-	}, [quoteType, quotes, seedQuotes, seedWords, totalWords, words])
+	}, [quoteType, quotes, seedQuotes, seedWords, words])
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {

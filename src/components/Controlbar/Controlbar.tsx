@@ -2,8 +2,6 @@
 
 import React, { use, useState } from "react"
 import { FaA } from "react-icons/fa6"
-import { RiSingleQuotesR } from "react-icons/ri"
-import { TbNumber1Small } from "react-icons/tb"
 import { FaRegClock } from "react-icons/fa"
 import { BiSolidQuoteAltLeft } from "react-icons/bi"
 import { useGamesStore } from "@/lib/zustand/gamestore"
@@ -13,60 +11,19 @@ import { useTestStore } from "@/lib/zustand/teststore"
 function Controlbar() {
 	const [selected, setSelected] = useState<string | number>(15)
 
-	const {
-		setPunctuation,
-		setNumbers,
-		setQuotes,
-		setWords,
-		setTime,
-		punctuation,
-		numbers,
-		quotes,
-		words,
-		time,
-	} = useGamesStore((state) => state)
+	const { setQuotes, setWords, setTime, quotes, words, time } = useGamesStore(
+		(state) => state
+	)
 
 	const handleClick = (size: string | number) => {
 		setSelected(size)
 	}
 
 	return (
-		<div className="w-1/2 h-14 p-2 mx-auto flex justify-between items-center mt-16 bg-neutral-200 dark:bg-[#242120] rounded-full border border-stone-400 dark:border-neutral-700 text-stone-400 dark:text-neutral-600">
+		<div className="w-1/3 h-14 p-2 mx-auto flex justify-between items-center mt-16 bg-neutral-200 dark:bg-[#242120] rounded-full border border-stone-400 dark:border-neutral-700 text-stone-400 dark:text-neutral-600">
 			<ul className="flex flex-row font-semibold">
 				<li
-					className={`flex flex-row ml-8 items-center ${
-						quotes
-							? "text-stone-300 dark:text-neutral-800 cursor-not-allowed"
-							: "hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer"
-					} transition-all duration-300`}
-					onClick={() => {
-						!quotes && setPunctuation(!punctuation)
-					}}
-					style={{ color: punctuation && !quotes ? "#7e22ce" : "" }}
-				>
-					<RiSingleQuotesR className="w-5 h-5 mr-1" />
-					<span>Punctuation</span>
-				</li>
-				<li
-					className={`flex flex-row ml-4 items-center ${
-						quotes
-							? "text-stone-300 dark:text-neutral-800 cursor-not-allowed"
-							: "hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer"
-					} transition-all duration-300`}
-					onClick={() => {
-						!quotes && setNumbers(!numbers)
-					}}
-					style={{ color: numbers && !quotes ? "#7e22ce" : "" }}
-				>
-					<TbNumber1Small className="w-8 h-8 mr-[-4px]" />
-					<span>Numbers</span>
-				</li>
-			</ul>
-
-			<div className="border-r-4 rounded-full border-stone-300 dark:border-stone-800 h-full"></div>
-			<ul className="flex flex-row font-semibold">
-				<li
-					className="flex flex-row mr-4 items-center hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+					className="ml-8 flex flex-row mr-4 items-center hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
 					onClick={() => {
 						setSelected("small")
 						setQuotes(true, "small")
@@ -74,7 +31,10 @@ function Controlbar() {
 						useTimeStore.getState().setTime(0)
 						useTestStore.getState().reset()
 					}}
-					style={{ color: quotes ? "#7e22ce" : "" }}
+					style={{
+						color: quotes ? "#7e22ce" : "",
+						transition: "color 0.3s ease-in-out",
+					}}
 				>
 					<BiSolidQuoteAltLeft className="w-5 h-5 mr-2" />
 					<span>Quotes</span>
@@ -88,7 +48,10 @@ function Controlbar() {
 						useTestStore.getState().reset()
 						setSelected(10)
 					}}
-					style={{ color: words ? "#7e22ce" : "" }}
+					style={{
+						color: words ? "#7e22ce" : "",
+						transition: "color 0.3s ease-in-out",
+					}}
 				>
 					<FaA className="w-4 h-4 mr-2" />
 					<span>Words</span>
@@ -100,7 +63,10 @@ function Controlbar() {
 						useTimeStore.getState().setTime(15)
 						setSelected(15)
 					}}
-					style={{ color: time ? "#7e22ce" : "" }}
+					style={{
+						color: time ? "#7e22ce" : "",
+						transition: "color 0.3s ease-in-out",
+					}}
 				>
 					<FaRegClock className="w-4 h-4 mr-2" />
 					<span>Time</span>
@@ -118,7 +84,10 @@ function Controlbar() {
 							useTimeStore.getState().setTime(0)
 							useTestStore.getState().seedQuotes("small")
 						}}
-						style={{ color: selected === "small" ? "#7e22ce" : "" }}
+						style={{
+							color: selected === "small" ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						Small
 					</li>
@@ -132,7 +101,10 @@ function Controlbar() {
 							useTestStore.getState().reset()
 							useTestStore.getState().seedQuotes("medium")
 						}}
-						style={{ color: selected === "medium" ? "#7e22ce" : "" }}
+						style={{
+							color: selected === "medium" ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						Medium
 					</li>
@@ -146,23 +118,12 @@ function Controlbar() {
 							useTestStore.getState().reset()
 							useTestStore.getState().seedQuotes("large")
 						}}
-						style={{ color: selected === "large" ? "#7e22ce" : "" }}
+						style={{
+							color: selected === "large" ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						Large
-					</li>
-					<li
-						className="mr-8 ml-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
-						onClick={() => {
-							handleClick("xl")
-							setQuotes(true, "xl")
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(0)
-							useTestStore.getState().reset()
-							useTestStore.getState().seedQuotes("xl")
-						}}
-						style={{ color: selected === "large" ? "#7e22ce" : "" }}
-					>
-						Extra large
 					</li>
 				</ul>
 			)}
@@ -177,7 +138,10 @@ function Controlbar() {
 							useTimeStore.getState().setTime(0)
 							useTestStore.getState().reset()
 						}}
-						style={{ color: selected === 10 ? "#7e22ce" : "" }}
+						style={{
+							color: selected === 10 ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						10
 					</li>
@@ -190,7 +154,10 @@ function Controlbar() {
 							useTimeStore.getState().setTime(0)
 							useTestStore.getState().reset()
 						}}
-						style={{ color: selected === 25 ? "#7e22ce" : "" }}
+						style={{
+							color: selected === 25 ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						25
 					</li>
@@ -203,7 +170,10 @@ function Controlbar() {
 							useTimeStore.getState().setTime(0)
 							useTestStore.getState().reset()
 						}}
-						style={{ color: selected === 50 ? "#7e22ce" : "" }}
+						style={{
+							color: selected === 50 ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						50
 					</li>
@@ -216,7 +186,10 @@ function Controlbar() {
 							useTimeStore.getState().setTime(0)
 							useTestStore.getState().reset()
 						}}
-						style={{ color: selected === 100 ? "#7e22ce" : "" }}
+						style={{
+							color: selected === 100 ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						100
 					</li>
@@ -233,7 +206,10 @@ function Controlbar() {
 							useTimeStore.getState().setTime(15)
 							useTestStore.getState().reset()
 						}}
-						style={{ color: selected === 15 ? "#7e22ce" : "" }}
+						style={{
+							color: selected === 15 ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						15
 					</li>
@@ -246,7 +222,10 @@ function Controlbar() {
 							useTimeStore.getState().setTime(30)
 							useTestStore.getState().reset()
 						}}
-						style={{ color: selected === 30 ? "#7e22ce" : "" }}
+						style={{
+							color: selected === 30 ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						30
 					</li>
@@ -259,7 +238,10 @@ function Controlbar() {
 							useTimeStore.getState().setTime(60)
 							useTestStore.getState().reset()
 						}}
-						style={{ color: selected === 60 ? "#7e22ce" : "" }}
+						style={{
+							color: selected === 60 ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						60
 					</li>
@@ -272,7 +254,10 @@ function Controlbar() {
 							useTimeStore.getState().setTime(120)
 							useTestStore.getState().reset()
 						}}
-						style={{ color: selected === 120 ? "#7e22ce" : "" }}
+						style={{
+							color: selected === 120 ? "#7e22ce" : "",
+							transition: "color 0.3s ease-in-out",
+						}}
 					>
 						120
 					</li>

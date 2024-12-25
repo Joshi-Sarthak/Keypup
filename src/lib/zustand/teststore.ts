@@ -3,7 +3,7 @@ import english from "@/lib/Languages/english.json"
 import quotesData from "@/lib/Languages/quotes.json"
 import { useGamesStore } from "./gamestore"
 
-type quote = "small" | "medium" | "large" | "xl" | null
+type quote = "small" | "medium" | "large" | null
 
 type testStore = {
 	initialWords: string[]
@@ -54,17 +54,25 @@ export const useTestStore = create<testStore>((set) => ({
 			const index = Math.floor(Math.random() * quotesData.quotes.length)
 			const quote = quotesData.quotes[index]
 
-			if (
-				(quoteType === "small" && quote.length <= 100) ||
-				(quoteType === "medium" && quote.length <= 300) ||
-				(quoteType === "large" && quote.length <= 600) ||
-				(quoteType === "xl" && quote.length > 600)
+			if (quoteType === "small" && quote.length <= 150) {
+				const words = quote.text.split(" ")
+				seedArr.push(...words)
+				break
+			} else if (
+				quoteType === "medium" &&
+				quote.length <= 300 &&
+				quote.length > 150
 			) {
+				const words = quote.text.split(" ")
+				seedArr.push(...words)
+				break
+			} else if (quoteType === "large" && quote.length > 300) {
 				const words = quote.text.split(" ")
 				seedArr.push(...words)
 				break
 			}
 		}
+		useGamesStore.getState().totalWords = seedArr.length
 
 		set({
 			initialWords: seedArr,
@@ -113,14 +121,21 @@ export const useTestStore = create<testStore>((set) => ({
 				const quote = quotesData.quotes[index]
 
 				if (
-					(useGamesStore.getState().quotesType === "small" &&
-						quote.length <= 100) ||
-					(useGamesStore.getState().quotesType === "medium" &&
-						quote.length <= 300) ||
-					(useGamesStore.getState().quotesType === "large" &&
-						quote.length <= 600) ||
-					(useGamesStore.getState().quotesType === "xl" && quote.length > 600)
+					useGamesStore.getState().quotesType === "small" &&
+					quote.length <= 150
 				) {
+					const words = quote.text.split(" ")
+					seedArr.push(...words)
+					break
+				} else if (
+					useGamesStore.getState().quotesType &&
+					quote.length <= 300 &&
+					quote.length > 150
+				) {
+					const words = quote.text.split(" ")
+					seedArr.push(...words)
+					break
+				} else if (useGamesStore.getState().quotesType && quote.length > 300) {
 					const words = quote.text.split(" ")
 					seedArr.push(...words)
 					break
