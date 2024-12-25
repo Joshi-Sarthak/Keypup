@@ -90,21 +90,52 @@ export const useTestStore = create<testStore>((set) => ({
 
 	// Reset function
 	reset: () => {
-		const { words } = english
-		const seedWords = []
-		for (let i = 0; i < useGamesStore.getState().totalWords!; i++) {
-			const index = Math.floor(Math.random() * words.length)
-			seedWords.push(words[index])
+		if (!useGamesStore.getState().quotes) {
+			const { words } = english
+			const seedWords = []
+			for (let i = 0; i < useGamesStore.getState().totalWords!; i++) {
+				const index = Math.floor(Math.random() * words.length)
+				seedWords.push(words[index])
+			}
+			set({
+				initialWords: seedWords,
+				typedWords: [],
+				currWord: seedWords[0],
+				typedWord: "",
+				currWordIndex: 0,
+				correctChars: 0,
+				correctCharsForEachSecond: [],
+			})
+		} else {
+			const seedArr: string[] = []
+			while (true) {
+				const index = Math.floor(Math.random() * quotesData.quotes.length)
+				const quote = quotesData.quotes[index]
+
+				if (
+					(useGamesStore.getState().quotesType === "small" &&
+						quote.length <= 100) ||
+					(useGamesStore.getState().quotesType === "medium" &&
+						quote.length <= 300) ||
+					(useGamesStore.getState().quotesType === "large" &&
+						quote.length <= 600) ||
+					(useGamesStore.getState().quotesType === "xl" && quote.length > 600)
+				) {
+					const words = quote.text.split(" ")
+					seedArr.push(...words)
+					break
+				}
+			}
+			set({
+				initialWords: seedArr,
+				typedWords: [],
+				currWord: seedArr[0],
+				typedWord: "",
+				currWordIndex: 0,
+				correctChars: 0,
+				correctCharsForEachSecond: [],
+			})
 		}
-		set({
-			initialWords: seedWords,
-			typedWords: [],
-			currWord: seedWords[0],
-			typedWord: "",
-			currWordIndex: 0,
-			correctChars: 0,
-			correctCharsForEachSecond: [],
-		})
 
 		const resetableSpans = document.querySelectorAll("#resetable")
 		const resetableDivs = document.querySelectorAll("#resetableDiv")
