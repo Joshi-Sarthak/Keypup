@@ -1,4 +1,4 @@
-import React, { use, useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useTimeStore } from "@/lib/zustand/timestore"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
@@ -30,6 +30,7 @@ function Main() {
 	const correctCharsForEachSecond = useTestStore(
 		(state) => state.correctCharsForEachSecond
 	)
+	const rawCharsForEachSecond = useTestStore((state) => state.rawCharsForEachSecond)
 
 	const activeWord = useRef<HTMLDivElement>(null)
 	const activeLetter = useRef<HTMLSpanElement>(null)
@@ -40,6 +41,7 @@ function Main() {
 
 	// Track correct characters typed each second
 	const correctCharsPerSecond = useRef(0)
+	const rawCharsPerSecond = useRef(0)
 
 	const Restart = () => {
 		setIsBlinking(false)
@@ -67,6 +69,8 @@ function Main() {
 					}
 					correctCharsForEachSecond.push(correctCharsPerSecond.current)
 					correctCharsPerSecond.current = 0
+					rawCharsForEachSecond.push(rawCharsPerSecond.current)
+					rawCharsPerSecond.current = 0
 				}, 1000)
 			}
 
@@ -76,7 +80,12 @@ function Main() {
 				}
 			}
 		}
-	}, [correctCharsForEachSecond, time, useTimeStore.getState().isTimerRunning])
+	}, [
+		correctCharsForEachSecond,
+		time,
+		useTimeStore.getState().isTimerRunning,
+		rawCharsForEachSecond,
+	])
 
 	useEffect(() => {
 		if (!time) {
@@ -97,6 +106,8 @@ function Main() {
 					}
 					correctCharsForEachSecond.push(correctCharsPerSecond.current)
 					correctCharsPerSecond.current = 0
+					rawCharsForEachSecond.push(rawCharsPerSecond.current)
+					rawCharsPerSecond.current = 0
 				}, 1000)
 			}
 
@@ -111,6 +122,7 @@ function Main() {
 		time,
 		totalWords,
 		useTimeStore.getState().isTimerRunning,
+		rawCharsForEachSecond,
 	])
 
 	useEffect(() => {
@@ -178,6 +190,7 @@ function Main() {
 			} else {
 				activeLetter.current?.classList.add("wrong")
 			}
+			rawCharsPerSecond.current = rawCharsPerSecond.current + 1
 		}
 	}, [currWord, typedWord])
 
