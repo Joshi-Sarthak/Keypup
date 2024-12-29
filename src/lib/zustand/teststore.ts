@@ -56,7 +56,6 @@ export const useTestStore = create<testStore>((set) => ({
 
 	seedQuotes: (quoteType: quote) => {
 		const seedArr: string[] = []
-		console.log("quoteType")
 
 		while (true) {
 			const index = Math.floor(Math.random() * quotesData.quotes.length)
@@ -123,6 +122,7 @@ export const useTestStore = create<testStore>((set) => ({
 				correctCharsForEachSecond: [],
 				rawCharsForEachSecond: [],
 				rawChars: 0,
+				loadResult: false,
 			})
 		} else {
 			const seedArr: string[] = []

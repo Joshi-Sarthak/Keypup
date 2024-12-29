@@ -36,7 +36,7 @@ export default function Result() {
 		useTimeStore.getState().setIsTimerRunning(false)
 		useTimeStore.getState().setTime(useGamesStore.getState().totalTime as number)
 		reset()
-		useTestStore.setState({ loadResult: false })
+		useTestStore.getState().setLoadResult(false)
 	}
 
 	useEffect(() => {

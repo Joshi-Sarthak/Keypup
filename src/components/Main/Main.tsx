@@ -48,6 +48,7 @@ function Main() {
 		useTimeStore.getState().setIsTimerRunning(false)
 		useTimeStore.getState().setTime(useGamesStore.getState().totalTime as number)
 		reset()
+		useTestStore.getState().setLoadResult(false)
 	}
 
 	useEffect(() => {
@@ -128,18 +129,16 @@ function Main() {
 	useEffect(() => {
 		if (words) {
 			seedWords(totalWords as number)
-			console.log("here")
 		} else if (quotes) {
 			seedQuotes(quoteType)
-			console.log("here")
 		} else {
 			seedWords(100)
 		}
-	}, [quoteType, quotes, seedQuotes, seedWords, words])
+	}, [quoteType, quotes, seedQuotes, seedWords, totalWords, words])
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (time && !useTimeStore.getState().isTimerRunning) {
+			if (!useTimeStore.getState().isTimerRunning) {
 				useTimeStore.getState().setIsTimerRunning(true)
 			}
 

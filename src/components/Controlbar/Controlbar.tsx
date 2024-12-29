@@ -1,6 +1,6 @@
 "use client"
 
-import React, { use, useState } from "react"
+import React, { use, useEffect, useState } from "react"
 import { FaA } from "react-icons/fa6"
 import { FaRegClock } from "react-icons/fa"
 import { BiSolidQuoteAltLeft } from "react-icons/bi"
@@ -10,6 +10,10 @@ import { useTestStore } from "@/lib/zustand/teststore"
 
 function Controlbar() {
 	const [selected, setSelected] = useState<string | number>(15)
+
+	useEffect(() => {
+		setSelected(useGamesStore.getState().getGameType().subType!)
+	}, [])
 
 	const { setQuotes, setWords, setTime, quotes, words, time } = useGamesStore(
 		(state) => state
