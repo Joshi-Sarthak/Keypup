@@ -8,28 +8,34 @@ const handleBackspace = (
 
 	if (typedWord.length > 0) {
 		// Handle case when the typed word matches current word
-		if (useTestStore.getState().currWord === typedWord) {
+		if (currWord === typedWord) {
 			useTestStore.setState((state) => ({
-				correctChars: state.correctChars - state.currWord.length - 1,
-				rawChars: state.rawChars - state.currWord.length + 1,
+				correctChars: state.correctChars - currWord.length - 1,
 			}))
 		}
 
 		// Reset word styling
 		if (activeWord) {
 			activeWord.classList.remove("correct", "wrong", "semiWrong")
-
-			// Handle extra letters only at word level
-			const lengthDiff = typedWord.length - currWord.length
-			if (lengthDiff > 0) {
-				useTestStore.setState((state) => ({
-					extraLetters: state.extraLetters - 1,
-				}))
-			}
+		}
+		// Only handle extraLetters if we're removing a character beyond the current word length
+		if (typedWord.length > currWord.length) {
+			useTestStore.setState((state) => ({
+				tempExtraLetters: Math.max(0, state.tempExtraLetters - 1),
+			}))
 		}
 
 		// Remove the last character from typedWord
 		setChar(typedWord.slice(0, -1))
+		useTestStore.setState((state) => ({
+			rawChars: state.rawChars - 1,
+		}))
+
+		if (currWord[typedWord.length - 1] === typedWord[typedWord.length - 1]) {
+			useTestStore.setState((state) => ({
+				correctLetters: state.correctLetters - 1,
+			}))
+		}
 
 		// Reset letter styling
 		if (activeLetter && activeLetter.parentElement) {
@@ -41,9 +47,13 @@ const handleBackspace = (
 		}
 	} else if (currWordIndex > 0) {
 		// Handle backspace at the beginning of a word
+
+		console.log("here")
+
 		useTestStore.setState((state) => ({
 			correctChars: state.correctChars - 1,
-			rawChars: state.rawChars + 1,
+			rawChars: state.rawChars - 1,
+			correctLetters: state.correctLetters - 1,
 		}))
 
 		const prevWordIndex = currWordIndex - 1
@@ -69,18 +79,19 @@ const handleSpace = (
 ) => {
 	if (typedWord === "") return
 
-	// Update raw character count
-	useTestStore.setState((state) => ({
-		rawChars: state.rawChars + typedWord.length + 1,
-	}))
-
 	// Handle word completion
 	if (activeWord) {
 		if (currWord !== typedWord) {
 			activeWord.classList.add("semiWrong")
+			useTestStore.setState((state) => ({
+				rawChars: state.rawChars + 1,
+				correctLetters: state.correctLetters + 1,
+			}))
 		} else {
 			useTestStore.setState((state) => ({
 				correctChars: state.correctChars + currWord.length + 1,
+				correctLetters: state.correctLetters + 1,
+				rawChars: state.rawChars + 1,
 			}))
 		}
 	}
@@ -119,6 +130,28 @@ export const RecordTest = (
 
 		default:
 			setChar(typedWord + key)
+
+			if (currWord[typedWord.length] === key) {
+				useTestStore.setState((state) => ({
+					correctLetters: state.correctLetters + 1,
+					rawChars: state.rawChars + 1,
+				}))
+			} else {
+				useTestStore.setState((state) => ({
+					rawChars: state.rawChars + 1,
+				}))
+			}
+
+			if (typedWord.length >= currWord.length) {
+				useTestStore.setState((state) => ({
+					tempExtraLetters: state.tempExtraLetters + 1,
+				}))
+			}
+
 			break
 	}
+	console.log(
+		useTestStore.getState().correctLetters,
+		useTestStore.getState().rawChars
+	)
 }

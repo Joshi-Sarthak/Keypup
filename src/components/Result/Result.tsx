@@ -25,6 +25,7 @@ export default function Result() {
 	const subType = useGamesStore.getState().getGameType().subType
 	const correctChars = useTestStore.getState().correctChars
 	const rawChars = useTestStore.getState().rawChars
+	const correctLetters = useTestStore.getState().correctLetters
 	const totalTime =
 		useGamesStore.getState().totalTime || useTimeStore.getState().timer || 1
 
@@ -226,7 +227,7 @@ export default function Result() {
 						characters
 					</span>
 					<span className="text-4xl text-purple-600 ">
-						{correctChars}/{rawChars - correctChars}/{extraLetters}/
+						{correctLetters}/{rawChars - correctLetters}/{extraLetters}/
 						{missingLetters}
 					</span>
 				</div>

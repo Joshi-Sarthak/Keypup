@@ -22,8 +22,11 @@ type testStore = {
 	correctCharsForEachSecond: number[]
 	rawCharsForEachSecond: number[]
 	rawChars: number
+	inaccuracies: number
 	extraLetters: number
 	missingLetters: number
+	tempExtraLetters: number
+	correctLetters: number
 }
 
 export const useTestStore = create<testStore>((set) => ({
@@ -34,11 +37,14 @@ export const useTestStore = create<testStore>((set) => ({
 	currWordIndex: 0,
 	correctChars: 0,
 	loadResult: false,
+	inaccuracies: 0,
 	correctCharsForEachSecond: [],
 	rawCharsForEachSecond: [],
 	rawChars: 0,
 	extraLetters: 0,
 	missingLetters: 0,
+	tempExtraLetters: 0,
+	correctLetters: 0,
 
 	setLoadResult: (loadResult) => {
 		set({ loadResult })
@@ -122,6 +128,7 @@ export const useTestStore = create<testStore>((set) => ({
 				correctCharsForEachSecond: [],
 				rawCharsForEachSecond: [],
 				rawChars: 0,
+				correctLetters: 0,
 				loadResult: false,
 			})
 		} else {
@@ -158,6 +165,7 @@ export const useTestStore = create<testStore>((set) => ({
 				typedWord: "",
 				currWordIndex: 0,
 				correctChars: 0,
+				correctLetters: 0,
 				correctCharsForEachSecond: [],
 				rawCharsForEachSecond: [],
 				rawChars: 0,
