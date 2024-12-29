@@ -42,7 +42,7 @@ export default function Result() {
 	const Restart = () => {
 		useTimeStore.getState().setIsTimerRunning(false)
 		useTimeStore.getState().setTime(useGamesStore.getState().totalTime as number)
-		reset()
+		useTestStore.getState().reset()
 		useTestStore.getState().setLoadResult(false)
 	}
 
@@ -206,6 +206,7 @@ export default function Result() {
 							{Math.round(
 								(correctLetters / (rawChars + inaccuracies)) * 100
 							)}
+							%
 						</span>
 					</div>
 				</div>
