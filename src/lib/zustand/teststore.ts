@@ -130,6 +130,7 @@ export const useTestStore = create<testStore>((set) => ({
 				loadResult: false,
 				extraLetters: 0,
 				missingLetters: 0,
+				inaccuracies: 0,
 			})
 		} else {
 			const seedArr: string[] = []
@@ -171,6 +172,7 @@ export const useTestStore = create<testStore>((set) => ({
 				rawChars: 0,
 				extraLetters: 0,
 				missingLetters: 0,
+				inaccuracies: 0,
 			})
 		}
 

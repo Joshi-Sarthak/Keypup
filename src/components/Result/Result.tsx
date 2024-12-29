@@ -26,6 +26,7 @@ export default function Result() {
 	const correctChars = useTestStore.getState().correctChars
 	const rawChars = useTestStore.getState().rawChars
 	const correctLetters = useTestStore.getState().correctLetters
+	const inaccuracies = useTestStore.getState().inaccuracies
 	const totalTime =
 		useGamesStore.getState().totalTime || useTimeStore.getState().timer || 1
 
@@ -196,7 +197,11 @@ export default function Result() {
 						<span className="text-2xl font-normal text-stone-400 dark:text-neutral-500">
 							acc
 						</span>
-						<span className="text-6xl text-purple-600 ">90%</span>
+						<span className="text-6xl text-purple-600 ">
+							{Math.round(
+								(correctLetters / (rawChars + inaccuracies)) * 100
+							)}
+						</span>
 					</div>
 				</div>
 				<div style={{ width: "90rem", height: "20rem" }}>

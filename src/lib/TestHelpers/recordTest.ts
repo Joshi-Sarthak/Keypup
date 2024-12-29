@@ -21,7 +21,8 @@ const handleBackspace = (
 		// Only handle extraLetters if we're removing a character beyond the current word length
 		if (typedWord.length > currWord.length) {
 			useTestStore.setState((state) => ({
-				extraLetters: Math.max(0, state.extraLetters - 1),
+				extraLetters: state.extraLetters - 1,
+				inaccuracies: state.inaccuracies - 1,
 			}))
 		}
 
@@ -59,6 +60,10 @@ const handleBackspace = (
 			correctLetters: state.correctLetters - 1,
 			missingLetters:
 				state.missingLetters -
+				state.initialWords[currWordIndex - 1].length +
+				state.typedWords[currWordIndex - 1].length,
+			inaccuracies:
+				state.inaccuracies -
 				state.initialWords[currWordIndex - 1].length +
 				state.typedWords[currWordIndex - 1].length,
 		}))
@@ -114,6 +119,7 @@ const handleSpace = (
 	if (lengthDiff < 0) {
 		useTestStore.setState((state) => ({
 			missingLetters: state.missingLetters + Math.abs(lengthDiff),
+			inaccuracies: state.inaccuracies + Math.abs(lengthDiff),
 		}))
 	}
 
@@ -148,16 +154,17 @@ export const RecordTest = (
 			} else {
 				useTestStore.setState((state) => ({
 					rawChars: state.rawChars + 1,
+					inaccuracies: state.inaccuracies + 1,
 				}))
 			}
 
 			if (typedWord.length >= currWord.length) {
 				useTestStore.setState((state) => ({
 					extraLetters: state.extraLetters + 1,
+					inaccuracies: state.inaccuracies + 1,
 				}))
 			}
 
 			break
 	}
-	console.log(useTestStore.getState().missingLetters)
 }
