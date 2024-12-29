@@ -25,7 +25,6 @@ type testStore = {
 	inaccuracies: number
 	extraLetters: number
 	missingLetters: number
-	tempExtraLetters: number
 	correctLetters: number
 }
 
@@ -43,7 +42,6 @@ export const useTestStore = create<testStore>((set) => ({
 	rawChars: 0,
 	extraLetters: 0,
 	missingLetters: 0,
-	tempExtraLetters: 0,
 	correctLetters: 0,
 
 	setLoadResult: (loadResult) => {
@@ -130,6 +128,7 @@ export const useTestStore = create<testStore>((set) => ({
 				rawChars: 0,
 				correctLetters: 0,
 				loadResult: false,
+				extraLetters: 0,
 			})
 		} else {
 			const seedArr: string[] = []
@@ -169,6 +168,7 @@ export const useTestStore = create<testStore>((set) => ({
 				correctCharsForEachSecond: [],
 				rawCharsForEachSecond: [],
 				rawChars: 0,
+				extraLetters: 0,
 			})
 		}
 
