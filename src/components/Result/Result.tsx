@@ -27,8 +27,13 @@ export default function Result() {
 	const rawChars = useTestStore.getState().rawChars
 	const correctLetters = useTestStore.getState().correctLetters
 	const inaccuracies = useTestStore.getState().inaccuracies
-	const totalTime =
-		useGamesStore.getState().totalTime || useTimeStore.getState().timer || 1
+	let totalTime = 0
+	if (type !== "time") {
+		totalTime = useTimeStore.getState().timer || 1
+		correctCharsForEachSecond.pop()
+	} else {
+		totalTime = useGamesStore.getState().totalTime || 1
+	}
 
 	const [isClient, setIsClient] = useState(false)
 	const [theme, setTheme] = useState<"dark" | "light">("dark")

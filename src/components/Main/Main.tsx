@@ -149,6 +149,12 @@ function Main() {
 				RecordTest(e.key, activeLetter.current, activeWord.current)
 				setIsBlinking(false)
 
+				if (e.key === "Backspace") {
+					rawCharsPerSecond.current = rawCharsPerSecond.current - 1
+				} else {
+					rawCharsPerSecond.current = rawCharsPerSecond.current + 1
+				}
+
 				if (timeoutId.current) {
 					clearTimeout(timeoutId.current)
 				}
@@ -189,7 +195,6 @@ function Main() {
 			} else {
 				activeLetter.current?.classList.add("wrong")
 			}
-			rawCharsPerSecond.current = rawCharsPerSecond.current + 1
 		}
 	}, [currWord, typedWord])
 
