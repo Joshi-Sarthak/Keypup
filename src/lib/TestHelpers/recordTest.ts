@@ -48,12 +48,19 @@ const handleBackspace = (
 	} else if (currWordIndex > 0) {
 		// Handle backspace at the beginning of a word
 
-		console.log("here")
+		console.log(
+			useTestStore.getState().initialWords[currWordIndex - 1],
+			useTestStore.getState().typedWords[currWordIndex - 1]
+		)
 
 		useTestStore.setState((state) => ({
 			correctChars: state.correctChars - 1,
 			rawChars: state.rawChars - 1,
 			correctLetters: state.correctLetters - 1,
+			missingLetters:
+				state.missingLetters -
+				state.initialWords[currWordIndex - 1].length +
+				state.typedWords[currWordIndex - 1].length,
 		}))
 
 		const prevWordIndex = currWordIndex - 1
@@ -146,5 +153,5 @@ export const RecordTest = (
 
 			break
 	}
-	console.log(useTestStore.getState().extraLetters)
+	console.log(useTestStore.getState().missingLetters)
 }
