@@ -71,6 +71,11 @@ const handleBackspace = (
 			typedWords: state.typedWords.slice(0, -1),
 			currWord: state.initialWords[prevWordIndex],
 		}))
+
+		// Reset word styling
+		if (activeWord) {
+			activeWord.classList.remove("correct", "wrong", "semiWrong")
+		}
 	}
 
 	// Reset active letter styling
@@ -95,6 +100,7 @@ const handleSpace = (
 				correctLetters: state.correctLetters + 1,
 			}))
 		} else {
+			activeWord.classList.remove("semiWrong")
 			useTestStore.setState((state) => ({
 				correctChars: state.correctChars + currWord.length + 1,
 				correctLetters: state.correctLetters + 1,
