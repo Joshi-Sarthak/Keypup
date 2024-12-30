@@ -2,6 +2,7 @@ import { create } from "zustand"
 import english from "@/lib/Languages/english.json"
 import quotesData from "@/lib/Languages/quotes.json"
 import { useGamesStore } from "./gamestore"
+import { useTimeStore } from "./timestore"
 
 type quote = "small" | "medium" | "large" | null
 
@@ -106,6 +107,10 @@ export const useTestStore = create<testStore>((set) => ({
 
 	// Reset function
 	reset: () => {
+		if (useGamesStore.getState().time) {
+			useTimeStore.getState().setTime(useGamesStore.getState().totalTime!)
+		}
+
 		if (!useGamesStore.getState().quotes) {
 			const { words } = english
 			const seedWords = []

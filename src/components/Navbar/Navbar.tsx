@@ -8,6 +8,8 @@ import { MdAccountCircle } from "react-icons/md"
 import { MdOutlineLightMode } from "react-icons/md"
 import { MdOutlineDarkMode } from "react-icons/md"
 import Link from "next/link"
+import { useTestStore } from "@/lib/zustand/teststore"
+import { useTimeStore } from "@/lib/zustand/timestore"
 
 function Navbar() {
 	const [darkMode, setDarkMode] = useState<boolean | null>(null) // Start with null
@@ -75,7 +77,14 @@ function Navbar() {
 						</span>
 					</li>
 					<Link href="/leaderboard">
-						<li className="group ml-4 flex items-center transition-all duration-200">
+						<li
+							onClick={() => {
+								useTestStore.getState().setLoadResult(false)
+								useTimeStore.getState().setTime(0)
+								useTestStore.getState().reset()
+							}}
+							className="group ml-4 flex items-center transition-all duration-200"
+						>
 							<MdLeaderboard
 								className="text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200"
 								size={25}
