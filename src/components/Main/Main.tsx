@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { use, useEffect, useRef, useState } from "react"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useTimeStore } from "@/lib/zustand/timestore"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
@@ -95,9 +95,11 @@ function Main() {
 			if (useTimeStore.getState().isTimerRunning) {
 				interval = setInterval(() => {
 					const isTestComplete =
-						useTestStore.getState().currWordIndex >= totalWords! - 1 &&
+						useTestStore.getState().currWordIndex >= useTestStore.getState().initialWords.length! - 1 &&
 						useTestStore.getState().typedWord.length ===
 							useTestStore.getState().currWord.length
+
+					console.log(useTestStore.getState().currWordIndex,useTestStore.getState().initialWords.length,useTestStore.getState().typedWord.length,useTestStore.getState().currWord.length)
 
 					if (isTestComplete) {
 						clearInterval(interval!)
