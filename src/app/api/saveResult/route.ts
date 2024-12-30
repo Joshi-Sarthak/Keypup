@@ -22,37 +22,40 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Invalid data" }, { status: 400 })
 		}
 
-		const defaultResults = [
-			JSON.stringify({ type: "quotes", subType: "small", wpm: 0 }),
-			JSON.stringify({ type: "quotes", subType: "medium", wpm: 0 }),
-			JSON.stringify({ type: "quotes", subType: "large", wpm: 0 }),
-			JSON.stringify({ type: "words", subType: "10", wpm: 0 }),
-			JSON.stringify({ type: "words", subType: "25", wpm: 0 }),
-			JSON.stringify({ type: "words", subType: "50", wpm: 0 }),
-			JSON.stringify({ type: "words", subType: "100", wpm: 0 }),
-			JSON.stringify({ type: "time", subType: "15", wpm: 0 }),
-			JSON.stringify({ type: "time", subType: "30", wpm: 0 }),
-			JSON.stringify({ type: "time", subType: "60", wpm: 0 }),
-			JSON.stringify({ type: "time", subType: "120", wpm: 0 }),
+		const defaultResults: { type: string; subType: string; wpm: number }[] = [
+			{ type: "quotes", subType: "small", wpm: 0 },
+			{ type: "quotes", subType: "medium", wpm: 0 },
+			{ type: "quotes", subType: "large", wpm: 0 },
+			{ type: "words", subType: "10", wpm: 0 },
+			{ type: "words", subType: "25", wpm: 0 },
+			{ type: "words", subType: "50", wpm: 0 },
+			{ type: "words", subType: "100", wpm: 0 },
+			{ type: "time", subType: "15", wpm: 0 },
+			{ type: "time", subType: "30", wpm: 0 },
+			{ type: "time", subType: "60", wpm: 0 },
+			{ type: "time", subType: "120", wpm: 0 },
 		]
 
 		if (user.allResults.length === 0) {
-			defaultResults.forEach((result) => {
-				user.allResults.push(result)
-			})
+			defaultResults.forEach(
+				(result: { type: string; subType: string; wpm: number }) => {
+					user.allResults.push(result)
+				}
+			)
 		}
 
-		const existingResultIndex = user.allResults.findIndex((resultStr: string) => {
-			const result = JSON.parse(resultStr)
-			return result.type === type && result.subType === String(subType)
-		})
+		const existingResultIndex = user.allResults.findIndex(
+			(result: { type: string; subType: string; wpm: number }) =>
+				result.type === type && result.subType === String(subType)
+		)
 
 		if (existingResultIndex !== -1) {
-			const existingResult = JSON.parse(user.allResults[existingResultIndex])
+			const existingResult = user.allResults[existingResultIndex]
 			if (existingResult.wpm < wpm) {
 				existingResult.wpm = wpm
-				user.allResults[existingResultIndex] = JSON.stringify(existingResult)
 			}
+		} else {
+			user.allResults.push({ type, subType: String(subType), wpm })
 		}
 
 		await User.findOneAndUpdate(
