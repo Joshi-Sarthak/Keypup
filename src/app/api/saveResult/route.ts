@@ -59,9 +59,16 @@ export async function POST(req: NextRequest) {
 			user.allResults.push({ type, subType: String(subType), wpm })
 		}
 
+		if (user.recentResult.length < 5) {
+			user.recentResult.unshift({ type, subType: String(subType), wpm })
+		} else {
+			user.recentResult.pop()
+			user.recentResult.unshift({ type, subType: String(subType), wpm })
+		}
+
 		await User.findOneAndUpdate(
 			{ email },
-			{ $set: { allResults: user.allResults } },
+			{ $set: { allResults: user.allResults, recentResult: user.recentResult } },
 			{ new: true, runValidators: true }
 		)
 
