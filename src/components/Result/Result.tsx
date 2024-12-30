@@ -102,6 +102,33 @@ export default function Result() {
 		}
 	}, [])
 
+	const overallWPM = Math.round((correctChars * 60) / (5 * totalTime))
+	const rawWPM = Math.round((rawChars * 60) / (5 * totalTime))
+
+	useEffect(() => {
+		const saveResult = async () => {
+			try {
+				const res = await fetch(`/api/saveResult`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ type, subType, wpm: overallWPM }),
+					credentials: "include",
+				})
+
+				const data = await res.json()
+				if (!res.ok) {
+					console.log("Failed to save result", data)
+				}
+			} catch (err) {
+				console.error("Result error:", err)
+			}
+		}
+
+		saveResult()
+	}, [overallWPM, subType, type])
+
 	const wpmForEachSecond = useMemo(() => {
 		let cumulativeChars = 0
 		return correctCharsForEachSecond.map((chars, index) => {
@@ -119,9 +146,6 @@ export default function Result() {
 			return { second: index + 1, wpm: cumulativeWPM }
 		})
 	}, [rawCharsForEachSecond])
-
-	const overallWPM = Math.round((correctChars * 60) / (5 * totalTime))
-	const rawWPM = Math.round((rawChars * 60) / (5 * totalTime))
 
 	const chartData = useMemo(
 		() => ({

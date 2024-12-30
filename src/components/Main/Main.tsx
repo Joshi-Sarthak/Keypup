@@ -99,8 +99,6 @@ function Main() {
 						useTestStore.getState().typedWord.length ===
 							useTestStore.getState().currWord.length
 
-					console.log(useTestStore.getState().currWordIndex,useTestStore.getState().initialWords.length,useTestStore.getState().typedWord.length,useTestStore.getState().currWord.length)
-
 					if (isTestComplete) {
 						clearInterval(interval!)
 						useTestStore.getState().setLoadResult(true)
