@@ -1,5 +1,6 @@
 import { getUser } from "@/lib/getUser"
 import { connectToDatabase } from "@/lib/utils"
+import { Leaderboard } from "@/models/leaderboardModel"
 import { User } from "@/models/userModel"
 import { User as Usertype } from "next-auth"
 import { NextRequest, NextResponse } from "next/server"
@@ -61,6 +62,31 @@ export async function POST(req: NextRequest) {
 		await User.findOneAndUpdate(
 			{ email },
 			{ $set: { allResults: user.allResults } },
+			{ new: true, runValidators: true }
+		)
+
+		let leaderboard = await Leaderboard.findOne({
+			mode: type,
+			subType: String(subType),
+		})
+
+		if (!leaderboard) {
+			leaderboard = new Leaderboard({
+				mode: type,
+				subType: String(subType),
+				topResults: [{ playerName: user.name, wpm: Number(wpm) }],
+			})
+		} else {
+			leaderboard.topResults.push({ playerName: user.name, wpm: Number(wpm) })
+			leaderboard.topResults.sort(
+				(a: { wpm: number }, b: { wpm: number }) => b.wpm - a.wpm
+			)
+			leaderboard.topResults = leaderboard.topResults.slice(0, 3)
+		}
+
+		await Leaderboard.findOneAndUpdate(
+			{ mode: type, subType: String(subType) },
+			{ $set: { topResults: leaderboard.topResults } },
 			{ new: true, runValidators: true }
 		)
 
