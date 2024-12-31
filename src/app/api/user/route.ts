@@ -1,20 +1,20 @@
-import {getUser} from "@/lib/getUser"
-import {connectToDatabase} from "@/lib/utils"
-import {User} from "@/models/userModel"
-import {User as Usertype} from "next-auth"
-import {NextRequest, NextResponse} from "next/server"
+import { getUser } from "@/lib/getUser"
+import { connectToDatabase } from "@/lib/utils"
+import { User } from "@/models/userModel"
+import { User as Usertype } from "next-auth"
+import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(req: NextRequest) {
 	try {
 		await connectToDatabase()
 
-		const {email} = (await getUser()) as Usertype
+		const { email } = (await getUser()) as Usertype
 
-		const user = await User.findOne({email})
+		const user = await User.findOne({ email })
 
-		return NextResponse.json({name:user.name})
+		return NextResponse.json(user)
 	} catch (error) {
 		console.error("Error :", error)
-		return NextResponse.json({error: "Failed to get user"}, {status: 500})
+		return NextResponse.json({ error: "Failed to get user" }, { status: 500 })
 	}
 }

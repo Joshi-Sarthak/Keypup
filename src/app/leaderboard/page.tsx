@@ -26,7 +26,7 @@ export default function Page() {
 				if (!res.ok) {
 					console.log("Failed to save result", data)
 				} else {
-					setLeaderboard(data)
+					setLeaderboard(data.name)
 				}
 			} catch (err) {
 				console.error("Result error:", err)
@@ -50,12 +50,9 @@ export default function Page() {
 						<div>
 							{mode.topResults.length > 0 ? (
 								mode.topResults.map((result, idx) => (
-									<div
-										key={idx}
-										className=""
-									>
+									<div key={idx} className="">
 										<span>
-											{idx + 1}. {result.playerName} 
+											{idx + 1}. {result.playerName}
 										</span>
 										<span> {result.wpm} WPM</span>
 									</div>

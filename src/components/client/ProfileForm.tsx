@@ -1,14 +1,14 @@
 "use client"
 
 import validator from "validator"
-import {useEffect, useState} from "react"
-import {SignOut} from "@/actions/signout"
-import {getUser} from "@/lib/getUser"
-import {DeleteAccount} from "@/actions/deleteAccount"
-import {User} from "next-auth"
+import { useEffect, useState } from "react"
+import { SignOut } from "@/actions/signout"
+import { getUser } from "@/lib/getUser"
+import { DeleteAccount } from "@/actions/deleteAccount"
+import { User } from "next-auth"
 import bcryptjs from "bcryptjs"
 
-const ProfileForm = ({email}: { email: string}) => {
+const ProfileForm = ({ email }: { email: string }) => {
 	const [user, setUser] = useState({
 		name: "",
 		email: "",
@@ -17,7 +17,7 @@ const ProfileForm = ({email}: { email: string}) => {
 	const [updatingPassword, setUpdatingPassword] = useState(false)
 	const [error, setError] = useState("")
 	const [formData, setFormData] = useState({
-		username:"",
+		username: "",
 		email,
 		password: "",
 	})
@@ -40,7 +40,7 @@ const ProfileForm = ({email}: { email: string}) => {
 
 			const user = await res.json()
 			console.log(user)
-			setUser({name: user.name, email: userData.email as string})
+			setUser({ name: user.name, email: userData.email as string })
 		} catch (err) {
 			console.error("Error fetching user data:", err)
 			setError("Failed to load user data. Please try again.")
@@ -52,7 +52,7 @@ const ProfileForm = ({email}: { email: string}) => {
 	}, [])
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFormData({...formData, [e.target.id]: e.target.value})
+		setFormData({ ...formData, [e.target.id]: e.target.value })
 		checkForm(e)
 		setSuccess(false)
 	}
@@ -104,7 +104,7 @@ const ProfileForm = ({email}: { email: string}) => {
 				setError(data.msg || "Failed to update profile.")
 			} else {
 				console.log(formData, data.name)
-				if(!formData.username && !formData.password){
+				if (!formData.username && !formData.password) {
 					setError("No change in profile were made")
 					return
 				}
@@ -136,7 +136,7 @@ const ProfileForm = ({email}: { email: string}) => {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({...formData}),
+				body: JSON.stringify({ ...formData }),
 				credentials: "include",
 			})
 
@@ -146,7 +146,7 @@ const ProfileForm = ({email}: { email: string}) => {
 			} else {
 				setSuccess(true)
 				console.log("Profile updated successfully")
-				getUserData() 
+				getUserData()
 			}
 		} catch (err) {
 			console.error("Profile update error:", err)
@@ -155,34 +155,75 @@ const ProfileForm = ({email}: { email: string}) => {
 	}
 
 	return (
-		<div className="p-3 max-w-lg mx-auto">
-			<h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
+		<div className="p-2 max-w-lg mx-auto">
+			<h1 className="tracking-widest text-3xl my-7 text-stone-500 dark:text-neutral-500 text-center">
+				Profile
+			</h1>
 
 			<form onSubmit={handleSubmit} className="flex flex-col gap-4">
-				<input
-					type="text"
-					defaultValue={user.name}
-					id="username"
-					placeholder="Username"
-					className="bg-slate-100 text-gray-700 rounded-lg p-3"
-					onChange={handleChange}
-				/>
-				<input
-					disabled={true}
-					type="email"
-					defaultValue={user.email}
-					id="email"
-					placeholder="Email"
-					className="bg-slate-100 text-gray-700 rounded-lg p-3"
-				/>
-				<input
-					type="password"
-					id="password"
-					placeholder="Password"
-					className="bg-slate-100 text-gray-700 rounded-lg p-3"
-					onChange={handleChange}
-				/>
-				<button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
+				<div>
+					<label
+						htmlFor="password"
+						className="block text-stone-500 dark:text-neutral-400 text-sm font-medium mb-2 ml-2 tracking-wider"
+					>
+						Username
+					</label>
+					<input
+						type="text"
+						defaultValue={user.name}
+						id="username"
+						placeholder="Username"
+						className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent"
+						onChange={handleChange}
+					/>
+				</div>
+				<div>
+					<label
+						htmlFor="password"
+						className="block text-stone-500 dark:text-neutral-400 text-sm font-medium mb-2 ml-2 tracking-wider"
+					>
+						Email
+					</label>
+					<input
+						disabled={true}
+						type="email"
+						defaultValue={user.email}
+						id="email"
+						placeholder="Email"
+						className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-neutral-300 dark:bg-neutral-800 cursor-not-allowed"
+					/>
+				</div>
+				<div>
+					<label
+						htmlFor="password"
+						className="block text-stone-500 dark:text-neutral-400 text-sm font-medium mb-2 ml-2 tracking-wider"
+					>
+						Change Password
+					</label>
+					<input
+						type="password"
+						id="password"
+						placeholder="Change Password"
+						className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent"
+						onChange={handleChange}
+					/>
+				</div>
+				<div>
+					<label
+						htmlFor="confirmPassword"
+						className="block text-stone-500 dark:text-neutral-400 text-sm font-medium mb-2 ml-2 tracking-wider"
+					>
+						Confirm Password
+					</label>
+					<input
+						type="password"
+						id="confirmPassword"
+						placeholder="Confirm Password"
+						className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent"
+						onChange={handleChange}
+					/>
+				</div>
+				<button className="font-medium text-stone-500 w-full mt-4 py-2 px-32 rounded-2xl flex justify-center items-center tracking-wide bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400">
 					Update
 				</button>
 			</form>
@@ -197,7 +238,7 @@ const ProfileForm = ({email}: { email: string}) => {
 							console.error("Delete account error:", err)
 						}
 					}}
-					className="text-red-700 cursor-pointer"
+					className="text-red-500 hover:text-red-700 transition-all duration-200 cursor-pointer mt-2 ml-2 hover:underline font-thin tracking-wider"
 				>
 					Delete Account
 				</span>
@@ -210,18 +251,24 @@ const ProfileForm = ({email}: { email: string}) => {
 							console.error("Sign out error:", err)
 						}
 					}}
-					className="text-red-700 cursor-pointer"
+					className="text-red-500 hover:text-red-700 transition-all duration-200 cursor-pointer mt-2 ml-2 hover:underline font-thin tracking-wider"
 				>
 					Sign Out
 				</span>
 			</div>
 
-			{error && <p className="text-red-700 mt-5">{error}</p>}
+			{error && (
+				<p className="text-red-800 mt-5 tracking-wider font-thin text-center">
+					{error}
+				</p>
+			)}
 			{success && (
-				<p className="text-green-700 mt-5">Profile updated successfully</p>
+				<p className="text-green-800 mt-5 tracking-wider font-thin text-center">
+					Profile updated successfully
+				</p>
 			)}
 		</div>
 	)
 }
 
-export {ProfileForm}
+export { ProfileForm }
