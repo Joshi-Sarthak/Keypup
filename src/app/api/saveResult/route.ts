@@ -74,27 +74,39 @@ export async function POST(req: NextRequest) {
 
 		let leaderboard = await Leaderboard.findOne({
 			mode: type,
-			subType: String(subType),
 		})
+
+		console.log(leaderboard)
 
 		if (!leaderboard) {
 			leaderboard = new Leaderboard({
 				mode: type,
-				subType: String(subType),
-				topResults: [{ playerName: user.name, wpm: Number(wpm) }],
+				topResults: [
+					{
+						playerName: user.name,
+						subType: String(subType),
+						wpm: Number(wpm),
+					},
+				],
 			})
+
+			console.log("new"+leaderboard)
 		} else {
-			leaderboard.topResults.push({ playerName: user.name, wpm: Number(wpm) })
+			leaderboard.topResults.push({
+				playerName: user.name,
+				subType: String(subType),
+				wpm: Number(wpm),
+			})
 			leaderboard.topResults.sort(
 				(a: { wpm: number }, b: { wpm: number }) => b.wpm - a.wpm
 			)
-			leaderboard.topResults = leaderboard.topResults.slice(0, 3)
+			leaderboard.topResults = leaderboard.topResults.slice(0, 10)
 		}
 
 		await Leaderboard.findOneAndUpdate(
-			{ mode: type, subType: String(subType) },
+			{ mode: type },
 			{ $set: { topResults: leaderboard.topResults } },
-			{ new: true, runValidators: true }
+			{ new: true, runValidators: true ,upsert:true}
 		)
 
 		return NextResponse.json(

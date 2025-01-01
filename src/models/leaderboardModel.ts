@@ -2,15 +2,6 @@ import mongoose from "mongoose"
 
 const topResultSchema = new mongoose.Schema({
 	playerName: { type: String, required: true },
-	wpm: { type: Number, required: true },
-})
-
-const leaderboardSchema = new mongoose.Schema({
-	mode: {
-		type: String,
-		required: true,
-		enum: ["quotes", "words", "time"],
-	},
 	subType: {
 		type: String,
 		required: true,
@@ -27,6 +18,15 @@ const leaderboardSchema = new mongoose.Schema({
 			"60",
 			"120",
 		],
+	},
+	wpm: { type: Number, required: true },
+})
+
+const leaderboardSchema = new mongoose.Schema({
+	mode: {
+		type: String,
+		required: true,
+		enum: ["quotes", "words", "time"],
 	},
 	topResults: [topResultSchema],
 })
