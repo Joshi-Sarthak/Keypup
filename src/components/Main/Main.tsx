@@ -95,9 +95,12 @@ function Main() {
 			if (useTimeStore.getState().isTimerRunning) {
 				interval = setInterval(() => {
 					const isTestComplete =
-						useTestStore.getState().currWordIndex >= useTestStore.getState().initialWords.length! - 1 &&
+						useTestStore.getState().currWordIndex >=
+							useTestStore.getState().initialWords.length! - 1 &&
 						useTestStore.getState().typedWord.length ===
-							useTestStore.getState().currWord.length
+							useTestStore.getState().currWord.length &&
+						useTestStore.getState().typedWord ===
+							useTestStore.getState().currWord
 
 					if (isTestComplete) {
 						clearInterval(interval!)
