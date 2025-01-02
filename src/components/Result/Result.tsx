@@ -113,7 +113,12 @@ export default function Result() {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({ type, subType, wpm: overallWPM }),
+					body: JSON.stringify({
+						type,
+						subType,
+						rawSpeed: rawWPM,
+						wpm: overallWPM,
+					}),
 					credentials: "include",
 				})
 

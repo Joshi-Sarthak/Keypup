@@ -22,7 +22,6 @@ export async function GET(req: NextRequest) {
       if (leaderboard) {
         allTopResults.push({
           mode: mode.type,
-          subTypes: mode.subTypes, 
           topResults: leaderboard.topResults,
         })
       }

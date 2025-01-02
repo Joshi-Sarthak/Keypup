@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "User not found" }, { status: 404 })
 		}
 
-		const { type, subType, wpm } = await req.json()
+		const { type, subType, rawSpeed, wpm } = await req.json()
 
 		if (!type || !subType || typeof wpm !== "number" || wpm < 0) {
 			return NextResponse.json({ error: "Invalid data" }, { status: 400 })
@@ -77,6 +77,7 @@ export async function POST(req: NextRequest) {
 		})
 
 		console.log(leaderboard)
+		console.log(Number(rawSpeed))
 
 		if (!leaderboard) {
 			leaderboard = new Leaderboard({
@@ -85,16 +86,18 @@ export async function POST(req: NextRequest) {
 					{
 						playerName: user.name,
 						subType: String(subType),
+						rawSpeed: Number(rawSpeed),
 						wpm: Number(wpm),
 					},
 				],
 			})
 
-			console.log("new"+leaderboard)
+			console.log("new" + leaderboard)
 		} else {
 			leaderboard.topResults.push({
 				playerName: user.name,
 				subType: String(subType),
+				rawSpeed: Number(rawSpeed),
 				wpm: Number(wpm),
 			})
 			leaderboard.topResults.sort(
@@ -106,7 +109,7 @@ export async function POST(req: NextRequest) {
 		await Leaderboard.findOneAndUpdate(
 			{ mode: type },
 			{ $set: { topResults: leaderboard.topResults } },
-			{ new: true, runValidators: true ,upsert:true}
+			{ new: true, runValidators: true, upsert: true }
 		)
 
 		return NextResponse.json(
