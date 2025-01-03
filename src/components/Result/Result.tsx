@@ -130,9 +130,11 @@ export default function Result() {
 				console.error("Result error:", err)
 			}
 		}
-
-		saveResult()
-	}, [overallWPM, subType, type])
+		if (!useTimeStore.getState().isTestRecording) {
+			useTimeStore.getState().setIsTestRecording(true)
+			saveResult()
+		}
+	}, [overallWPM, rawWPM, subType, type])
 
 	const wpmForEachSecond = useMemo(() => {
 		let cumulativeChars = 0

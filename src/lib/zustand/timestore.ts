@@ -7,11 +7,14 @@ type timestore = {
 	decrementTime: () => void
 	incrementTime: () => void
 	setIsTimerRunning: (isTimerRunning: boolean) => void
+	setIsTestRecording: (isTestRecording: boolean) => void
+	isTestRecording: boolean
 }
 
 export const useTimeStore = create<timestore>((set) => ({
 	timer: 15,
 	isTimerRunning: false,
+	isTestRecording: false,
 	setTime: (timer: number) => {
 		set({ timer })
 	},
@@ -23,5 +26,8 @@ export const useTimeStore = create<timestore>((set) => ({
 	},
 	setIsTimerRunning(isTimerRunning) {
 		set({ isTimerRunning })
+	},
+	setIsTestRecording(isTestRecording) {
+		set({ isTestRecording })
 	},
 }))

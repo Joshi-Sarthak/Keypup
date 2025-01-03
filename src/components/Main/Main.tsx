@@ -52,6 +52,7 @@ function Main() {
 	}
 
 	useEffect(() => {
+		useTimeStore.getState().setIsTestRecording(false)
 		if (time) {
 			let interval: NodeJS.Timeout | null = null
 
@@ -89,6 +90,7 @@ function Main() {
 	])
 
 	useEffect(() => {
+		useTimeStore.getState().setIsTestRecording(false)
 		if (!time) {
 			let interval: NodeJS.Timeout | null = null
 
@@ -103,6 +105,7 @@ function Main() {
 							useTestStore.getState().currWord
 
 					if (isTestComplete) {
+						
 						clearInterval(interval!)
 						useTestStore.getState().setLoadResult(true)
 					} else {
