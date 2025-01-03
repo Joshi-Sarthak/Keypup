@@ -102,12 +102,18 @@ export default function Page() {
 				</ul>
 			</div>
 			{leaderboard.length === 0 ? (
-				<div className="text-center text-xl text-stone-500">No Results Available</div>
+				<div className="text-center text-xl text-stone-500">
+					No Results Available
+				</div>
 			) : (
 				<div className="w-3/4 flex justify-center gap-8">
 					{/* Render only the selected mode */}
 					<div key={selectedMode} className="w-full flex flex-col">
-						<div className={`w-full border border-stone-300 dark:border-neutral-600 rounded-3xl py-1 ${leaderboard.length%2===1?("pb-5"):("")} px-4 bg-white dark:bg-[#242120]`}>
+						<div
+							className={`w-full border border-stone-300 dark:border-neutral-600 rounded-3xl py-1 ${
+								(getModeResults(selectedMode)?.topResults?.length ?? 0) % 2 === 1 ? "pb-4" : "pb-0"
+							} px-4 bg-white dark:bg-[#242120]`}
+						>
 							<div
 								className="grid grid-cols-5 text-lg font-medium pt-1 pb-3 border-b border-stone-200 dark:border-neutral-700 text-neutral-300 dark:text-stone-400 text-center bg-white dark:bg-[#242120]"
 								style={{
@@ -126,9 +132,9 @@ export default function Page() {
 									(result, idx) => (
 										<div
 											key={idx}
-											className={`grid grid-cols-5 text-base py-2.5 border-b last:border-b-0 border-stone-200 dark:border-neutral-700 text-center text-stone-600 dark:text-stone-400 ${
+											className={`grid grid-cols-5 text-base py-2.5 border-b last:border-b-0 border-stone-200 dark:border-neutral-700 text-center text-stone-400 ${
 												idx % 2 === 0
-													? "bg-stone-800"
+													? "bg-neutral-200 dark:bg-stone-800"
 													: "bg-white dark:bg-[#242120]"
 											}`}
 										>
