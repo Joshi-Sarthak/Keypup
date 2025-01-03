@@ -76,9 +76,6 @@ export async function POST(req: NextRequest) {
 			mode: type,
 		})
 
-		console.log(leaderboard)
-		console.log(Number(rawSpeed))
-
 		if (!leaderboard) {
 			leaderboard = new Leaderboard({
 				mode: type,
@@ -86,31 +83,47 @@ export async function POST(req: NextRequest) {
 					{
 						playerName: user.name,
 						subType: String(subType),
+						email: user.email,
 						rawSpeed: Number(rawSpeed),
 						wpm: Number(wpm),
 					},
 				],
 			})
-
 			console.log("new" + leaderboard)
+			await leaderboard.save()
 		} else {
-			leaderboard.topResults.push({
-				playerName: user.name,
-				subType: String(subType),
-				rawSpeed: Number(rawSpeed),
-				wpm: Number(wpm),
-			})
+			const isEmailExist = leaderboard.topResults.some(
+				(result: { email: string }) => result.email === user.email
+			)
+
+			if (isEmailExist) {
+				const index = leaderboard.topResults.findIndex(
+					(result: { email: String }) => result.email === user.email
+				)
+
+				if (leaderboard.topResults[index].wpm < Number(wpm)) {
+					leaderboard.topResults[index].wpm = Number(wpm)
+					console.log("updated" + leaderboard)
+				}
+			} else {
+				leaderboard.topResults.push({
+					playerName: user.name,
+					subType: String(subType),
+					rawSpeed: Number(rawSpeed),
+					email: user.email,
+					wpm: Number(wpm),
+				})
+			}
 			leaderboard.topResults.sort(
 				(a: { wpm: number }, b: { wpm: number }) => b.wpm - a.wpm
 			)
 			leaderboard.topResults = leaderboard.topResults.slice(0, 10)
+			await Leaderboard.findOneAndUpdate(
+				{ mode: type },
+				{ $set: { topResults: leaderboard.topResults } },
+				{ new: true, runValidators: true, upsert: true }
+			)
 		}
-
-		await Leaderboard.findOneAndUpdate(
-			{ mode: type },
-			{ $set: { topResults: leaderboard.topResults } },
-			{ new: true, runValidators: true, upsert: true }
-		)
 
 		return NextResponse.json(
 			{ message: "Result Saved successfully" },

@@ -19,6 +19,7 @@ const topResultSchema = new mongoose.Schema({
 			"120",
 		],
 	},
+	email: { type: String, required: true },
 	rawSpeed: { type: Number, required: true },
 	wpm: { type: Number, required: true },
 })

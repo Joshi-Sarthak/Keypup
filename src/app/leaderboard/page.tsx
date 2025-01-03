@@ -102,12 +102,12 @@ export default function Page() {
 				</ul>
 			</div>
 			{leaderboard.length === 0 ? (
-				<div className="text-center text-xl text-stone-500">Loading...</div>
+				<div className="text-center text-xl text-stone-500">No Results Available</div>
 			) : (
 				<div className="w-3/4 flex justify-center gap-8">
 					{/* Render only the selected mode */}
 					<div key={selectedMode} className="w-full flex flex-col">
-						<div className="w-full border border-stone-300 dark:border-neutral-600 rounded-3xl py-1 px-4 bg-white dark:bg-[#242120]">
+						<div className={`w-full border border-stone-300 dark:border-neutral-600 rounded-3xl py-1 ${leaderboard.length%2===1?("pb-5"):("")} px-4 bg-white dark:bg-[#242120]`}>
 							<div
 								className="grid grid-cols-5 text-lg font-medium pt-1 pb-3 border-b border-stone-200 dark:border-neutral-700 text-neutral-300 dark:text-stone-400 text-center bg-white dark:bg-[#242120]"
 								style={{
@@ -157,7 +157,7 @@ export default function Page() {
 									)
 								)
 							) : (
-								<div className="text-center text-stone-500">
+								<div className="text-center text-stone-500 mt-4">
 									No results available
 								</div>
 							)}
