@@ -105,7 +105,14 @@ function Main() {
 							useTestStore.getState().currWord
 
 					if (isTestComplete) {
-						
+						if (
+							useTestStore.getState().typedWord ===
+							useTestStore.getState().currWord
+						) {
+							useTestStore.getState().correctChars =
+								useTestStore.getState().correctChars +
+								useTestStore.getState().currWord.length
+						}
 						clearInterval(interval!)
 						useTestStore.getState().setLoadResult(true)
 					} else {

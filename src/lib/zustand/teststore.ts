@@ -66,7 +66,7 @@ export const useTestStore = create<testStore>((set) => ({
 		while (!selectedQuote) {
 			const index = Math.floor(Math.random() * quotesData.quotes.length)
 			const quote = quotesData.quotes[index]
-			const length = quote.text.length // Assuming text is the property containing the quote
+			const length = quote.text.length 
 
 			if (quoteType === "small" && length <= 100) {
 				selectedQuote = quote
