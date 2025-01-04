@@ -7,6 +7,7 @@ import { MdLeaderboard } from "react-icons/md"
 import { MdAccountCircle } from "react-icons/md"
 import { MdOutlineLightMode } from "react-icons/md"
 import { MdOutlineDarkMode } from "react-icons/md"
+import { IoIosPeople } from "react-icons/io"
 import Link from "next/link"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useTimeStore } from "@/lib/zustand/timestore"
@@ -76,6 +77,24 @@ function Navbar() {
 							Theme
 						</span>
 					</li>
+					<Link href="/multiplayer">
+						<li
+							onClick={() => {
+								useTestStore.getState().setLoadResult(false)
+								useTimeStore.getState().setTime(0)
+								useTestStore.getState().reset()
+							}}
+							className="group ml-4 flex items-center transition-all duration-200"
+						>
+							<IoIosPeople
+								className="text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200"
+								size={25}
+							/>
+							<span className="ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
+								Multiplayer
+							</span>
+						</li>
+					</Link>
 					<Link href="/leaderboard">
 						<li
 							onClick={() => {
