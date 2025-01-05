@@ -1,33 +1,11 @@
-"use client"
-
+import { auth } from "@/auth"
 import Room from "@/components/Room/Room"
-import React, { useEffect } from "react"
-// import { socket as io } from "../../lib/socket"
+import { redirect } from "next/navigation"
+import React from "react"
 
-const Page = () => {
-	// useEffect(() => {
-	// 	// Clean up socket connection when the component unmounts
-	// 	return () => {
-	// 		if (io.connected) {
-	// 			io.disconnect()
-	// 		}
-	// 	}
-	// }, [])
-
-	// const handleClick = () => {
-	// 	if (!io.connected) {
-	// 		io.connect()
-	// 		io.on("connect", () => {
-	// 			console.log("Connected to the server with ID:", io.id)
-	// 		})
-	// 		io.on("disconnect", () => {
-	// 			console.log("Disconnected from the server")
-	// 		})
-	// 	} else {
-	// 		console.log("Already connected!")
-	// 	}
-	// }
-
+const Page = async () => {
+	const session = await auth()
+	if (!session?.user) redirect("/login")
 	return <Room />
 }
 
