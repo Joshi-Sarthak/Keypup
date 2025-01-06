@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { socket } from "@/lib/sockets"
 import { MdCopyAll } from "react-icons/md"
 import Controlbar from "../Controlbar/Controlbar"
+import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
 
 interface User {
 	id: string
@@ -25,7 +26,6 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 		// Handle users in the room
 		const handleRoomUsers = (data: User[]) => {
 			setUsers(data) // Update users directly
-			console.log("Room users:", data)
 		}
 
 		socket.on("room_users", handleRoomUsers)
@@ -79,7 +79,7 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 					/>
 				</div>
 			</div>
-			<button
+			{useMultiplayerstore.getState().isHost && <button
 				onClick={handleStartGame}
 				className="relative inline-flex border border-neutral-500 dark:border-stone-900 items-center justify-center px-8 py-2.5 overflow-hidden tracking-tighter mt-16 text-white bg-neutral-400 dark:bg-stone-800 rounded-full group"
 			>
@@ -115,7 +115,7 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 				<span className="relative text-base font-semibold uppercase tracking-widest dark:text-neutral-200 text-stone-600 group-hover:text-white transition-all duration-200">
 					Start Game!
 				</span>
-			</button>
+			</button>}
 		</div>
 	)
 }

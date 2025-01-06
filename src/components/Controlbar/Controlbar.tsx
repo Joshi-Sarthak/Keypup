@@ -8,13 +8,72 @@ import { useGamesStore } from "@/lib/zustand/gamestore"
 import { useTimeStore } from "@/lib/zustand/timestore"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
+import { socket } from "@/lib/sockets"
+
+type quote = "small" | "medium" | "large" | null
 
 function Controlbar() {
 	const [selected, setSelected] = useState<string | number>(15)
+
 	const [isDisabled, setIsDisabled] = useState(
 		useMultiplayerstore.getState().isMultiplayer &&
 			!useMultiplayerstore.getState().isHost
 	)
+
+	useEffect(() => {
+		if (!isDisabled) {
+			socket.emit(
+				"changeMode",
+				useGamesStore.getState().getGameType().type,
+				selected
+			)
+		}
+	}, [isDisabled, selected])
+
+	useEffect(() => {
+		const handleChangeMode = (mode: string, newSelected: string | number) => {
+			if (isDisabled) {
+				switch (mode) {
+					case "quotes":
+						setQuotes(true, newSelected as quote);
+						setSelected(newSelected); 
+						useTestStore.getState().seedQuotes(newSelected as quote); 
+						useTimeStore.getState().setIsTimerRunning(false);
+						useTimeStore.getState().setTime(0);
+						useTestStore.getState().reset();
+						break;
+					case "words":
+						setWords(true, Number(newSelected));
+						setSelected(newSelected);
+						useTimeStore.getState().setIsTimerRunning(false);
+						useTimeStore.getState().setTime(0);
+						useTestStore.getState().reset();
+						break;
+					case "time":
+						setTime(true, Number(newSelected));
+						useTimeStore.getState().setTime(Number(newSelected));
+						setSelected(newSelected);
+						useTimeStore.getState().setIsTimerRunning(false);
+						useTestStore.getState().reset();
+						break;
+					default:
+						console.warn("Unknown mode:", mode);
+						break;
+				}
+			}
+		};
+		
+
+		if (isDisabled) {
+			socket.on("changeNonHostMode", handleChangeMode)
+		} else {
+			socket.off("changeNonHostMode", handleChangeMode)
+		}
+
+		return () => {
+			socket.off("changeNonHostMode", handleChangeMode)
+		}
+	}, [isDisabled])
 
 	useEffect(() => {
 		setSelected(useGamesStore.getState().getGameType().subType!)
