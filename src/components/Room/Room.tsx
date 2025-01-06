@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { socket } from "@/lib/sockets"
 import { useRouter } from "next/navigation"
+import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
 
 function Room() {
 	const [roomCode, setRoomCode] = useState<string | null>(null)
@@ -23,6 +24,7 @@ function Room() {
 			socket.connect()
 			const GenroomCode = generateRoomCode()
 			setRoomCode(GenroomCode)
+			useMultiplayerstore.getState().setisHost(true)
 			router.push(`/multiplayer/${GenroomCode}`)
 		} else {
 			console.log("Already connected!")

@@ -11,6 +11,7 @@ import { IoIosPeople } from "react-icons/io"
 import Link from "next/link"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useTimeStore } from "@/lib/zustand/timestore"
+import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
 
 function Navbar() {
 	const [darkMode, setDarkMode] = useState<boolean | null>(null) // Start with null
@@ -43,7 +44,12 @@ function Navbar() {
 	return (
 		<nav className="flex flex-row items-center justify-between pt-2 px-16">
 			<Link href="/">
-				<div className="group flex flex-row items-center">
+				<div
+					onClick={() => {
+						useMultiplayerstore.getState().setisMultiplayer(false)
+					}}
+					className="group flex flex-row items-center"
+				>
 					<Image
 						src={Logo}
 						alt="Logo"
@@ -83,6 +89,7 @@ function Navbar() {
 								useTestStore.getState().setLoadResult(false)
 								useTimeStore.getState().setTime(0)
 								useTestStore.getState().reset()
+								useMultiplayerstore.getState().setisMultiplayer(true)
 							}}
 							className="group ml-4 flex items-center transition-all duration-200"
 						>
@@ -101,6 +108,7 @@ function Navbar() {
 								useTestStore.getState().setLoadResult(false)
 								useTimeStore.getState().setTime(0)
 								useTestStore.getState().reset()
+								useMultiplayerstore.getState().setisMultiplayer(false)
 							}}
 							className="group ml-4 flex items-center transition-all duration-200"
 						>
@@ -114,7 +122,12 @@ function Navbar() {
 						</li>
 					</Link>
 					<Link href="/profile">
-						<li className="group ml-4 flex items-center transition-all duration-200">
+						<li
+							onClick={() => {
+								useMultiplayerstore.getState().setisMultiplayer(false)
+							}}
+							className="group ml-4 flex items-center transition-all duration-200"
+						>
 							<MdAccountCircle
 								className="text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200"
 								size={25}

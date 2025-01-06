@@ -11,7 +11,7 @@ interface User {
 }
 
 function WaitingRoom({ id, name }: { id: string; name: string }) {
-	const [ids, setIds] = useState<Record<string, User[]>>({})
+	const [users, setUsers] = useState<User[]>([]) // Store users directly
 
 	useEffect(() => {
 		if (!socket.connected) {
@@ -19,22 +19,26 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 			console.log("Attempting to connect to the server...")
 		}
 
+		// Join the room
 		socket.emit("join_room", id, name)
-		const handleRoomUsers = (data: Record<string, User[]>) => {
-			setIds(data)
+
+		// Handle users in the room
+		const handleRoomUsers = (data: User[]) => {
+			setUsers(data) // Update users directly
 			console.log("Room users:", data)
 		}
 
 		socket.on("room_users", handleRoomUsers)
 
+		// Cleanup on component unmount
 		return () => {
 			socket.off("room_users", handleRoomUsers)
-			setIds({})
+			setUsers([])
 		}
 	}, [id, name])
 
 	const handleStartGame = () => {
-		console.log("Game started with users:", ids)
+		console.log("Game started with users:", users)
 	}
 
 	return (
@@ -47,17 +51,17 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 				Players joined
 			</h3>
 			<div>
-				{ids[id] && ids[id].length > 0 && (
-					<>
-						{ids[id].map((curr) => (
-							<div
-								key={curr.id}
-								className="text-neutral-400 dark:text-stone-600 tracking-wider text-lg my-2"
-							>
-								{curr.name}
-							</div>
-						))}
-					</>
+				{users.length > 0 ? (
+					users.map((curr) => (
+						<div
+							key={curr.id}
+							className="text-neutral-400 dark:text-stone-600 tracking-wider text-lg my-2"
+						>
+							{curr.name}
+						</div>
+					))
+				) : (
+					<p className="text-neutral-400">No players yet.</p>
 				)}
 			</div>
 			<span className="text-neutral-500 dark:text-stone-500 tracking-wider text-lg mt-8">
@@ -75,7 +79,10 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 					/>
 				</div>
 			</div>
-			<button className="relative inline-flex border border-neutral-500 dark:border-stone-900 items-center justify-center px-8 py-2.5 overflow-hidden tracking-tighter mt-16 text-white bg-neutral-400 dark:bg-stone-800 rounded-full group">
+			<button
+				onClick={handleStartGame}
+				className="relative inline-flex border border-neutral-500 dark:border-stone-900 items-center justify-center px-8 py-2.5 overflow-hidden tracking-tighter mt-16 text-white bg-neutral-400 dark:bg-stone-800 rounded-full group"
+			>
 				<span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-purple-700 rounded-full group-hover:w-56 group-hover:h-56"></span>
 				<span className="absolute bottom-0 left-0 h-full -ml-2">
 					<svg

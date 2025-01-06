@@ -7,9 +7,14 @@ import { BiSolidQuoteAltLeft } from "react-icons/bi"
 import { useGamesStore } from "@/lib/zustand/gamestore"
 import { useTimeStore } from "@/lib/zustand/timestore"
 import { useTestStore } from "@/lib/zustand/teststore"
+import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
 
 function Controlbar() {
 	const [selected, setSelected] = useState<string | number>(15)
+	const [isDisabled, setIsDisabled] = useState(
+		useMultiplayerstore.getState().isMultiplayer &&
+			!useMultiplayerstore.getState().isHost
+	)
 
 	useEffect(() => {
 		setSelected(useGamesStore.getState().getGameType().subType!)
@@ -23,17 +28,23 @@ function Controlbar() {
 		setSelected(size)
 	}
 
+	const disabledStyles = "opacity-50 cursor-not-allowed"
+
 	return (
 		<div className="w-1/3 h-14 p-2 mx-auto flex justify-between items-center mt-16 bg-neutral-200 dark:bg-[#242120] rounded-full border border-stone-400 dark:border-neutral-700 text-stone-400 dark:text-neutral-600">
 			<ul className="flex flex-row font-semibold">
 				<li
-					className="ml-8 flex flex-row mr-4 items-center hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+					className={`ml-8 flex flex-row mr-4 items-center hover:text-stone-500 hover:dark:text-neutral-500 transition-all duration-300 ${
+						isDisabled ? disabledStyles : "cursor-pointer"
+					}`}
 					onClick={() => {
-						setSelected("small")
-						setQuotes(true, "small")
-						useTimeStore.getState().setIsTimerRunning(false)
-						useTimeStore.getState().setTime(0)
-						useTestStore.getState().reset()
+						if (!isDisabled) {
+							setSelected("small")
+							setQuotes(true, "small")
+							useTimeStore.getState().setIsTimerRunning(false)
+							useTimeStore.getState().setTime(0)
+							useTestStore.getState().reset()
+						}
 					}}
 					style={{
 						color: quotes ? "#7e22ce" : "",
@@ -44,13 +55,17 @@ function Controlbar() {
 					<span>Quotes</span>
 				</li>
 				<li
-					className="flex flex-row mx-4 items-center hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+					className={`flex flex-row mx-4 items-center hover:text-stone-500 hover:dark:text-neutral-500 transition-all duration-300 ${
+						isDisabled ? disabledStyles : "cursor-pointer"
+					}`}
 					onClick={() => {
-						setWords(true, 10)
-						useTimeStore.getState().setIsTimerRunning(false)
-						useTimeStore.getState().setTime(0)
-						useTestStore.getState().reset()
-						setSelected(10)
+						if (!isDisabled) {
+							setWords(true, 10)
+							useTimeStore.getState().setIsTimerRunning(false)
+							useTimeStore.getState().setTime(0)
+							useTestStore.getState().reset()
+							setSelected(10)
+						}
 					}}
 					style={{
 						color: words ? "#7e22ce" : "",
@@ -61,11 +76,15 @@ function Controlbar() {
 					<span>Words</span>
 				</li>
 				<li
-					className="flex flex-row ml-4 items-center hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+					className={`flex flex-row ml-4 items-center hover:text-stone-500 hover:dark:text-neutral-500 transition-all duration-300 ${
+						isDisabled ? disabledStyles : "cursor-pointer"
+					}`}
 					onClick={() => {
-						setTime(true, 15)
-						useTimeStore.getState().setTime(15)
-						setSelected(15)
+						if (!isDisabled) {
+							setTime(true, 15)
+							useTimeStore.getState().setTime(15)
+							setSelected(15)
+						}
 					}}
 					style={{
 						color: time ? "#7e22ce" : "",
@@ -80,13 +99,17 @@ function Controlbar() {
 			{quotes && (
 				<ul className="flex flex-row font-semibold">
 					<li
-						className="mr-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mr-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick("small")
-							setQuotes(true, "small")
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(0)
-							useTestStore.getState().seedQuotes("small")
+							if (!isDisabled) {
+								handleClick("small")
+								setQuotes(true, "small")
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(0)
+								useTestStore.getState().seedQuotes("small")
+							}
 						}}
 						style={{
 							color: selected === "small" ? "#7e22ce" : "",
@@ -96,14 +119,18 @@ function Controlbar() {
 						Small
 					</li>
 					<li
-						className="mx-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mx-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick("medium")
-							setQuotes(true, "medium")
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(0)
-							useTestStore.getState().reset()
-							useTestStore.getState().seedQuotes("medium")
+							if (!isDisabled) {
+								handleClick("medium")
+								setQuotes(true, "medium")
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(0)
+								useTestStore.getState().reset()
+								useTestStore.getState().seedQuotes("medium")
+							}
 						}}
 						style={{
 							color: selected === "medium" ? "#7e22ce" : "",
@@ -113,14 +140,18 @@ function Controlbar() {
 						Medium
 					</li>
 					<li
-						className="mr-8 ml-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mr-8 ml-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick("large")
-							setQuotes(true, "large")
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(0)
-							useTestStore.getState().reset()
-							useTestStore.getState().seedQuotes("large")
+							if (!isDisabled) {
+								handleClick("large")
+								setQuotes(true, "large")
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(0)
+								useTestStore.getState().reset()
+								useTestStore.getState().seedQuotes("large")
+							}
 						}}
 						style={{
 							color: selected === "large" ? "#7e22ce" : "",
@@ -134,13 +165,17 @@ function Controlbar() {
 			{words && (
 				<ul className="flex flex-row font-semibold">
 					<li
-						className="mr-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mr-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick(10)
-							setWords(true, 10)
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(0)
-							useTestStore.getState().reset()
+							if (!isDisabled) {
+								handleClick(10)
+								setWords(true, 10)
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(0)
+								useTestStore.getState().reset()
+							}
 						}}
 						style={{
 							color: selected === 10 ? "#7e22ce" : "",
@@ -150,13 +185,17 @@ function Controlbar() {
 						10
 					</li>
 					<li
-						className="mx-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mx-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick(25)
-							setWords(true, 25)
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(0)
-							useTestStore.getState().reset()
+							if (!isDisabled) {
+								handleClick(25)
+								setWords(true, 25)
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(0)
+								useTestStore.getState().reset()
+							}
 						}}
 						style={{
 							color: selected === 25 ? "#7e22ce" : "",
@@ -166,13 +205,17 @@ function Controlbar() {
 						25
 					</li>
 					<li
-						className="mx-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mx-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick(50)
-							setWords(true, 50)
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(0)
-							useTestStore.getState().reset()
+							if (!isDisabled) {
+								handleClick(50)
+								setWords(true, 50)
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(0)
+								useTestStore.getState().reset()
+							}
 						}}
 						style={{
 							color: selected === 50 ? "#7e22ce" : "",
@@ -182,13 +225,17 @@ function Controlbar() {
 						50
 					</li>
 					<li
-						className="mr-8 ml-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mr-8 ml-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick(100)
-							setWords(true, 100)
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(0)
-							useTestStore.getState().reset()
+							if (!isDisabled) {
+								handleClick(100)
+								setWords(true, 100)
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(0)
+								useTestStore.getState().reset()
+							}
 						}}
 						style={{
 							color: selected === 100 ? "#7e22ce" : "",
@@ -202,13 +249,17 @@ function Controlbar() {
 			{time && (
 				<ul className="flex flex-row font-semibold">
 					<li
-						className="mr-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mr-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick(15)
-							setTime(true, 15)
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(15)
-							useTestStore.getState().reset()
+							if (!isDisabled) {
+								handleClick(15)
+								setTime(true, 15)
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(15)
+								useTestStore.getState().reset()
+							}
 						}}
 						style={{
 							color: selected === 15 ? "#7e22ce" : "",
@@ -218,13 +269,17 @@ function Controlbar() {
 						15
 					</li>
 					<li
-						className="mx-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mx-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick(30)
-							setTime(true, 30)
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(30)
-							useTestStore.getState().reset()
+							if (!isDisabled) {
+								handleClick(30)
+								setTime(true, 30)
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(30)
+								useTestStore.getState().reset()
+							}
 						}}
 						style={{
 							color: selected === 30 ? "#7e22ce" : "",
@@ -234,13 +289,17 @@ function Controlbar() {
 						30
 					</li>
 					<li
-						className="mx-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mx-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick(60)
-							setTime(true, 60)
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(60)
-							useTestStore.getState().reset()
+							if (!isDisabled) {
+								handleClick(60)
+								setTime(true, 60)
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(60)
+								useTestStore.getState().reset()
+							}
 						}}
 						style={{
 							color: selected === 60 ? "#7e22ce" : "",
@@ -250,13 +309,17 @@ function Controlbar() {
 						60
 					</li>
 					<li
-						className="mr-8 ml-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300"
+						className={`mr-8 ml-4 hover:text-stone-500 hover:dark:text-neutral-500 cursor-pointer transition-all duration-300 ${
+							isDisabled ? disabledStyles : "cursor-pointer"
+						}`}
 						onClick={() => {
-							handleClick(120)
-							setTime(true, 120)
-							useTimeStore.getState().setIsTimerRunning(false)
-							useTimeStore.getState().setTime(120)
-							useTestStore.getState().reset()
+							if (!isDisabled) {
+								handleClick(120)
+								setTime(true, 120)
+								useTimeStore.getState().setIsTimerRunning(false)
+								useTimeStore.getState().setTime(120)
+								useTestStore.getState().reset()
+							}
 						}}
 						style={{
 							color: selected === 120 ? "#7e22ce" : "",

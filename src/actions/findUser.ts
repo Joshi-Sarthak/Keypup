@@ -7,7 +7,7 @@ export const findUser = async (email: string) => {
 	try {
 		await connectToDatabase()
 		const user = await User.findOne({ email })
-
+		console.log(user)
 		return user
 	} catch (e) {
 		console.log(e)
