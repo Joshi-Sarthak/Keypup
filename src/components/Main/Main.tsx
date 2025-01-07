@@ -4,6 +4,8 @@ import { useTimeStore } from "@/lib/zustand/timestore"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
 import { VscDebugRestart } from "react-icons/vsc"
 import { useGamesStore } from "@/lib/zustand/gamestore"
+import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
+import { socket } from "@/lib/sockets"
 
 function Main() {
 	const initialWords = useTestStore((state) => state.initialWords)
@@ -50,6 +52,24 @@ function Main() {
 		reset()
 		useTestStore.getState().setLoadResult(false)
 	}
+
+	useEffect(() => {
+		if (
+			useMultiplayerstore.getState().isMultiplayer &&
+			useMultiplayerstore.getState().isHost
+		) {
+			console.log(useTestStore.getState().initialWords)
+			socket.emit("startGame", useTestStore.getState().initialWords)
+		} else if (
+			useMultiplayerstore.getState().isMultiplayer &&
+			!useMultiplayerstore.getState().isHost
+		) {
+			useTestStore
+				.getState()
+				.setInitialWords(useMultiplayerstore.getState().initialWords)
+			useTestStore.getState().setCurrWord(useTestStore.getState().initialWords[0])
+		}
+	}, [useTestStore.getState().initialWords])
 
 	useEffect(() => {
 		useTimeStore.getState().setIsTestRecording(false)
@@ -231,7 +251,7 @@ function Main() {
 		}
 	}, [typedWord])
 
-	const extraLetters = typedWord.slice(currWord.length).split("")
+	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : [];
 
 	return (
 		<div>

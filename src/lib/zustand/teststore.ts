@@ -13,6 +13,8 @@ type testStore = {
 	typedWord: string
 	currWordIndex: number
 	correctChars: number
+	setInitialWords : (initialWords:string[]) => void
+	setCurrWord : (currWord:string) => void
 	seedWords: (totalWords: number) => void
 	seedQuotes: (quoteType: quote) => void
 	setChar: (typedWordandChar: string) => void
@@ -45,6 +47,15 @@ export const useTestStore = create<testStore>((set) => ({
 	missingLetters: 0,
 	correctLetters: 0,
 
+	setCurrWord:((currWord:string)=>{
+		set({currWord})
+	}),
+
+	setInitialWords: (initialWords: string[]) => {
+		set({ initialWords }); 
+	},
+	
+
 	setLoadResult: (loadResult) => {
 		set({ loadResult })
 	},
@@ -76,7 +87,6 @@ export const useTestStore = create<testStore>((set) => ({
 				selectedQuote = quote
 			}
 		}
-		console.log(selectedQuote.length)
 
 		const words = selectedQuote.text
 			.split(" ")
