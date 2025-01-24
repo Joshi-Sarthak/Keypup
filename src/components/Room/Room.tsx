@@ -25,6 +25,8 @@ function Room() {
 			const GenroomCode = generateRoomCode()
 			setRoomCode(GenroomCode)
 			useMultiplayerstore.getState().setisHost(true)
+			useMultiplayerstore.getState().setisInWaitingRoom(true)
+			console.log("oshjd")
 			router.push(`/multiplayer/${GenroomCode}`)
 		} else {
 			console.log("Already connected!")
@@ -34,6 +36,7 @@ function Room() {
 	function handleJoinRoom() {
 		if (!socket.connected) {
 			socket.connect()
+			useMultiplayerstore.getState().setisInWaitingRoom(true)
 			router.push(`/multiplayer/${inputMessage}`)
 		} else {
 			console.log("Already connected!")

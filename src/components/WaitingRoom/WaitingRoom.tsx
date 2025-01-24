@@ -5,7 +5,6 @@ import { socket } from "@/lib/sockets"
 import { MdCopyAll } from "react-icons/md"
 import Controlbar from "../Controlbar/Controlbar"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
-import { useTestStore } from "@/lib/zustand/teststore"
 import { useRouter } from "next/navigation"
 
 interface User {
@@ -29,6 +28,7 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 		// Handle users in the room
 		const handleRoomUsers = (data: User[]) => {
 			setUsers(data) // Update users directly
+			console.log("Room users:", data)
 		}
 
 		socket.on("room_users", handleRoomUsers)
@@ -37,7 +37,8 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 			console.log("momooo")
 			useMultiplayerstore.getState().setInitialWords(initialWords)
 			console.log(initialWords)
-			router.push("/")
+			useMultiplayerstore.getState().setisInWaitingRoom(false)
+			useMultiplayerstore.getState().setisInGame(true)
 		}
 
 		socket.on("startNonHostGame", handleNonHostStartGame)
@@ -50,7 +51,8 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 	}, [id, name, router])
 
 	const handleStartGame = () => {
-		router.push("/")
+		useMultiplayerstore.getState().setisInWaitingRoom(false)
+		useMultiplayerstore.getState().setisInGame(true)	
 	}
 
 	return (

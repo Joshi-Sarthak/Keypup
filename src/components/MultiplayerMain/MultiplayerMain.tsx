@@ -8,8 +8,7 @@ import { useGamesStore } from "@/lib/zustand/gamestore"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
 import { socket } from "@/lib/sockets"
 
-function Main() {
-	const initialWords = useTestStore((state) => state.initialWords)
+function MultiplayerMain() {
 	const typedWord = useTestStore((state) => state.typedWord)
 	const typedWords = useTestStore((state) => state.typedWords)
 	const currWord = useTestStore((state) => state.currWord)
@@ -17,6 +16,9 @@ function Main() {
 	const seedWords = useTestStore((state) => state.seedWords)
 	const seedQuotes = useTestStore((state) => state.seedQuotes)
 	const reset = useTestStore((state) => state.reset)
+	const isDisabled =
+		useMultiplayerstore.getState().isMultiplayer &&
+		!useMultiplayerstore.getState().isHost
 
 	const timer = useTimeStore((state) => state.timer)
 
@@ -26,6 +28,7 @@ function Main() {
 	const quoteType = useGamesStore((state) => state.quotesType)
 	const totalWords = useGamesStore((state) => state.totalWords)
 
+	const [initialWords, setInitialWords] = useState<string[]>([])
 	const [isHovered, setIsHovered] = useState(false)
 	const [isBlinking, setIsBlinking] = useState(false)
 	const [isBackspacing, setIsBackspacing] = useState(false)
@@ -59,18 +62,23 @@ function Main() {
 			useMultiplayerstore.getState().isMultiplayer &&
 			useMultiplayerstore.getState().isHost
 		) {
-			console.log(useTestStore.getState().initialWords)
 			socket.emit("startGame", useTestStore.getState().initialWords)
-		} else if (
+			setInitialWords(useTestStore.getState().initialWords)
+		}
+	}, [initialWords])
+
+	useEffect(() => {
+		if (
 			useMultiplayerstore.getState().isMultiplayer &&
 			!useMultiplayerstore.getState().isHost
 		) {
+			setInitialWords(useMultiplayerstore.getState().initialWords)
 			useTestStore
 				.getState()
 				.setInitialWords(useMultiplayerstore.getState().initialWords)
 			useTestStore.getState().setCurrWord(useTestStore.getState().initialWords[0])
 		}
-	}, [useTestStore.getState().initialWords])
+	}, [useMultiplayerstore.getState().initialWords])
 
 	useEffect(() => {
 		useTimeStore.getState().setIsTestRecording(false)
@@ -161,12 +169,15 @@ function Main() {
 	])
 
 	useEffect(() => {
-		if (words) {
-			seedWords(totalWords as number)
-		} else if (quotes) {
-			seedQuotes(quoteType)
-		} else {
-			seedWords(100)
+		console.log("akjd " + useMultiplayerstore.getState().isHost)
+		if (!isDisabled) {
+			if (words) {
+				seedWords(totalWords as number)
+			} else if (quotes) {
+				seedQuotes(quoteType)
+			} else {
+				seedWords(100)
+			}
 		}
 	}, [quoteType, quotes, seedQuotes, seedWords, totalWords, words])
 
@@ -252,7 +263,7 @@ function Main() {
 		}
 	}, [typedWord])
 
-	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : [];
+	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : []
 
 	return (
 		<div>
@@ -359,4 +370,4 @@ function Main() {
 	)
 }
 
-export default Main
+export default MultiplayerMain

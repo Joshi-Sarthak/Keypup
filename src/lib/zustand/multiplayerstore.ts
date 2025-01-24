@@ -1,10 +1,16 @@
 import { create } from "zustand"
 
 type multiplayerstore = {
+	inWaitingRoom: boolean
+	inGame: boolean
+	inResult: boolean
 	isMultiplayer: boolean
 	isHost: boolean
 	mode: string
 	subType: string
+	setisInWaitingRoom : (inWaitingRoom : boolean) => void
+	setisInGame : (inWaitingRoom : boolean) => void
+	setisInResult : (inWaitingRoom : boolean) => void
 	setisHost: (isHost: boolean) => void
 	setisMultiplayer: (isMultiplayer: boolean) => void
 	initialWords: string[]
@@ -12,6 +18,9 @@ type multiplayerstore = {
 }
 
 export const useMultiplayerstore = create<multiplayerstore>((set) => ({
+	inWaitingRoom: false,
+	inGame: false,
+	inResult: false,
 	isHost: false,
 	isMultiplayer: false,
 	mode: "time",
@@ -24,6 +33,15 @@ export const useMultiplayerstore = create<multiplayerstore>((set) => ({
 		set({ isHost })
 	},
 	setisMultiplayer(isMultiplayer) {
+		set({ isMultiplayer })
+	},
+	setisInWaitingRoom(inWaitingRoom) {
+		set({inWaitingRoom})
+	},
+	setisInGame(inGame) {
+		set({inGame})
+	},
+	setisInResult(isMultiplayer) {
 		set({ isMultiplayer })
 	},
 }))

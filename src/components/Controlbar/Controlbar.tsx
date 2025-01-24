@@ -14,11 +14,22 @@ type quote = "small" | "medium" | "large" | null
 
 function Controlbar() {
 	const [selected, setSelected] = useState<string | number>(15)
-
 	const [isDisabled, setIsDisabled] = useState(
 		useMultiplayerstore.getState().isMultiplayer &&
 			!useMultiplayerstore.getState().isHost
 	)
+
+	useEffect(() => {
+		setSelected(useGamesStore.getState().getGameType().subType!)
+	}, [])
+
+	const { setQuotes, setWords, setTime, quotes, words, time } = useGamesStore(
+		(state) => state
+	)
+
+	const handleClick = (size: string | number) => {
+		setSelected(size)
+	}
 
 	useEffect(() => {
 		if (!isDisabled) {
@@ -35,34 +46,33 @@ function Controlbar() {
 			if (isDisabled) {
 				switch (mode) {
 					case "quotes":
-						setQuotes(true, newSelected as quote);
-						setSelected(newSelected); 
-						useTestStore.getState().seedQuotes(newSelected as quote); 
-						useTimeStore.getState().setIsTimerRunning(false);
-						useTimeStore.getState().setTime(0);
-						useTestStore.getState().reset();
-						break;
+						setQuotes(true, newSelected as quote)
+						setSelected(newSelected)
+						useTestStore.getState().seedQuotes(newSelected as quote)
+						useTimeStore.getState().setIsTimerRunning(false)
+						useTimeStore.getState().setTime(0)
+						useTestStore.getState().reset()
+						break
 					case "words":
-						setWords(true, Number(newSelected));
-						setSelected(newSelected);
-						useTimeStore.getState().setIsTimerRunning(false);
-						useTimeStore.getState().setTime(0);
-						useTestStore.getState().reset();
-						break;
+						setWords(true, Number(newSelected))
+						setSelected(newSelected)
+						useTimeStore.getState().setIsTimerRunning(false)
+						useTimeStore.getState().setTime(0)
+						useTestStore.getState().reset()
+						break
 					case "time":
-						setTime(true, Number(newSelected));
-						useTimeStore.getState().setTime(Number(newSelected));
-						setSelected(newSelected);
-						useTimeStore.getState().setIsTimerRunning(false);
-						useTestStore.getState().reset();
-						break;
+						setTime(true, Number(newSelected))
+						useTimeStore.getState().setTime(Number(newSelected))
+						setSelected(newSelected)
+						useTimeStore.getState().setIsTimerRunning(false)
+						useTestStore.getState().reset()
+						break
 					default:
-						console.warn("Unknown mode:", mode);
-						break;
+						console.warn("Unknown mode:", mode)
+						break
 				}
 			}
-		};
-		
+		}
 
 		if (isDisabled) {
 			socket.on("changeNonHostMode", handleChangeMode)
@@ -74,18 +84,6 @@ function Controlbar() {
 			socket.off("changeNonHostMode", handleChangeMode)
 		}
 	}, [isDisabled])
-
-	useEffect(() => {
-		setSelected(useGamesStore.getState().getGameType().subType!)
-	}, [])
-
-	const { setQuotes, setWords, setTime, quotes, words, time } = useGamesStore(
-		(state) => state
-	)
-
-	const handleClick = (size: string | number) => {
-		setSelected(size)
-	}
 
 	const disabledStyles = "opacity-50 cursor-not-allowed"
 

@@ -1,22 +1,16 @@
 import { findUser } from "@/actions/findUser"
 import { auth } from "@/auth"
-import WaitingRoom from "@/components/WaitingRoom/WaitingRoom"
-import { redirect } from "next/navigation"
+import ClientPage from "@/components/ClientPage/ClientPage"
 import React from "react"
+import { redirect } from "next/navigation"
 
-async function page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { id: string } }) {
 	const session = await auth()
 	if (!session?.user) redirect("/login")
 
-	const email = session?.user.email
+	const email = session.user.email
 	const { name } = await findUser(email as string)
-
 	const id = params.id
-	return (
-		<div>
-			<WaitingRoom id={id} name={name} />
-		</div>
-	)
-}
 
-export default page
+	return <ClientPage id={id} name={name} />
+}
