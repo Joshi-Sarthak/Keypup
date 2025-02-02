@@ -29,7 +29,6 @@ function MultiplayerMain() {
 	const totalWords = useGamesStore((state) => state.totalWords)
 
 	const [initialWords, setInitialWords] = useState<string[]>([])
-	const [isHovered, setIsHovered] = useState(false)
 	const [isBlinking, setIsBlinking] = useState(false)
 	const [isBackspacing, setIsBackspacing] = useState(false)
 
@@ -87,7 +86,7 @@ function MultiplayerMain() {
 
 			if (
 				useTimeStore.getState().isTimerRunning &&
-				useTimeStore.getState().timer >= 1
+				useTimeStore.getState().timer > 1
 			) {
 				interval = setInterval(() => {
 					const timeLeft = useTimeStore.getState().timer
@@ -96,7 +95,9 @@ function MultiplayerMain() {
 						useTimeStore.getState().decrementTime()
 					} else {
 						clearInterval(interval!)
-						useTestStore.getState().setLoadResult(true)
+						console.log("lloopp")
+						useMultiplayerstore.getState().setisInGame(false)
+						useMultiplayerstore.getState().setisInResult(true)
 					}
 					correctCharsForEachSecond.push(correctCharsPerSecond.current)
 					correctCharsPerSecond.current = 0
@@ -133,6 +134,8 @@ function MultiplayerMain() {
 						useTestStore.getState().typedWord ===
 							useTestStore.getState().currWord
 
+					console.log(isTestComplete)
+
 					if (isTestComplete) {
 						if (
 							useTestStore.getState().typedWord ===
@@ -143,7 +146,8 @@ function MultiplayerMain() {
 								useTestStore.getState().currWord.length
 						}
 						clearInterval(interval!)
-						useTestStore.getState().setLoadResult(true)
+						useMultiplayerstore.getState().setisInGame(false)
+						useMultiplayerstore.getState().setisInResult(true)
 					} else {
 						useTimeStore.getState().incrementTime()
 					}
@@ -352,19 +356,6 @@ function MultiplayerMain() {
 						})}
 					</div>
 				</div>
-			</div>
-			<VscDebugRestart
-				onClick={Restart}
-				onMouseEnter={() => setIsHovered(true)}
-				onMouseLeave={() => setIsHovered(false)}
-				className="w-8 h-8 text-stone-400 dark:text-neutral-600 hover:text-stone-500 hover:dark:text-neutral-500 transition-all duration-200 ease-in-out mx-auto mt-8"
-			/>
-			<div
-				className={`text-center text-xs tracking-widest text-stone-500 dark:text-neutral-500 transition-opacity duration-300 ease-in-out ${
-					isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
-				}`}
-			>
-				Restart Test
 			</div>
 		</div>
 	)

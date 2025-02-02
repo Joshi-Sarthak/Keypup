@@ -8,9 +8,9 @@ type multiplayerstore = {
 	isHost: boolean
 	mode: string
 	subType: string
-	setisInWaitingRoom : (inWaitingRoom : boolean) => void
-	setisInGame : (inWaitingRoom : boolean) => void
-	setisInResult : (inWaitingRoom : boolean) => void
+	setisInWaitingRoom: (inWaitingRoom: boolean) => void
+	setisInGame: (inGame: boolean) => void
+	setisInResult: (inResult: boolean) => void
 	setisHost: (isHost: boolean) => void
 	setisMultiplayer: (isMultiplayer: boolean) => void
 	initialWords: string[]
@@ -36,12 +36,12 @@ export const useMultiplayerstore = create<multiplayerstore>((set) => ({
 		set({ isMultiplayer })
 	},
 	setisInWaitingRoom(inWaitingRoom) {
-		set({inWaitingRoom})
+		set({ inWaitingRoom })
 	},
 	setisInGame(inGame) {
-		set({inGame})
+		set({ inGame })
 	},
-	setisInResult(isMultiplayer) {
-		set({ isMultiplayer })
+	setisInResult(inResult) {
+		set({ inResult })
 	},
 }))
