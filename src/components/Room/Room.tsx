@@ -5,9 +5,10 @@ import { socket } from "@/lib/sockets"
 import { useRouter } from "next/navigation"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
 
-function Room() {
+function Room({ name }: { name: string }) {
 	const [roomCode, setRoomCode] = useState<string | null>(null)
 	const [inputMessage, setInputMessage] = useState<string>("")
+	const [error, setError] = useState<string>("")
 	const router = useRouter()
 
 	function generateRoomCode() {
@@ -26,10 +27,24 @@ function Room() {
 			setRoomCode(GenroomCode)
 			useMultiplayerstore.getState().setisHost(true)
 			useMultiplayerstore.getState().setisInWaitingRoom(true)
+			useMultiplayerstore.setState({ inResult: false })
+			useMultiplayerstore.setState({ inGame: false })
 			console.log("oshjd")
+			socket.emit("create_room", GenroomCode, name)
 			router.push(`/multiplayer/${GenroomCode}`)
 		} else {
 			console.log("Already connected!")
+			socket.disconnect()
+			socket.connect()
+			const GenroomCode = generateRoomCode()
+			setRoomCode(GenroomCode)
+			useMultiplayerstore.getState().setisHost(true)
+			useMultiplayerstore.getState().setisInWaitingRoom(true)
+			useMultiplayerstore.setState({ inResult: false })
+			useMultiplayerstore.setState({ inGame: false })
+			console.log("oshjd")
+			socket.emit("create_room", GenroomCode, name)
+			router.push(`/multiplayer/${GenroomCode}`)
 		}
 	}
 
@@ -37,9 +52,35 @@ function Room() {
 		if (!socket.connected) {
 			socket.connect()
 			useMultiplayerstore.getState().setisInWaitingRoom(true)
-			router.push(`/multiplayer/${inputMessage}`)
+			useMultiplayerstore.setState({ inResult: false })
+			useMultiplayerstore.setState({ inGame: false })
+			socket.emit("check_room", inputMessage)
+			console.log("here")
+			socket.on("room_exists", (data: boolean) => {
+				if (data) {
+					router.push(`/multiplayer/${inputMessage}`)
+				} else {
+					console.log("Room does not exist!")
+					setError("Room does not exist!")
+				}
+			})
 		} else {
 			console.log("Already connected!")
+			socket.disconnect()
+			socket.connect()
+			useMultiplayerstore.getState().setisInWaitingRoom(true)
+			useMultiplayerstore.setState({ inResult: false })
+			useMultiplayerstore.setState({ inGame: false })
+			socket.emit("check_room", inputMessage)
+			console.log("here2")
+			socket.on("room_exists", (data: boolean) => {
+				if (data) {
+					router.push(`/multiplayer/${inputMessage}`)
+				} else {
+					console.log("Room does not exist!")
+					setError("Room does not exist!")
+				}
+			})
 		}
 	}
 
@@ -81,6 +122,11 @@ function Room() {
 					className="w-2/3 text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent mt-8"
 					onChange={handleChange}
 				/>
+				{error && (
+					<div className="w-2/3 text-red-500 font-thin tracking-wider mt-4 text-center">
+						{error}
+					</div>
+				)}
 				<button
 					className="font-medium text-stone-500 w-1/4 mt-8 py-2 rounded-2xl flex justify-center items-center tracking-wide bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 					onClick={handleJoinRoom}

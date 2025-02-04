@@ -12,6 +12,7 @@ import Link from "next/link"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useTimeStore } from "@/lib/zustand/timestore"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
+import { useGamesStore } from "@/lib/zustand/gamestore"
 
 function Navbar() {
 	const [darkMode, setDarkMode] = useState<boolean | null>(null) // Start with null
@@ -47,6 +48,13 @@ function Navbar() {
 				<div
 					onClick={() => {
 						useMultiplayerstore.getState().setisMultiplayer(false)
+
+						useTimeStore.getState().setIsTimerRunning(false)
+						useTimeStore
+							.getState()
+							.setTime(useGamesStore.getState().totalTime as number)
+						useTestStore.getState().reset()
+						useTestStore.getState().setLoadResult(false)
 					}}
 					className="group flex flex-row items-center"
 				>

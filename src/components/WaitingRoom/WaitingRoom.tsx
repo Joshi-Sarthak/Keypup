@@ -52,7 +52,7 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 
 	const handleStartGame = () => {
 		useMultiplayerstore.getState().setisInWaitingRoom(false)
-		useMultiplayerstore.getState().setisInGame(true)	
+		useMultiplayerstore.getState().setisInGame(true)
 	}
 
 	return (
@@ -127,7 +127,7 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 							></path>
 						</svg>
 					</span>
-					<span className="relative text-base font-semibold uppercase tracking-widest dark:text-neutral-200 text-stone-600 group-hover:text-white transition-all duration-200">
+					<span className="relative text-base font-semibold uppercase tracking-widest dark:text-neutral-400 text-stone-600 group-hover:text-neutral-300 transition-all duration-200">
 						Start Game!
 					</span>
 				</button>
