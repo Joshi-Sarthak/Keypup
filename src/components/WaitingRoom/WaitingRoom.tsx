@@ -12,7 +12,7 @@ interface User {
 	name: string
 }
 
-function WaitingRoom({ id, name }: { id: string; name: string }) {
+function WaitingRoom({ id, name,email }: { id: string; name: string; email:string}) {
 	const [users, setUsers] = useState<User[]>([]) // Store users directly
 	const router = useRouter()
 
@@ -23,7 +23,7 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 		}
 
 		// Join the room
-		socket.emit("join_room", id, name)
+		socket.emit("join_room", id, name, email)
 
 		// Handle users in the room
 		const handleRoomUsers = (data: User[]) => {
@@ -137,3 +137,6 @@ function WaitingRoom({ id, name }: { id: string; name: string }) {
 }
 
 export default WaitingRoom
+
+
+

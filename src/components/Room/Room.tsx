@@ -4,8 +4,10 @@ import React, { useState } from "react"
 import { socket } from "@/lib/sockets"
 import { useRouter } from "next/navigation"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
+import { auth } from "@/auth"
 
-function Room({ name }: { name: string }) {
+function Room({ name, email }: { name: string; email: string }) {
+	console.log("email : : : ", email)
 	const [roomCode, setRoomCode] = useState<string | null>(null)
 	const [inputMessage, setInputMessage] = useState<string>("")
 	const [error, setError] = useState<string>("")
@@ -20,7 +22,7 @@ function Room({ name }: { name: string }) {
 		return result
 	}
 
-	function handleCreateRoom() {
+	async function handleCreateRoom({ email }: { email: string }) {
 		if (!socket.connected) {
 			socket.connect()
 			const GenroomCode = generateRoomCode()
@@ -29,8 +31,7 @@ function Room({ name }: { name: string }) {
 			useMultiplayerstore.getState().setisInWaitingRoom(true)
 			useMultiplayerstore.setState({ inResult: false })
 			useMultiplayerstore.setState({ inGame: false })
-			console.log("oshjd")
-			socket.emit("create_room", GenroomCode, name)
+			socket.emit("create_room", GenroomCode, name, email)
 			router.push(`/multiplayer/${GenroomCode}`)
 		} else {
 			console.log("Already connected!")
@@ -42,8 +43,7 @@ function Room({ name }: { name: string }) {
 			useMultiplayerstore.getState().setisInWaitingRoom(true)
 			useMultiplayerstore.setState({ inResult: false })
 			useMultiplayerstore.setState({ inGame: false })
-			console.log("oshjd")
-			socket.emit("create_room", GenroomCode, name)
+			socket.emit("create_room", GenroomCode, name, email)
 			router.push(`/multiplayer/${GenroomCode}`)
 		}
 	}
@@ -104,7 +104,7 @@ function Room({ name }: { name: string }) {
 				</div>
 				<button
 					className="font-medium text-stone-500 w-1/4 mt-8 py-2 rounded-2xl flex justify-center items-center tracking-wide bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
-					onClick={handleCreateRoom}
+					onClick={() => handleCreateRoom({ email })}
 				>
 					Create room
 				</button>

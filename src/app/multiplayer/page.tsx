@@ -8,10 +8,10 @@ const Page = async () => {
 	const session = await auth()
 	if (!session?.user) redirect("/login")
 
-	const email = session.user.email
+	const email = session.user.email ?? ""
 	const { name } = await findUser(email as string)
 
-	return <Room name={name} />
+	return <Room name={name} email={email}/>
 }
 
 export default Page

@@ -8,9 +8,9 @@ export default async function Page({ params }: { params: { id: string } }) {
 	const session = await auth()
 	if (!session?.user) redirect("/login")
 
-	const email = session.user.email
+	const email = session.user.email ?? ""
 	const { name } = await findUser(email as string)
 	const id = params.id
 
-	return <ClientPage id={id} name={name} />
+	return <ClientPage id={id} name={name} email={email} />
 }

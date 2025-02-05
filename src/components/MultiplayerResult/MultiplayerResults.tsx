@@ -22,7 +22,7 @@ interface PlayerResult {
 	totalTime: number
 }
 
-export default function MultiplayerResults() {
+export default function MultiplayerResults({ email }: { email: string }) {
 	let totalTime = 0
 	if (!useGamesStore.getState().time) {
 		totalTime = useTimeStore.getState().timer || 1
@@ -48,7 +48,32 @@ export default function MultiplayerResults() {
 					Math.round((b.correctChars * 60) / (5 * b.totalTime)) -
 					Math.round((a.correctChars * 60) / (5 * a.totalTime))
 			)
+
+			const saveMultiplayerResult = async () => {
+				try {
+					const res = await fetch(`/api/saveMultiplayerResult`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							PlayerResult: sortedResults,
+						}),
+						credentials: "include",
+					})
+
+					const data = await res.json()
+					if (!res.ok) {
+						console.log("Failed to save result", data)
+					}
+				} catch (err) {
+					console.error("Result error:", err)
+				}
+			}
+
+			console.log("sortedResults", sortedResults)
 			setResults(sortedResults)
+			saveMultiplayerResult()
 		})
 
 		return () => {
@@ -106,8 +131,18 @@ export default function MultiplayerResults() {
 										)}
 									</span>
 									<span className="px-4">{player.name}</span>
-									<span className="px-4">{Math.round((player.rawChars * 60) / (5 * player.totalTime))}</span>
-									<span className="px-4">{Math.round((player.correctChars * 60) / (5 * player.totalTime))}</span>
+									<span className="px-4">
+										{Math.round(
+											(player.rawChars * 60) /
+												(5 * player.totalTime)
+										)}
+									</span>
+									<span className="px-4">
+										{Math.round(
+											(player.correctChars * 60) /
+												(5 * player.totalTime)
+										)}
+									</span>
 								</div>
 							))}
 						</div>
