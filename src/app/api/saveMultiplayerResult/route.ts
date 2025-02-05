@@ -20,8 +20,6 @@ interface PlayerResult {
 
 export async function POST(req: NextRequest) {
 	try {
-		console.log("in req ahjs dsa djks dksa djk askd ")
-
 		await connectToDatabase()
 
 		const { email } = (await getUser()) as Usertype
@@ -38,27 +36,22 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Invalid data" }, { status: 400 })
 		}
 
+		let emailTicked = false
+
 		PlayerResult.map((result: PlayerResult) => {
 			if (result.email === email) {
 				console.log("result", result)
 				const wpm =
 					Math.round(result.correctChars * 60) / (5 * result.totalTime)
 
-				if (PlayerResult[0].email === email) {
+				if (PlayerResult[0].email === email && emailTicked == false) {
+					console.log("result win ", result)
 					user.multiplayerResults.wins += 1
+					emailTicked = true
 				} else {
+					console.log("losses", result)
 					user.multiplayerResults.losses += 1
 				}
-				console.log("user.averageWPM", user.multiplayerResults.averageWPM)
-				console.log("wpm", wpm)
-				console.log(
-					"user.multiplayerResults.wins",
-					user.multiplayerResults.wins
-				)
-				console.log(
-					"user.multiplayerResults.losses",
-					user.multiplayerResults.losses
-				)
 
 				user.multiplayerResults.averageWPM = parseFloat(
 					(
@@ -69,7 +62,7 @@ export async function POST(req: NextRequest) {
 						(user.multiplayerResults.wins +
 							user.multiplayerResults.losses +
 							1)
-					).toFixed(2)
+					).toFixed(0)
 				)
 
 				console.log("user.multiplayerWPM", user.multiplayerResults)
