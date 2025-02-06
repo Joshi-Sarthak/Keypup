@@ -48,14 +48,6 @@ function MultiplayerMain() {
 	const correctCharsPerSecond = useRef(0)
 	const rawCharsPerSecond = useRef(0)
 
-	const Restart = () => {
-		setIsBlinking(false)
-		useTimeStore.getState().setIsTimerRunning(false)
-		useTimeStore.getState().setTime(useGamesStore.getState().totalTime as number)
-		reset()
-		useTestStore.getState().setLoadResult(false)
-	}
-
 	useEffect(() => {
 		if (
 			useMultiplayerstore.getState().isMultiplayer &&
@@ -173,7 +165,6 @@ function MultiplayerMain() {
 	])
 
 	useEffect(() => {
-		console.log("akjd " + useMultiplayerstore.getState().isHost)
 		if (!isDisabled) {
 			if (words) {
 				seedWords(totalWords as number)
@@ -191,9 +182,7 @@ function MultiplayerMain() {
 				useTimeStore.getState().setIsTimerRunning(true)
 			}
 
-			if (e.ctrlKey && e.key === "b") {
-				Restart()
-			} else if (e.key.length === 1 || e.key === "Backspace") {
+			if (e.key.length === 1 || e.key === "Backspace") {
 				setIsBackspacing(e.key === "Backspace")
 				RecordTest(e.key, activeLetter.current, activeWord.current)
 				setIsBlinking(false)
