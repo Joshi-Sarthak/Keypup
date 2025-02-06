@@ -43,12 +43,11 @@ function Navbar() {
 	if (darkMode === null) return null
 
 	return (
-		<nav className="flex flex-row items-center justify-between pt-2 px-16">
+		<nav className="flex flex-row items-center justify-between pt-2 px-4 md:px-16">
 			<Link href="/">
 				<div
 					onClick={() => {
 						useMultiplayerstore.getState().setisMultiplayer(false)
-
 						useTimeStore.getState().setIsTimerRunning(false)
 						useTimeStore
 							.getState()
@@ -71,10 +70,10 @@ function Navbar() {
 				</div>
 			</Link>
 			<div>
-				<ul className="flex flex-row items-center font-light">
+				<ul className="flex flex-row items-center justify-between md:justify-end gap-4 md:gap-0 flex-wrap md:flex-none font-light mt-4 md:mt-0">
 					<li
 						onClick={toggleTheme}
-						className="group cursor-pointer flex items-center transition-all duration-200"
+						className="group cursor-pointer flex items-center transition-all duration-200 mb-4 md:mb-0"
 					>
 						{darkMode ? (
 							<MdOutlineLightMode
@@ -87,7 +86,7 @@ function Navbar() {
 								size={25}
 							/>
 						)}
-						<span className="ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
+						<span className="hidden md:inline ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
 							Theme
 						</span>
 					</li>
@@ -99,13 +98,13 @@ function Navbar() {
 								useTestStore.getState().reset()
 								useMultiplayerstore.getState().setisMultiplayer(true)
 							}}
-							className="group ml-4 flex items-center transition-all duration-200"
+							className="group ml-0 md:ml-4 flex items-center transition-all duration-200 mb-4 md:mb-0"
 						>
 							<IoIosPeople
 								className="text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200"
 								size={25}
 							/>
-							<span className="ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
+							<span className="hidden md:inline ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
 								Multiplayer
 							</span>
 						</li>
@@ -118,13 +117,13 @@ function Navbar() {
 								useTestStore.getState().reset()
 								useMultiplayerstore.getState().setisMultiplayer(false)
 							}}
-							className="group ml-4 flex items-center transition-all duration-200"
+							className="group ml-0 md:ml-4 flex items-center transition-all duration-200 mb-4 md:mb-0"
 						>
 							<MdLeaderboard
 								className="text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200"
 								size={25}
 							/>
-							<span className="ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
+							<span className="hidden md:inline ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
 								Leaderboards
 							</span>
 						</li>
@@ -134,13 +133,13 @@ function Navbar() {
 							onClick={() => {
 								useMultiplayerstore.getState().setisMultiplayer(false)
 							}}
-							className="group ml-4 flex items-center transition-all duration-200"
+							className="group ml-0 md:ml-4 flex items-center transition-all duration-200 mb-4 md:mb-0"
 						>
 							<MdAccountCircle
 								className="text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200"
 								size={25}
 							/>
-							<span className="ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
+							<span className="hidden md:inline ml-2 text-stone-500 dark:text-neutral-500 group-hover:text-stone-800 dark:group-hover:text-neutral-100 transition-all duration-200">
 								Profile
 							</span>
 						</li>
