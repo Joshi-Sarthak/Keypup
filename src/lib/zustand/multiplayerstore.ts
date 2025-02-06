@@ -15,6 +15,7 @@ type multiplayerstore = {
 	setisMultiplayer: (isMultiplayer: boolean) => void
 	initialWords: string[]
 	setInitialWords: (initialWords: string[]) => void
+	reset: () => void
 }
 
 export const useMultiplayerstore = create<multiplayerstore>((set) => ({
@@ -43,5 +44,17 @@ export const useMultiplayerstore = create<multiplayerstore>((set) => ({
 	},
 	setisInResult(inResult) {
 		set({ inResult })
+	},
+	reset() {
+		set({
+			inWaitingRoom: false,
+			inGame: false,
+			inResult: false,
+			isHost: false,
+			isMultiplayer: false,
+			mode: "time",
+			subType: "15",
+			initialWords: [],
+		})
 	},
 }))

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { use, useEffect } from "react"
 import Controlbar from "@/components/Controlbar/Controlbar"
 import Main from "@/components/Main/Main"
 import Result from "@/components/Result/Result"
@@ -17,7 +17,14 @@ export default function Home() {
 
 	if (!loadResult && returningFromMultiplayerResult) {
 		resetTestStore()
+		useMultiplayerstore.getState().reset()
 	}
+
+	useEffect(() => {
+		if (useMultiplayerstore.getState().isMultiplayer) {
+			useMultiplayerstore.getState().setisMultiplayer(false)
+		}
+	}, [])
 
 	return loadResult ? (
 		<Result />
