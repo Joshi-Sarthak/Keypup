@@ -9,6 +9,7 @@ type timestore = {
 	setIsTimerRunning: (isTimerRunning: boolean) => void
 	setIsTestRecording: (isTestRecording: boolean) => void
 	isTestRecording: boolean
+	reset : ()	=> void
 }
 
 export const useTimeStore = create<timestore>((set) => ({
@@ -30,4 +31,7 @@ export const useTimeStore = create<timestore>((set) => ({
 	setIsTestRecording(isTestRecording) {
 		set({ isTestRecording })
 	},
+	reset(){
+		set({isTimerRunning: false, isTestRecording: false})
+	}
 }))

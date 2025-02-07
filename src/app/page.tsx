@@ -6,17 +6,19 @@ import Main from "@/components/Main/Main"
 import Result from "@/components/Result/Result"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
+import { useTimeStore } from "@/lib/zustand/timestore"
 
 export default function Home() {
 	const loadResult = useTestStore((state) => state.loadResult)
-	const returningFromMultiplayerResult = useMultiplayerstore(
-		(state) => state.inResult
-	)
+	const inResult = useMultiplayerstore((state) => state.inResult)
+	const isInGame = useMultiplayerstore((state) => state.inGame)
+	const returningFromMultiplayerResult = inResult || isInGame
 
 	const resetTestStore = useTestStore((state) => state.reset)
 
 	if (!loadResult && returningFromMultiplayerResult) {
 		resetTestStore()
+		useTimeStore.getState().reset()
 		useMultiplayerstore.getState().reset()
 	}
 
