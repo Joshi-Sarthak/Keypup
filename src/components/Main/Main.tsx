@@ -252,7 +252,7 @@ function Main() {
 		}
 	}, [typedWord])
 
-	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : [];
+	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : []
 
 	return (
 		<div>
@@ -266,6 +266,11 @@ function Main() {
 					{words && (
 						<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">
 							{currWordIndex}/{totalWords}
+						</span>
+					)}
+					{quotes && (
+						<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">
+							{currWordIndex}/{initialWords.length}
 						</span>
 					)}
 					<div

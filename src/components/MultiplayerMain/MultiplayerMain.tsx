@@ -272,6 +272,11 @@ function MultiplayerMain() {
 							{currWordIndex}/{totalWords}
 						</span>
 					)}
+					{quotes && (
+						<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">
+							{currWordIndex}/{initialWords.length}
+						</span>
+					)}
 					<div
 						className="w-full flex flex-wrap max-h-[120px] overflow-hidden"
 						ref={wordsContainerRef}
