@@ -257,7 +257,7 @@ function Main() {
 	return (
 		<div>
 			<div className="flex justify-center w-full mt-28">
-				<div className="w-3/4 flex flex-col">
+				<div className="w-3/4 flex flex-col items-center">
 					{time && (
 						<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">
 							{timer}
