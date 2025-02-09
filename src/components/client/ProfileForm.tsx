@@ -156,7 +156,7 @@ const ProfileForm = ({ email }: { email: string }) => {
 
 	return (
 		<div className="p-2 max-w-lg mx-auto">
-			<h1 className="tracking-widest text-3xl my-7 text-stone-500 dark:text-neutral-500 text-center">
+			<h1 className="tracking-widest text-3xl max-lg:text-2xl my-7 text-stone-500 dark:text-neutral-500 text-center">
 				Profile
 			</h1>
 

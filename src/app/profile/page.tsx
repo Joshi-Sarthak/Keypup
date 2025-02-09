@@ -24,11 +24,11 @@ const Page = async () => {
 	} = user
 
 	return (
-		<div className="w-full flex flex-row">
-			<div className="w-1/3">
+		<div className="w-full flex flex-row max-lg:flex-col">
+			<div className="w-1/3 max-lg:w-full">
 				<ProfileForm email={email as string} />
 			</div>
-			<div className="w-2/3 flex flex-col">
+			<div className="w-2/3 flex flex-col max-lg:w-full">
 				<ProfileComponent
 					data={recentResult as result[]}
 					type="recent"
