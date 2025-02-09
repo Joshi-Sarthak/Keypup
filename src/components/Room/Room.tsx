@@ -105,8 +105,7 @@ function Room({ name, email }: { name: string; email: string }) {
 				</button>
 			</div>
 
-			{/* Divider - Only visible on medium screens and up */}
-			<div className="hidden md:block w-px bg-stone-600 h-[400px] rounded-full"></div>
+			<div className="w-full h-px bg-stone-600 rounded-full lg:w-px lg:h-[400px]"></div>
 
 			{/* Join Room Section */}
 			<div className="w-full md:w-1/3 flex flex-col items-center">
