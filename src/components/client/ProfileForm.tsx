@@ -14,6 +14,7 @@ const ProfileForm = ({ email }: { email: string }) => {
 		email: "",
 	})
 	const [success, setSuccess] = useState(false)
+	const [loading, setLoading] = useState(false)
 	const [updatingPassword, setUpdatingPassword] = useState(false)
 	const [error, setError] = useState("")
 	const [formData, setFormData] = useState({
@@ -80,6 +81,7 @@ const ProfileForm = ({ email }: { email: string }) => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		setLoading(true)
 		setError("") // Clear any previous errors
 		setSuccess(false)
 		if (formData.username === "" && updatingPassword && formData.password === "") {
@@ -88,7 +90,9 @@ const ProfileForm = ({ email }: { email: string }) => {
 		}
 
 		if (updatingPassword && !validator.isStrongPassword(formData.password)) {
-			return setError("Please enter a strong password")
+			setError("Please enter a strong password")
+			setLoading(false)
+			return
 		}
 
 		try {
@@ -128,6 +132,8 @@ const ProfileForm = ({ email }: { email: string }) => {
 		} catch (err) {
 			console.error("Profile update error:", err)
 			setError("An unexpected error occurred. Please try again.")
+		} finally {
+			setLoading(false)
 		}
 
 		try {
@@ -223,8 +229,20 @@ const ProfileForm = ({ email }: { email: string }) => {
 						onChange={handleChange}
 					/>
 				</div>
-				<button className="font-medium text-stone-500 w-full mt-4 py-2 px-32 rounded-2xl flex justify-center items-center tracking-wide bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400">
-					Update
+				<button
+					type="submit"
+					className="font-medium text-stone-500 w-full mt-4 py-2 px-32 rounded-2xl flex justify-center items-center tracking-wide bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
+					disabled={loading}
+				>
+					{loading ? (
+						<div className="w-full gap-x-2 flex justify-center items-center p-2">
+							<div className="w-2 bg-stone-200 animate-pulse h-2 rounded-full"></div>
+							<div className="w-2 animate-pulse h-2 bg-stone-400 rounded-full"></div>
+							<div className="w-2 h-2 animate-pulse bg-stone-600 rounded-full"></div>
+						</div>
+					) : (
+						"Update"
+					)}
 				</button>
 			</form>
 
