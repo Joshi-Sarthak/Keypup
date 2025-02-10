@@ -19,6 +19,8 @@ const SignupForm = () => {
 	const [error, setError] = useState("")
 	const [OTPInputVisible, setOtpInputVisible] = useState(false)
 	const [otpVerified, setOtpVerified] = useState(false)
+	const [loading, setLoading] = useState(false)
+	const [googleLoading, setGoogleLoading] = useState(false)
 	const router = useRouter()
 
 	const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -131,34 +133,46 @@ const SignupForm = () => {
 	}
 
 	return (
-		<div className="flex-col items-center justify-center h-full">
-			<h2 className="flex justify-center tracking-widest text-3xl mb-4 text-stone-500 dark:text-neutral-500">
+		<div className="flex flex-col items-center mt-8 lg:mt-16 min-h-screen px-4">
+			<h2 className="text-3xl tracking-widest mb-4 text-stone-500 dark:text-neutral-500">
 				SIGN UP
 			</h2>
 
-			<form
-				action={googleSignin}
-				className="flex flex-row justify-center mb-4 mt-4"
-			>
-				<button
-					className="text-stone-500 py-3 px-32 rounded-2xl flex items-center tracking-wide font-medium bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
-					type="submit"
-				>
-					<FaGoogle />
-					<span className="ml-4">Signup with Google</span>
-				</button>
-			</form>
-			<div className="mx-auto max-w-md flex justify-center tracking-widest text-stone-400 dark:text-neutral-600">
-				OR
+			<div className="flex justify-center w-full mb-4">
+				{" "}
+				<form action={googleSignin}>
+					<button
+						className="w-full text-stone-500 py-2 px-4 sm:px-6 md:px-8 lg:px-12 rounded-2xl flex items-center justify-center tracking-wide font-medium bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
+						type="submit"
+						disabled={googleLoading}
+					>
+						{googleLoading ? (
+							<div className="flex justify-center items-center p-2 space-x-2">
+								<div className="w-2 h-2 bg-stone-200 animate-pulse rounded-full"></div>
+								<div className="w-2 h-2 bg-stone-400 animate-pulse rounded-full"></div>
+								<div className="w-2 h-2 bg-stone-600 animate-pulse rounded-full"></div>
+							</div>
+						) : (
+							<div className="flex items-center justify-center w-full">
+								<FaGoogle className="mr-2 sm:mr-3 md:mr-4 text-lg sm:text-xl" />
+								<span className="text-sm sm:text-base">
+									Signup with Google
+								</span>
+							</div>
+						)}
+					</button>
+				</form>
 			</div>
+
+			<div className="text-stone-400 dark:text-neutral-600">OR</div>
 			<form
 				onSubmit={handleFormSubmit}
-				className="mx-auto max-w-md bg-transparent"
+				className="mx-auto w-full max-w-md bg-transparent"
 			>
-				<div className="mb-4 mt-2">
+				<div className="mb-4">
 					<label
 						htmlFor="username"
-						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2 ml-2 tracking-wider"
+						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2"
 					>
 						Name
 					</label>
@@ -168,7 +182,7 @@ const SignupForm = () => {
 						type="text"
 						id="username"
 						name="username"
-						className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent"
+						className="w-full font-light px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl bg-transparent text-stone-500 dark:text-neutral-300 focus:ring-2 focus:ring-stone-500"
 						placeholder="Enter your Name"
 					/>
 				</div>
@@ -176,7 +190,7 @@ const SignupForm = () => {
 				<div className="relative">
 					<label
 						htmlFor="email"
-						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2 ml-2 tracking-wider"
+						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2"
 					>
 						Email
 					</label>
@@ -187,8 +201,8 @@ const SignupForm = () => {
 							type="email"
 							id="email"
 							name="email"
-							className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent pr-[110px]"
-							placeholder="Enter your email"
+							className="w-full font-light px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl bg-transparent text-stone-500 dark:text-neutral-300 focus:ring-2 focus:ring-stone-500 pr-[110px]"
+							placeholder="Enter your Email"
 						/>
 						<button
 							type="button"
@@ -212,7 +226,7 @@ const SignupForm = () => {
 						<div className="relative">
 							<label
 								htmlFor="otp"
-								className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2 ml-2 tracking-wider"
+								className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2"
 							>
 								OTP
 							</label>
@@ -222,7 +236,7 @@ const SignupForm = () => {
 									type="text"
 									id="otp"
 									name="otp"
-									className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent pr-[120px]"
+									className="w-full font-light px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl bg-transparent text-stone-500 dark:text-neutral-300 focus:ring-2 focus:ring-stone-500 pr-[120px]"
 									placeholder="Enter your OTP"
 								/>
 								<button
@@ -247,7 +261,7 @@ const SignupForm = () => {
 				<div className="mb-4">
 					<label
 						htmlFor="password"
-						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2 ml-2 tracking-wider"
+						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2"
 					>
 						Password
 					</label>
@@ -256,7 +270,7 @@ const SignupForm = () => {
 						type="password"
 						id="password"
 						name="password"
-						className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent"
+						className="w-full font-light px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl bg-transparent text-stone-500 dark:text-neutral-300 focus:ring-2 focus:ring-stone-500"
 						placeholder="Enter your password"
 					/>
 				</div>
@@ -264,7 +278,7 @@ const SignupForm = () => {
 				<div className="">
 					<label
 						htmlFor="confirmpassword"
-						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2 ml-2 tracking-wider"
+						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2"
 					>
 						Confirm Password
 					</label>
@@ -273,7 +287,7 @@ const SignupForm = () => {
 						type="password"
 						id="confirmPassword"
 						name="confirmPassword"
-						className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent"
+						className="w-full font-light px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl bg-transparent text-stone-500 dark:text-neutral-300 focus:ring-2 focus:ring-stone-500"
 						placeholder="Enter your password again"
 					/>
 				</div>
@@ -286,13 +300,16 @@ const SignupForm = () => {
 						Sign Up
 					</button>
 				</div>
-				<Link
-					className="flex justify-start items-center mt-4 ml-2 text-stone-400 dark:text-neutral-400 hover:text-stone-500 hover:dark:text-neutral-300 transition-all duration-400 font-thin tracking-wider"
-					href="/login"
-				>
-					<p>Already on Keypup? Login</p>
-				</Link>
 			</form>
+			<Link
+				className="mt-4 text-stone-400 font-light dark:text-neutral-400 hover:text-stone-500 text-sm tracking-wider"
+				href="/login"
+			>
+				Already on Keypup?{" "}
+				<p className="hover:text-stone-600 dark:hover:text-neutral-200 hover:underline inline">
+					Login
+				</p>
+			</Link>
 
 			<div className="flex flex-row justify-center items-center mt-2 tracking-wider font-thin">
 				{error && <p className="text-red-500 mx-auto">{error}</p>}

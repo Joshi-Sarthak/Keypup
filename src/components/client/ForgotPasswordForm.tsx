@@ -133,18 +133,18 @@ const ForgotPasswordForm = () => {
 	}
 
 	return (
-		<div className="flex-col items-center justify-center h-full">
-			<h2 className="flex justify-center tracking-widest text-3xl mb-4 text-stone-500 dark:text-neutral-500">
+		<div className="flex flex-col items-center mt-8 lg:mt-16 min-h-screen px-4">
+			<h2 className="text-3xl tracking-widest mb-4 text-stone-500 dark:text-neutral-500">
 				RESET PASSWORD
 			</h2>
 			<form
 				onSubmit={handleFormSubmit}
-				className="mx-auto max-w-md bg-transparent"
+				className="mx-auto w-full max-w-md bg-transparent"
 			>
 				<div className="relative">
 					<label
 						htmlFor="email"
-						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2 ml-2 tracking-wider"
+						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2"
 					>
 						Email
 					</label>
@@ -155,7 +155,7 @@ const ForgotPasswordForm = () => {
 							type="email"
 							id="email"
 							name="email"
-							className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent pr-[110px]"
+							className="w-full font-light px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl bg-transparent text-stone-500 dark:text-neutral-300 focus:ring-2 focus:ring-stone-500 pr-[110px]"
 							placeholder="Enter your email"
 						/>
 						<button
@@ -180,7 +180,7 @@ const ForgotPasswordForm = () => {
 						<div className="relative">
 							<label
 								htmlFor="otp"
-								className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2 ml-2 tracking-wider"
+								className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2"
 							>
 								OTP
 							</label>
@@ -190,7 +190,7 @@ const ForgotPasswordForm = () => {
 									type="text"
 									id="otp"
 									name="otp"
-									className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent pr-[120px]"
+									className="w-full font-light px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl bg-transparent text-stone-500 dark:text-neutral-300 focus:ring-2 focus:ring-stone-500 pr-[120px]"
 									placeholder="Enter your OTP"
 								/>
 								<button
@@ -215,7 +215,7 @@ const ForgotPasswordForm = () => {
 				<div className="mb-4">
 					<label
 						htmlFor="password"
-						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2 ml-2 tracking-wider"
+						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2"
 					>
 						Password
 					</label>
@@ -224,7 +224,7 @@ const ForgotPasswordForm = () => {
 						type="password"
 						id="password"
 						name="password"
-						className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent"
+						className="w-full font-light px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl bg-transparent text-stone-500 dark:text-neutral-300 focus:ring-2 focus:ring-stone-500"
 						placeholder="Enter your password"
 					/>
 				</div>
@@ -232,7 +232,7 @@ const ForgotPasswordForm = () => {
 				<div className="">
 					<label
 						htmlFor="confirmpassword"
-						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2 ml-2 tracking-wider"
+						className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2"
 					>
 						Confirm Password
 					</label>
@@ -241,14 +241,14 @@ const ForgotPasswordForm = () => {
 						type="password"
 						id="confirmPassword"
 						name="confirmPassword"
-						className="w-full text-stone-500 dark:text-neutral-300 font-thin tracking-wider px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-500 bg-transparent"
+						className="w-full font-light px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-2xl bg-transparent text-stone-500 dark:text-neutral-300 focus:ring-2 focus:ring-stone-500"
 						placeholder="Enter your password again"
 					/>
 				</div>
 				<div className="flex items-center justify-between">
 					<button
 						type="submit"
-						className="text-stone-500 w-full mt-6 py-2 px-32 rounded-2xl flex justify-center items-center tracking-wide font-medium bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
+						className="text-stone-500 w-full mt-6 py-2 px-24 lg:px-32 rounded-2xl flex justify-center items-center tracking-wide font-medium bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 					>
 						Reset Password
 					</button>
