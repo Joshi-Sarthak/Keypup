@@ -220,16 +220,16 @@ export default function Result() {
 	)
 
 	return (
-		<div className="flex justify-center items-center flex-col mt-32">
-			<div className="flex flex-row">
-				<div className="flex flex-col mr-8">
-					<div className="flex flex-col mt-12">
+		<div className="flex justify-center items-center flex-col lg:mt-32">
+			<div className="flex flex-row max-lg:flex-col">
+				<div className="flex flex-col lg:mr-8">
+					<div className="flex flex-col mt-12 items-center">
 						<span className="text-2xl font-normal text-stone-400 dark:text-neutral-500">
 							wpm
 						</span>
 						<span className="text-6xl text-purple-600">{overallWPM}</span>
 					</div>
-					<div className="flex flex-col mt-8">
+					<div className="flex flex-col mt-4 lg:mt-8 items-center">
 						<span className="text-2xl font-normal text-stone-400 dark:text-neutral-500">
 							acc
 						</span>
@@ -241,7 +241,7 @@ export default function Result() {
 						</span>
 					</div>
 				</div>
-				<div style={{ width: "90rem", height: "20rem" }}>
+				<div className="w-[90rem] h-[20rem] max-lg:hidden max-2xl:w-[50rem]">
 					{isClient ? (
 						<Line data={chartData} options={chartOptions} />
 					) : (
@@ -249,8 +249,8 @@ export default function Result() {
 					)}
 				</div>
 			</div>
-			<div className="flex flex-row justify-between w-2/3 mt-8 ml-32">
-				<div className="flex flex-col">
+			<div className="flex flex-row max-lg:flex-col justify-between w-2/3 mt-8 lg:ml-32 max-lg:mt-8">
+				<div className="flex flex-col items-center max-lg:mt-4">
 					<span className="text-lg font-normal text-stone-400 dark:text-neutral-500">
 						test type
 					</span>
@@ -258,13 +258,13 @@ export default function Result() {
 						{type}-{subType}
 					</span>
 				</div>
-				<div className="flex flex-col">
+				<div className="flex flex-col items-center max-lg:mt-4">
 					<span className="text-lg font-normal text-stone-400 dark:text-neutral-500">
 						raw
 					</span>
 					<span className="text-4xl text-purple-600 ">{rawWPM}</span>
 				</div>
-				<div className="flex flex-col">
+				<div className="flex flex-col items-center max-lg:mt-4">
 					<span className="text-lg font-normal text-stone-400 dark:text-neutral-500">
 						characters
 					</span>
@@ -273,7 +273,7 @@ export default function Result() {
 						{missingLetters}
 					</span>
 				</div>
-				<div className="flex flex-col">
+				<div className="flex flex-col max-lg:items-center max-lg:mt-4">
 					<span className="text-lg font-normal text-stone-400 dark:text-neutral-500">
 						time
 					</span>
@@ -284,7 +284,7 @@ export default function Result() {
 				onClick={Restart}
 				onMouseEnter={() => setIsHovered(true)}
 				onMouseLeave={() => setIsHovered(false)}
-				className="w-8 h-8 text-stone-400 dark:text-neutral-600 hover:text-stone-500 hover:dark:text-neutral-500 transition-all duration-200 ease-in-out mx-auto mt-8"
+				className="max-lg:mt-12 w-8 h-8 text-stone-400 dark:text-neutral-600 hover:text-stone-500 hover:dark:text-neutral-500 transition-all duration-200 ease-in-out mx-auto mt-8"
 			/>
 			<div
 				className={`text-center text-xs tracking-widest text-stone-500 dark:text-neutral-500 transition-opacity duration-300 ease-in-out ${

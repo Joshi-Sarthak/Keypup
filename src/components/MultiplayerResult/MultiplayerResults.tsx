@@ -95,49 +95,47 @@ export default function MultiplayerResults({ email }: { email: string }) {
 					Waiting for results...
 				</div>
 			) : (
-				<div className="w-3/4 flex justify-center gap-8">
+				<div className="w-full md:w-4/5 lg:w-3/4 flex justify-center px-4 sm:px-6">
 					<div className="w-full flex flex-col">
 						<div
-							className={`w-full border border-stone-300 dark:border-neutral-600 rounded-3xl py-1 px-4 bg-white dark:bg-[#242120]`}
+							className={`w-full border border-stone-300 dark:border-neutral-600 rounded-xl sm:rounded-3xl py-1 px-2 sm:px-4 bg-white dark:bg-[#242120]`}
 						>
-							<div
-								className="grid grid-cols-4 text-lg font-medium pt-1 pb-3 border-b border-stone-200 dark:border-neutral-700 text-neutral-300 dark:text-stone-400 text-center"
-								style={{ color: "#7e22ce" }}
-							>
-								<span>Rank</span>
-								<span>Player</span>
-								<span>Raw WPM</span>
-								<span>WPM</span>
+							{/* Table Header */}
+							<div className="grid grid-cols-4 text-sm sm:text-lg font-medium pt-1 pb-3 border-b border-stone-200 dark:border-neutral-700 text-center bg-white dark:bg-[#242120] text-purple-600">
+								<span className="px-1 sm:px-2">Rank</span>
+								<span className="px-1 sm:px-2">Player</span>
+								<span className="px-1 sm:px-2">Raw WPM</span>
+								<span className="px-1 sm:px-2">WPM</span>
 							</div>
 
 							{results.map((player, idx) => (
 								<div
 									key={player.id}
-									className={`grid grid-cols-4 text-base py-2.5 border-b last:border-b-0 border-stone-200 dark:border-neutral-700 text-center text-stone-400 ${
+									className={`grid grid-cols-4 text-sm sm:text-base py-2 border-b last:border-b-0 border-stone-200 dark:border-neutral-700 text-center text-stone-400 ${
 										idx % 2 === 0
 											? "bg-neutral-200 dark:bg-stone-800"
 											: "bg-white dark:bg-[#242120]"
 									}`}
 								>
-									<span className="ml-2">
+									<span className="flex justify-center items-center">
 										{idx == 0 ? (
-											<PiMedalFill className="text-yellow-400 ml-32" />
+											<PiMedalFill className="text-yellow-400 w-5 h-5" />
 										) : idx == 1 ? (
-											<PiMedalFill className="text-gray-300 ml-32" />
+											<PiMedalFill className="text-gray-300 w-5 h-5" />
 										) : idx == 2 ? (
-											<PiMedalFill className="text-[#CD7F32] ml-32" />
+											<PiMedalFill className="text-[#CD7F32] w-5 h-5" />
 										) : (
 											idx + 1
 										)}
 									</span>
-									<span className="px-4">{player.name}</span>
-									<span className="px-4">
+									<span className="px-1 truncate">{player.name}</span>
+									<span className="px-1">
 										{Math.round(
 											(player.rawChars * 60) /
 												(5 * player.totalTime)
 										)}
 									</span>
-									<span className="px-4">
+									<span className="px-1">
 										{Math.round(
 											(player.correctChars * 60) /
 												(5 * player.totalTime)
