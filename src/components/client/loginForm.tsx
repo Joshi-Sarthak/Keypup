@@ -14,12 +14,14 @@ const LoginForm = () => {
 	const [loading, setLoading] = useState(false)
 	const [googleLoading, setGoogleLoading] = useState(false)
 
-	const handleFormSubmit = async (formData: FormData) => {
+	const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault()
+		setLoading(true)
+		const formData = new FormData(event.currentTarget)
 		const email = formData.get("email") as string
 		const password = formData.get("password") as string
 
 		setError("")
-		setLoading(true)
 
 		if (!email || !password) {
 			setError("Please fill all the details.")
@@ -44,6 +46,12 @@ const LoginForm = () => {
 		}
 	}
 
+	const handleGoogleSignin = async () => {
+		setGoogleLoading(true)
+		await googleSignin()
+		setGoogleLoading(false)
+	}
+
 	return (
 		<div className="flex flex-col items-center mt-8 lg:mt-16 min-h-screen px-4">
 			<h2 className="text-3xl tracking-widest mb-4 text-stone-500 dark:text-neutral-500">
@@ -51,17 +59,12 @@ const LoginForm = () => {
 			</h2>
 
 			<div className="flex justify-center w-full mb-4">
-				<form
-					action={async () => {
-						setGoogleLoading(true)
-						await googleSignin()
-						setGoogleLoading(false)
-					}}
-				>
+				<form>
 					<button
-						className="w-full text-stone-500 py-2 px-4 sm:px-6 md:px-8 lg:px-12 rounded-2xl flex items-center justify-center tracking-wide font-medium bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
-						type="submit"
+						onClick={handleGoogleSignin}
+						type="button"
 						disabled={googleLoading}
+						className="w-full text-stone-500 py-2 px-4 sm:px-6 md:px-8 lg:px-12 rounded-2xl flex items-center justify-center tracking-wide font-medium bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 					>
 						{googleLoading ? (
 							<div className="flex justify-center items-center p-2 space-x-2">
@@ -83,12 +86,7 @@ const LoginForm = () => {
 
 			<div className="text-stone-400 dark:text-neutral-600">OR</div>
 
-			<form
-				action={async (formData) => {
-					await handleFormSubmit(formData)
-				}}
-				className="w-full max-w-md"
-			>
+			<form onSubmit={handleFormSubmit} className="w-full max-w-md">
 				<div className="mb-4">
 					<label className="block text-stone-500 dark:text-neutral-400 font-medium text-sm mb-2">
 						Email

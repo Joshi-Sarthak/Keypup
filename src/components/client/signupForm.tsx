@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import googleSignin from "@/google/signin"
 import validator from "validator"
 import { FaGoogle } from "react-icons/fa"
+import { set } from "mongoose"
 
 const SignupForm = () => {
 	const [formData, setFormData] = useState({
@@ -25,30 +26,36 @@ const SignupForm = () => {
 
 	const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
+		setLoading(true)
 		const { username, email, password, confirmPassword } = formData
 
 		// Validate inputs
 		if (!username || !email || !password || !confirmPassword) {
 			console.log(formData)
 			setError("Please fill out all fields.")
+			setLoading(false)
 			return
 		}
 
 		if (password !== confirmPassword) {
 			setError("Passwords do not match.")
+			setLoading(false)
 			return
 		}
 
 		if (!otpVerified) {
 			setError("Please verify your OTP before signing up.")
+			setLoading(false)
 			return
 		}
 
 		if (!validator.isEmail(email)) {
 			return setError("Please enter a valid email address")
+			setLoading(false)
 		}
 
 		if (!validator.isStrongPassword(password)) {
+			setLoading(false)
 			return setError(
 				"Please enter a strong password,\n Password must contain atleast 1 uppercase alphabet, 1 lowercase alphabet,1 number and 1 special character"
 			)
@@ -59,14 +66,18 @@ const SignupForm = () => {
 			const signupError = await credentialsSignup(username, email, password)
 
 			if (signupError) {
+				setLoading(false)
 				setError(signupError)
 			} else {
+				setLoading(false)
 				router.push("/login")
 			}
 		} catch (err) {
+			setLoading(false)
 			setError("An unexpected error occurred. Please try again.")
 			console.error("Signup error:", err)
 		}
+		setLoading(false)
 	}
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,6 +143,12 @@ const SignupForm = () => {
 		}
 	}
 
+	const handleGoogleSignin = async () => {
+		setGoogleLoading(true)
+		await googleSignin()
+		setGoogleLoading(false)
+	}
+
 	return (
 		<div className="flex flex-col items-center mt-8 lg:mt-16 min-h-screen px-4">
 			<h2 className="text-3xl tracking-widest mb-4 text-stone-500 dark:text-neutral-500">
@@ -140,8 +157,9 @@ const SignupForm = () => {
 
 			<div className="flex justify-center w-full mb-4">
 				{" "}
-				<form action={googleSignin}>
+				<form>
 					<button
+						onClick={handleGoogleSignin}
 						className="w-full text-stone-500 py-2 px-4 sm:px-6 md:px-8 lg:px-12 rounded-2xl flex items-center justify-center tracking-wide font-medium bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 						type="submit"
 						disabled={googleLoading}
@@ -297,7 +315,15 @@ const SignupForm = () => {
 						type="submit"
 						className="text-stone-500 w-full mt-6 py-2 px-32 rounded-2xl flex justify-center items-center tracking-wide font-medium bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 					>
-						Sign Up
+						{loading ? (
+							<div className="w-full gap-x-2 flex justify-center items-center p-2">
+								<div className="w-2 bg-stone-200 animate-pulse h-2 rounded-full"></div>
+								<div className="w-2 animate-pulse h-2 bg-stone-400 rounded-full"></div>
+								<div className="w-2 h-2 animate-pulse bg-stone-600 rounded-full"></div>
+							</div>
+						) : (
+							"SignUp"
+						)}
 					</button>
 				</div>
 			</form>

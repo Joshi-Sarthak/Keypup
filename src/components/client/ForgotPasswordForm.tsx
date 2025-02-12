@@ -8,6 +8,7 @@ const ForgotPasswordForm = () => {
 	const [error, setError] = useState("")
 	const [OTPInputVisible, setOtpInputVisible] = useState(false)
 	const [otpVerified, setOtpVerified] = useState(false)
+	const [loading, setLoading] = useState(false)
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
@@ -105,11 +106,14 @@ const ForgotPasswordForm = () => {
 
 		if (!validator.isStrongPassword(password)) {
 			return setError(
-				"Please enter a strong password,\n Password must contain atleast 1 uppercase alphabet, 1 lowercase alphabet,1 number and 1 special character"
+				"Please enter a strong password.\nPassword must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character."
 			)
 		}
 
 		try {
+			setLoading(true) // Start loading
+			setError("") // Clear previous errors
+
 			const res = await fetch(`/api/auth/forgot-password`, {
 				method: "POST",
 				headers: {
@@ -121,14 +125,15 @@ const ForgotPasswordForm = () => {
 
 			const data = await res.json()
 			if (!res.ok) {
-				setError(data.msg || "Failed to update profile.")
+				setError(data.msg || "Failed to reset password.")
 			} else {
-				alert("Password Reset Successfull")
 				router.push("/login")
 			}
 		} catch (err) {
 			setError("An unexpected error occurred. Please try again.")
-			console.error("Signup error:", err)
+			console.error("Reset password error:", err)
+		} finally {
+			setLoading(false) // Stop loading
 		}
 	}
 
@@ -248,9 +253,24 @@ const ForgotPasswordForm = () => {
 				<div className="flex items-center justify-between">
 					<button
 						type="submit"
-						className="text-stone-500 w-full mt-6 py-2 px-24 lg:px-32 rounded-2xl flex justify-center items-center tracking-wide font-medium bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
+						disabled={loading}
+						className={`w-full mt-6 py-2 px-24 lg:px-32 rounded-2xl flex justify-center items-center tracking-wide font-medium bg-transparent border dark:border-stone-800 border-neutral-100 
+		${
+			loading
+				? "opacity-50 cursor-not-allowed"
+				: "hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
+		}
+	`}
 					>
-						Reset Password
+						{loading ? (
+							<div className="flex justify-center items-center p-2 space-x-2">
+								<div className="w-2 h-2 bg-stone-200 animate-pulse rounded-full"></div>
+								<div className="w-2 h-2 bg-stone-400 animate-pulse rounded-full"></div>
+								<div className="w-2 h-2 bg-stone-600 animate-pulse rounded-full"></div>
+							</div>
+						) : (
+							"Reset Password"
+						)}
 					</button>
 				</div>
 			</form>
