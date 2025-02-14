@@ -1,3 +1,6 @@
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic"; // ✅ Prevents Next.js from prerendering
+
 import { getUser } from "@/lib/getUser"
 import { connectToDatabase } from "@/lib/utils"
 import { User } from "@/models/userModel"

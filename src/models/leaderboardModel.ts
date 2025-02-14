@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import mongoose from "mongoose"
 
 const topResultSchema = new mongoose.Schema({

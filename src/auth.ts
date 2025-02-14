@@ -1,11 +1,12 @@
-import NextAuth, {AuthError, CredentialsSignin} from "next-auth"
+export const runtime = "nodejs"
+import NextAuth, { AuthError, CredentialsSignin } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
-import {User} from "./models/userModel"
-import {compare} from "bcryptjs"
-import {connectToDatabase} from "./lib/utils"
+import { User } from "./models/userModel"
+import { compare } from "bcryptjs"
+import { connectToDatabase } from "./lib/utils"
 
-export const {handlers, signIn, signOut, auth} = NextAuth({
+export const { handlers, signIn, signOut, auth } = NextAuth({
 	providers: [
 		GoogleProvider({
 			clientId: process.env.GOOGLE_CLIENT_ID,
@@ -34,21 +35,21 @@ export const {handlers, signIn, signOut, auth} = NextAuth({
 
 				await connectToDatabase()
 
-				const user = await User.findOne({email}).select("+password")
+				const user = await User.findOne({ email }).select("+password")
 
 				console.log(user)
 
-				if (!user) throw new CredentialsSignin({cause: "Invalid Credentials"})
+				if (!user) throw new CredentialsSignin({ cause: "Invalid Credentials" })
 
 				if (!user.password)
-					throw new CredentialsSignin({cause: "Invalid Credentials"})
+					throw new CredentialsSignin({ cause: "Invalid Credentials" })
 
 				const isMatch = await compare(password, user.password)
 
 				if (!isMatch)
-					throw new CredentialsSignin({cause: "Invalid Credentials"})
+					throw new CredentialsSignin({ cause: "Invalid Credentials" })
 
-				return {name: user.name, email: user.email, id: user._id}
+				return { name: user.name, email: user.email, id: user._id }
 			},
 		}),
 	],
@@ -56,16 +57,16 @@ export const {handlers, signIn, signOut, auth} = NextAuth({
 		signIn: "/login",
 	},
 	callbacks: {
-		signIn: async ({user, account}) => {
+		signIn: async ({ user, account }) => {
 			if (account?.provider === "google") {
 				try {
-					const {email, name, image, id} = user
+					const { email, name, image, id } = user
 					await connectToDatabase()
 					console.log("oo")
-					const alreadyUser = await User.findOne({email})
+					const alreadyUser = await User.findOne({ email })
 
 					if (!alreadyUser)
-						await User.create({email, name, image, googleId: id})
+						await User.create({ email, name, image, googleId: id })
 
 					return true
 				} catch (error) {

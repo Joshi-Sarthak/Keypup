@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation"
 import googleSignin from "@/google/signin"
 import validator from "validator"
 import { FaGoogle } from "react-icons/fa"
-import { set } from "mongoose"
 
 const SignupForm = () => {
 	const [formData, setFormData] = useState({

@@ -1,4 +1,4 @@
-"use server"
+export const runtime = "nodejs"
 
 import { connectToDatabase } from "@/lib/utils"
 import { User } from "@/models/userModel"

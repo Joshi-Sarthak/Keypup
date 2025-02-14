@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import {NextRequest, NextResponse} from "next/server"
 import {OTP} from "@/models/otpModels" 
 import { connectToDatabase } from "@/lib/utils"

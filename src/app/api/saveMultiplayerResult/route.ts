@@ -1,3 +1,5 @@
+export const runtime = "nodejs"
+
 import MultiplayerResults from "@/components/MultiplayerResult/MultiplayerResults"
 import { getUser } from "@/lib/getUser"
 import { connectToDatabase } from "@/lib/utils"

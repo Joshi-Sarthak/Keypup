@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import mongoose, {Schema} from "mongoose"
 
 interface OTP {

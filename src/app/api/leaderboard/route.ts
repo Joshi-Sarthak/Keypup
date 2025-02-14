@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { connectToDatabase } from "@/lib/utils"
 import { Leaderboard } from "@/models/leaderboardModel"
 import { NextRequest, NextResponse } from "next/server"

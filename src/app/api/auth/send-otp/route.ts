@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server"
 import otpGenerator from "otp-generator"
 import { OTP } from "@/models/otpModels" 

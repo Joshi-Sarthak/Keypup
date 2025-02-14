@@ -1,5 +1,7 @@
+export const runtime = "nodejs";
 import {signIn} from "next-auth/react"
 import {CredentialsSignin} from "next-auth"
+
 
 const credentialsLogin = async (email: string, password: string) => {
 	console.log(email)

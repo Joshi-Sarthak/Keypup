@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { getUser } from "@/lib/getUser"
 import { connectToDatabase } from "@/lib/utils"
 import { Leaderboard } from "@/models/leaderboardModel"
