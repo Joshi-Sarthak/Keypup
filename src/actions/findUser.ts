@@ -1,16 +1,18 @@
 "use server"
 
-import { connectToDatabase } from "@/lib/utils"
-import { User } from "@/models/userModel"
+import { prisma } from "@/lib/utils"
 
 export const findUser = async (email: string) => {
 	try {
-		await connectToDatabase()
-		const user = await User.findOne({ email })
+		// Find the user by email
+		const user = await prisma.user.findUnique({
+			where: { email },
+		})
+
 		console.log(user)
 		return user
-	} catch (e) {
-		console.log(e)
+	} catch (error) {
+		console.error("Error fetching user:", error)
 		return null
 	}
 }

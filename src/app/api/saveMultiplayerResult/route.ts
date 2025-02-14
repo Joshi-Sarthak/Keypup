@@ -1,8 +1,6 @@
 import MultiplayerResults from "@/components/MultiplayerResult/MultiplayerResults"
 import { getUser } from "@/lib/getUser"
-import { connectToDatabase } from "@/lib/utils"
-import { Leaderboard } from "@/models/leaderboardModel"
-import { User } from "@/models/userModel"
+import { prisma } from "@/lib/utils"
 import { User as Usertype } from "next-auth"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -20,14 +18,33 @@ interface PlayerResult {
 
 export async function POST(req: NextRequest) {
 	try {
-		await connectToDatabase()
+		const userData = await getUser()
+		const email = userData?.email ?? undefined
 
-		const { email } = (await getUser()) as Usertype
+		if (!email) {
+			return NextResponse.json(
+				{ error: "User email is required" },
+				{ status: 400 }
+			)
+		}
 
-		const user = await User.findOne({ email })
+		// Fetch user using Prisma
+		const user = await prisma.user.findUnique({
+			where: { email },
+			include: {
+				multiplayerResults: true, // Include this relation
+			},
+		})
 
 		if (!user) {
 			return NextResponse.json({ error: "User not found" }, { status: 404 })
+		}
+
+		if (!user.multiplayerResults) {
+			return NextResponse.json(
+				{ error: "User multiplayer results not found" },
+				{ status: 404 }
+			)
 		}
 
 		const { PlayerResult } = await req.json()
@@ -38,7 +55,7 @@ export async function POST(req: NextRequest) {
 
 		let emailTicked = false
 
-		PlayerResult.map((result: PlayerResult) => {
+		PlayerResult.map(async (result: PlayerResult) => {
 			if (result.email === email) {
 				console.log("result", result)
 				const wpm =
@@ -46,34 +63,83 @@ export async function POST(req: NextRequest) {
 
 				if (PlayerResult[0].email === email && emailTicked == false) {
 					console.log("result win ", result)
-					user.multiplayerResults.wins += 1
+					await prisma.user.update({
+						where: { email },
+						data: {
+							multiplayerResults: {
+								upsert: {
+									create: {
+										wins: 1, // If multiplayerResults doesn't exist, create it
+										losses: 0,
+										averageWPM: wpm, // Use the calculated wpm
+									},
+									update: {
+										wins: { increment: emailTicked ? 1 : 0 },
+										losses: { increment: emailTicked ? 0 : 1 },
+										averageWPM: Math.round(
+											((user.multiplayerResults?.averageWPM ||
+												0) *
+												(user.multiplayerResults?.wins || 0) +
+												wpm) /
+												((user.multiplayerResults?.wins || 0) +
+													(user.multiplayerResults?.losses ||
+														0) +
+													1)
+										),
+									},
+								},
+							},
+						},
+					})
+
 					emailTicked = true
 				} else {
 					console.log("losses", result)
-					user.multiplayerResults.losses += 1
+					await prisma.user.update({
+						where: { email },
+						data: {
+							multiplayerResults: {
+								update: {
+									wins: (user.multiplayerResults?.wins ?? 0) + 1, // Ensure it's incremented correctly
+									losses: user.multiplayerResults?.losses || 0,
+									averageWPM:
+										user.multiplayerResults?.averageWPM || 0,
+								},
+							},
+						},
+					})
 				}
 
-				user.multiplayerResults.averageWPM = parseFloat(
-					(
-						(user.multiplayerResults.averageWPM *
-							(user.multiplayerResults.wins +
-								user.multiplayerResults.losses) +
-							wpm) /
-						(user.multiplayerResults.wins +
-							user.multiplayerResults.losses +
-							1)
-					).toFixed(0)
-				)
+				await prisma.user.update({
+					where: { email },
+					data: {
+						multiplayerResults: {
+							upsert: {
+								create: {
+									wins: 1,
+									losses: 0,
+									averageWPM: wpm,
+								},
+								update: {
+									wins: { increment: emailTicked ? 1 : 0 },
+									losses: { increment: emailTicked ? 0 : 1 },
+									averageWPM: Math.round(
+										((user.multiplayerResults?.averageWPM || 0) *
+											(user.multiplayerResults?.wins || 0) +
+											wpm) /
+											((user.multiplayerResults?.wins || 0) +
+												(user.multiplayerResults?.losses || 0) +
+												1)
+									),
+								},
+							},
+						},
+					},
+				})
 
 				console.log("user.multiplayerWPM", user.multiplayerResults)
 			}
 		})
-
-		await User.findOneAndUpdate(
-			{ email },
-			{ $set: { multiplayerResults: user.multiplayerResults } },
-			{ new: true, runValidators: true }
-		)
 
 		return NextResponse.json(
 			{ message: "Result Saved successfully" },

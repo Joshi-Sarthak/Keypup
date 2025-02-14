@@ -1,13 +1,18 @@
 "use server"
 
-import {User} from "@/models/userModel"
+import { prisma } from "@/lib/utils"
 import { signOut } from "@/auth"
 
-const DeleteAccount = async (email:string) => {
+export const DeleteAccount = async (email: string) => {
+	try {
+		// Delete user from the database
+		await prisma.user.delete({
+			where: { email },
+		})
 
-	await User.findOneAndDelete({email})
-    await signOut()
-
+		// Sign the user out
+		await signOut()
+	} catch (error) {
+		console.error("Error deleting account:", error)
+	}
 }
-
-export {DeleteAccount}

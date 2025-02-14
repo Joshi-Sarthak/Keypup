@@ -1,17 +1,22 @@
 import { getUser } from "@/lib/getUser"
-import { connectToDatabase } from "@/lib/utils"
-import { Leaderboard } from "@/models/leaderboardModel"
-import { User } from "@/models/userModel"
+import { prisma } from "@/lib/utils"
 import { User as Usertype } from "next-auth"
 import { NextRequest, NextResponse } from "next/server"
+import { ObjectId } from "mongodb"
+import { SubType, Leaderboard } from "@prisma/client" // Import enums from Prisma
 
 export async function POST(req: NextRequest) {
 	try {
-		await connectToDatabase()
-
 		const { email } = (await getUser()) as Usertype
 
-		const user = await User.findOne({ email })
+		if (!email) {
+			return NextResponse.json({ error: "User email not found" }, { status: 400 })
+		}
+
+		const user = await prisma.user.findUnique({
+			where: { email },
+			include: { allResults: true, recentResult: true },
+		})
 
 		if (!user) {
 			return NextResponse.json({ error: "User not found" }, { status: 404 })
@@ -23,106 +28,159 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Invalid data" }, { status: 400 })
 		}
 
-		const defaultResults: { type: string; subType: string; wpm: number }[] = [
-			{ type: "quotes", subType: "small", wpm: 0 },
-			{ type: "quotes", subType: "medium", wpm: 0 },
-			{ type: "quotes", subType: "large", wpm: 0 },
-			{ type: "words", subType: "10", wpm: 0 },
-			{ type: "words", subType: "25", wpm: 0 },
-			{ type: "words", subType: "50", wpm: 0 },
-			{ type: "words", subType: "100", wpm: 0 },
-			{ type: "time", subType: "15", wpm: 0 },
-			{ type: "time", subType: "30", wpm: 0 },
-			{ type: "time", subType: "60", wpm: 0 },
-			{ type: "time", subType: "120", wpm: 0 },
-		]
-
-		if (user.allResults.length === 0) {
-			defaultResults.forEach(
-				(result: { type: string; subType: string; wpm: number }) => {
-					user.allResults.push(result)
-				}
-			)
+		// Enum mapping for SubType
+		const subTypeMapping: Record<string, SubType> = {
+			small: SubType.small,
+			medium: SubType.medium,
+			large: SubType.large,
+			"10": SubType.ten,
+			"25": SubType.twenty_five,
+			"50": SubType.fifty,
+			"100": SubType.hundred,
+			"15": SubType.fifteen,
+			"30": SubType.thirty,
+			"60": SubType.sixty,
+			"120": SubType.one_twenty,
 		}
 
-		const existingResultIndex = user.allResults.findIndex(
-			(result: { type: string; subType: string; wpm: number }) =>
-				result.type === type && result.subType === String(subType)
+		const validSubType = subTypeMapping[subType]
+		if (!validSubType) {
+			return NextResponse.json({ error: "Invalid subType" }, { status: 400 })
+		}
+
+		// Default Results Structure
+		const defaultResults = Object.entries(subTypeMapping).map(([key, value]) => ({
+			id: new ObjectId().toString(),
+			userId: user.id,
+			type: "default",
+			subType: value,
+			wpm: 0,
+		}))
+
+		// Handle allResults
+		let updatedAllResults =
+			user.allResults.length === 0 ? defaultResults : [...user.allResults]
+
+		const existingResultIndex = updatedAllResults.findIndex(
+			(result) => result.type === type && result.subType === validSubType
 		)
 
 		if (existingResultIndex !== -1) {
-			const existingResult = user.allResults[existingResultIndex]
+			const existingResult = updatedAllResults[existingResultIndex]
 			if (existingResult.wpm < wpm) {
-				existingResult.wpm = wpm
+				updatedAllResults[existingResultIndex].wpm = wpm
 			}
 		} else {
-			user.allResults.push({ type, subType: String(subType), wpm })
+			updatedAllResults.push({
+				id: new ObjectId().toString(),
+				userId: user.id,
+				type,
+				subType: validSubType,
+				wpm,
+			})
 		}
 
-		if (user.recentResult.length < 5) {
-			user.recentResult.unshift({ type, subType: String(subType), wpm })
-		} else {
-			user.recentResult.pop()
-			user.recentResult.unshift({ type, subType: String(subType), wpm })
-		}
+		// Handle recent results (only keep the last 5)
+		const updatedRecentResults = [
+			{
+				id: new ObjectId().toString(),
+				userId: user.id,
+				type,
+				subType: validSubType,
+				wpm,
+			},
+			...user.recentResult.slice(0, 4),
+		]
 
-		await User.findOneAndUpdate(
-			{ email },
-			{ $set: { allResults: user.allResults, recentResult: user.recentResult } },
-			{ new: true, runValidators: true }
-		)
+		// Update the user with Prisma-compatible nested updates
+		await prisma.user.update({
+			where: { email },
+			data: {
+				allResults: {
+					set: [],
+					create: updatedAllResults.map((r) => ({
+						id: r.id,
+						type: r.type,
+						subType: r.subType,
+						wpm: r.wpm,
+						userId: r.userId,
+					})),
+				},
+				recentResult: {
+					set: [],
+					create: updatedRecentResults.map((r) => ({
+						id: r.id,
+						type: r.type,
+						subType: r.subType,
+						wpm: r.wpm,
+						userId: r.userId,
+					})),
+				},
+			},
+		})
 
-		let leaderboard = await Leaderboard.findOne({
-			mode: type,
+		// Handle leaderboard
+		let leaderboard = await prisma.leaderboard.findFirst({
+			where: { mode: type },
+			include: { topResults: true },
 		})
 
 		if (!leaderboard) {
-			leaderboard = new Leaderboard({
-				mode: type,
-				topResults: [
-					{
-						playerName: user.name,
-						subType: String(subType),
-						email: user.email,
-						rawSpeed: Number(rawSpeed),
-						wpm: Number(wpm),
+			await prisma.leaderboard.create({
+				data: {
+					mode: type,
+					topResults: {
+						create: [
+							{
+								playerName: user.name,
+								subType: validSubType,
+								email: user.email,
+								rawSpeed: Number(rawSpeed),
+								wpm: Number(wpm),
+							},
+						],
 					},
-				],
+				},
 			})
-			console.log("new" + leaderboard)
-			await leaderboard.save()
 		} else {
-			const isEmailExist = leaderboard.topResults.some(
-				(result: { email: string }) => result.email === user.email
+			const existingIndex = leaderboard.topResults.findIndex(
+				(result) => result.email === user.email
 			)
 
-			if (isEmailExist) {
-				const index = leaderboard.topResults.findIndex(
-					(result: { email: String }) => result.email === user.email
-				)
-
-				if (leaderboard.topResults[index].wpm < Number(wpm)) {
-					leaderboard.topResults[index].wpm = Number(wpm)
-					console.log("updated" + leaderboard)
+			if (existingIndex !== -1) {
+				if (leaderboard.topResults[existingIndex].wpm < Number(wpm)) {
+					leaderboard.topResults[existingIndex].wpm = Number(wpm)
 				}
 			} else {
 				leaderboard.topResults.push({
+					id: new ObjectId().toString(), // Generate a unique ID
+					leaderboardId: leaderboard.id, // Ensure it is linked to the correct leaderboard
 					playerName: user.name,
-					subType: String(subType),
+					subType: validSubType,
 					rawSpeed: Number(rawSpeed),
 					email: user.email,
 					wpm: Number(wpm),
 				})
 			}
-			leaderboard.topResults.sort(
-				(a: { wpm: number }, b: { wpm: number }) => b.wpm - a.wpm
-			)
+
+			leaderboard.topResults.sort((a, b) => b.wpm - a.wpm)
 			leaderboard.topResults = leaderboard.topResults.slice(0, 10)
-			await Leaderboard.findOneAndUpdate(
-				{ mode: type },
-				{ $set: { topResults: leaderboard.topResults } },
-				{ new: true, runValidators: true, upsert: true }
-			)
+
+			await prisma.leaderboard.update({
+				where: { mode: type },
+				data: {
+					topResults: {
+						set: [],
+						create: leaderboard.topResults.map((r) => ({
+							playerName: r.playerName,
+							subType: r.subType,
+							email: r.email,
+							rawSpeed: r.rawSpeed,
+							wpm: r.wpm,
+						})),
+					},
+				},
+			})
 		}
 
 		return NextResponse.json(
@@ -130,6 +188,7 @@ export async function POST(req: NextRequest) {
 			{ status: 200 }
 		)
 	} catch (error) {
+		console.error(error)
 		return NextResponse.json({ error: "Failed to save Result" }, { status: 500 })
 	}
 }
