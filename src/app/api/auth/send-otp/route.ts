@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import otpGenerator from "otp-generator"
-import { prisma } from "@/lib/utils"
-import { sendMail } from "@/lib/sendMail"
+import { OTP } from "@/models/otpModels" 
+import { sendMail } from "@/lib/sendMail" 
+import { connectToDatabase } from "@/lib/utils"
 
 export async function POST(req: NextRequest) {
 	const { email } = await req.json()
@@ -10,7 +11,6 @@ export async function POST(req: NextRequest) {
 		return NextResponse.json({ error: "Email is required" }, { status: 400 })
 	}
 
-	// Generate a 6-digit numeric OTP
 	const otp = otpGenerator.generate(6, {
 		upperCaseAlphabets: false,
 		lowerCaseAlphabets: false,
@@ -21,12 +21,14 @@ export async function POST(req: NextRequest) {
 	expiry.setMinutes(expiry.getMinutes() + 10) // OTP expires in 10 minutes
 
 	try {
-		// Upsert OTP record in the database
-		await prisma.oTP.upsert({
-			where: { email }, // ✅ Correct way to use a unique field
-			update: { otp, expiry, attempts: 0 },
-			create: { email, otp, expiry, attempts: 0 },
-		})
+		// Create or update the OTP record in the database
+		await connectToDatabase()
+
+		await OTP.findOneAndUpdate(
+			{ email },
+			{ otp, expiry, attempts: 0 },
+			{ upsert: true, new: true }
+		)
 
 		// Send the OTP email
 		await sendMail(email, otp)

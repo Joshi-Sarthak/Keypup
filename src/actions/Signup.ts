@@ -1,33 +1,26 @@
 "use server"
-import { prisma } from "@/lib/utils"
-import { hash } from "bcryptjs"
+import {User} from "@/models/userModel"
+import {hash} from "bcryptjs"
+import { connectToDatabase } from "@/lib/utils"
 
-const credentialsSignup = async (name: string, email: string, password: string) => {
-	try {
-		// Check if the user already exists
-		const existingUser = await prisma.user.findUnique({
-			where: { email },
-		})
+const credentialsSignup = async (name:string,email: string, password: string) => {
 
-		if (existingUser) return "User already exists"
+    //connection db
+    await connectToDatabase()
 
-		// Hash the password
-		const hashedPassword = await hash(password, 10)
+    const user = await User.findOne({email})
 
-		// Create new user
-		await prisma.user.create({
-			data: {
-				name,
-				email,
-				password: hashedPassword,
-			},
-		})
+    if (user) return("User already exists")
 
-		return null
-	} catch (error) {
-		console.error("Error in credentialsSignup:", error)
-		return "An error occurred while signing up"
-	}
+    const hashedPassword = await hash(password, 10)
+
+    await User.create({
+        name,
+        email,
+        password: hashedPassword,
+    })
+
+    return null
 }
 
-export { credentialsSignup }
+export {credentialsSignup}

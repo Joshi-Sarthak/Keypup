@@ -1,7 +1,16 @@
-import { PrismaClient } from "@prisma/client"
+"use server"
+import mongoose from "mongoose"
 
-const globalForPrisma = global as unknown as { prisma?: PrismaClient }
+export const connectToDatabase = async () => {
+	try {
+		if (mongoose.connections && mongoose.connections[0].readyState) return
 
-export const prisma = globalForPrisma.prisma || new PrismaClient()
+		const {connection} = await mongoose.connect(process.env.MONGO_URL as string, {
+			dbName: "authjs",
+		})
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
+		console.log(`Connected to database: ${connection.host}`)
+	} catch (error) {
+		throw new Error(`Error connecting to database ${error}`)
+	}
+}

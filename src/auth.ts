@@ -1,44 +1,54 @@
-import NextAuth, { AuthError, CredentialsSignin } from "next-auth"
+import NextAuth, {AuthError, CredentialsSignin} from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { compare } from "bcryptjs"
-import { prisma } from "./lib/utils" // Ensure correct import
+import {User} from "./models/userModel"
+import {compare} from "bcryptjs"
+import {connectToDatabase} from "./lib/utils"
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const {handlers, signIn, signOut, auth} = NextAuth({
 	providers: [
 		GoogleProvider({
-			clientId: process.env.GOOGLE_CLIENT_ID!,
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+			clientId: process.env.GOOGLE_CLIENT_ID,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 		}),
 		CredentialsProvider({
 			name: "Credentials",
 			credentials: {
-				email: { label: "Email", type: "email" },
-				password: { label: "Password", type: "password" },
+				email: {
+					label: "Email",
+					type: "email",
+				},
+				password: {
+					label: "Password",
+					type: "password",
+				},
 			},
 			authorize: async (credentials) => {
-				const email = credentials?.email as string
-				const password = credentials?.password as string
+				const email = credentials.email as String | undefined
+				const password = credentials.password as string | undefined
 
-				if (!email || !password) {
-					throw new CredentialsSignin({ cause: "Please provide both email and password" })
-				}
+				if (!email || !password)
+					throw new CredentialsSignin({
+						cause: "Please provide both email and password",
+					})
 
-				const user = await prisma.user.findUnique({
-					where: { email },
-				})
+				await connectToDatabase()
 
-				if (!user || !user.password) {
-					throw new CredentialsSignin({ cause: "Invalid Credentials" })
-				}
+				const user = await User.findOne({email}).select("+password")
+
+				console.log(user)
+
+				if (!user) throw new CredentialsSignin({cause: "Invalid Credentials"})
+
+				if (!user.password)
+					throw new CredentialsSignin({cause: "Invalid Credentials"})
 
 				const isMatch = await compare(password, user.password)
 
-				if (!isMatch) {
-					throw new CredentialsSignin({ cause: "Invalid Credentials" })
-				}
+				if (!isMatch)
+					throw new CredentialsSignin({cause: "Invalid Credentials"})
 
-				return { id: user.id, name: user.name, email: user.email }
+				return {name: user.name, email: user.email, id: user._id}
 			},
 		}),
 	],
@@ -46,26 +56,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		signIn: "/login",
 	},
 	callbacks: {
-		signIn: async ({ user, account }) => {
+		signIn: async ({user, account}) => {
 			if (account?.provider === "google") {
 				try {
-					const { email, name, image, id } = user
+					const {email, name, image, id} = user
+					await connectToDatabase()
+					console.log("oo")
+					const alreadyUser = await User.findOne({email})
 
-					const alreadyUser = await prisma.user.findUnique({ where: { email: email! } })
-
-					if (!alreadyUser) {
-						await prisma.user.create({
-							data: { email: email!, name: name!, image: image!, googleId: id! },
-						})
-					}
+					if (!alreadyUser)
+						await User.create({email, name, image, googleId: id})
 
 					return true
 				} catch (error) {
 					throw new AuthError("Error while creating user")
 				}
-			} else if (account?.provider === "credentials") {
-				return true
-			}
+			} else if (account?.provider === "credentials") return true
 			return false
 		},
 	},
