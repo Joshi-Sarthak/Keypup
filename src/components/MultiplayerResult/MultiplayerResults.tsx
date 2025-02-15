@@ -41,7 +41,6 @@ export default function MultiplayerResults({ email }: { email: string }) {
 		socket.emit("endGame", mode, subType, correctChars, rawChars, totalTime)
 
 		socket.on("gameResults", (gameResults: PlayerResult[]) => {
-			console.log("gameResults", gameResults)
 			// Sort results by WPM in descending order
 			const sortedResults = [...gameResults].sort(
 				(a, b) =>
@@ -71,7 +70,6 @@ export default function MultiplayerResults({ email }: { email: string }) {
 				}
 			}
 
-			console.log("sortedResults", sortedResults)
 			setResults(sortedResults)
 			saveMultiplayerResult()
 		})

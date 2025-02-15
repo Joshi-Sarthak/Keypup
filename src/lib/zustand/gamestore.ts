@@ -22,7 +22,7 @@ export const useGamesStore = create<gamesStore>((set, get) => ({
 	quotes: false,
 	words: false,
 	time: true,
-	totalWords: 50,
+	totalWords: 800,
 	totalTime: 15,
 	quotesType: null,
 
@@ -48,7 +48,7 @@ export const useGamesStore = create<gamesStore>((set, get) => ({
 		set({
 			time,
 			totalTime,
-			totalWords: 100,
+			totalWords: 800,
 			words: false,
 			quotes: false,
 			quotesType: null,

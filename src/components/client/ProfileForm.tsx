@@ -40,7 +40,6 @@ const ProfileForm = ({ email }: { email: string }) => {
 			}
 
 			const user = await res.json()
-			console.log(user)
 			setUser({ name: user.name, email: userData.email as string })
 		} catch (err) {
 			console.error("Error fetching user data:", err)
@@ -107,7 +106,6 @@ const ProfileForm = ({ email }: { email: string }) => {
 			if (!res.ok) {
 				setError(data.msg || "Failed to update profile.")
 			} else {
-				console.log(formData, data.name)
 				if (!formData.username && !formData.password) {
 					setError("No change in profile were made")
 					return
@@ -118,7 +116,7 @@ const ProfileForm = ({ email }: { email: string }) => {
 							formData.password,
 							data.password
 						)
-						console.log(match)
+
 						if (match) {
 							setError("New password cannot be same as old password")
 							return
@@ -151,7 +149,6 @@ const ProfileForm = ({ email }: { email: string }) => {
 				setError(data.msg || "Failed to update profile.")
 			} else {
 				setSuccess(true)
-				console.log("Profile updated successfully")
 				getUserData()
 			}
 		} catch (err) {

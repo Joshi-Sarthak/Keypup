@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 	try {
 		await connectToDatabase()
 		const otpRecord = await OTP.findOne({email})
-		console.log(email)
+		
 
 		if (!otpRecord) {
 			return NextResponse.json(

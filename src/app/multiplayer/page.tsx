@@ -11,7 +11,7 @@ const Page = async () => {
 	const email = session.user.email ?? ""
 	const { name } = await findUser(email as string)
 
-	return <Room name={name} email={email}/>
+	return <Room name={name} email={email} />
 }
 
 export default Page

@@ -1,9 +1,8 @@
 export const runtime = "nodejs"
 
-import MultiplayerResults from "@/components/MultiplayerResult/MultiplayerResults"
+
 import { getUser } from "@/lib/getUser"
 import { connectToDatabase } from "@/lib/utils"
-import { Leaderboard } from "@/models/leaderboardModel"
 import { User } from "@/models/userModel"
 import { User as Usertype } from "next-auth"
 import { NextRequest, NextResponse } from "next/server"
@@ -42,16 +41,16 @@ export async function POST(req: NextRequest) {
 
 		PlayerResult.map((result: PlayerResult) => {
 			if (result.email === email) {
-				console.log("result", result)
+				
 				const wpm =
 					Math.round(result.correctChars * 60) / (5 * result.totalTime)
 
 				if (PlayerResult[0].email === email && emailTicked == false) {
-					console.log("result win ", result)
+					
 					user.multiplayerResults.wins += 1
 					emailTicked = true
 				} else {
-					console.log("losses", result)
+					
 					user.multiplayerResults.losses += 1
 				}
 
@@ -67,7 +66,7 @@ export async function POST(req: NextRequest) {
 					).toFixed(0)
 				)
 
-				console.log("user.multiplayerWPM", user.multiplayerResults)
+				
 			}
 		})
 

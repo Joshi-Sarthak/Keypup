@@ -49,11 +49,6 @@ const handleBackspace = (
 	} else if (currWordIndex > 0) {
 		// Handle backspace at the beginning of a word
 
-		console.log(
-			useTestStore.getState().initialWords[currWordIndex - 1],
-			useTestStore.getState().typedWords[currWordIndex - 1]
-		)
-
 		useTestStore.setState((state) => ({
 			correctChars: state.correctChars - 1,
 			rawChars: state.rawChars - 1,

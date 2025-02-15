@@ -30,4 +30,4 @@ The Keypup Team
 	await transporter.sendMail(mailOptions)
 }
 
-export {sendMail}
+export { sendMail }

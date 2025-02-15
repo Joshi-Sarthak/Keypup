@@ -33,7 +33,6 @@ function Room({ name, email }: { name: string; email: string }) {
 			socket.emit("create_room", GenroomCode, name, email)
 			router.push(`/multiplayer/${GenroomCode}`)
 		} else {
-			console.log("Already connected!")
 			socket.disconnect()
 			socket.connect()
 			const GenroomCode = generateRoomCode()

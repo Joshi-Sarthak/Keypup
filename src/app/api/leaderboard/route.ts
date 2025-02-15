@@ -29,7 +29,6 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    console.log(allTopResults)
     return NextResponse.json(allTopResults, { status: 200 })
   } catch (error) {
     console.error(error)

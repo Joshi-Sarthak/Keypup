@@ -4,7 +4,7 @@ import {CredentialsSignin} from "next-auth"
 
 
 const credentialsLogin = async (email: string, password: string) => {
-	console.log(email)
+	
 	try {
 		const res = await signIn("credentials", {
 			email,

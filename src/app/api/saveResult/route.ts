@@ -1,4 +1,4 @@
-export const runtime = "nodejs";
+export const runtime = "nodejs"
 
 import { getUser } from "@/lib/getUser"
 import { connectToDatabase } from "@/lib/utils"
@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
 					},
 				],
 			})
-			console.log("new" + leaderboard)
+
 			await leaderboard.save()
 		} else {
 			const isEmailExist = leaderboard.topResults.some(
@@ -105,7 +105,6 @@ export async function POST(req: NextRequest) {
 
 				if (leaderboard.topResults[index].wpm < Number(wpm)) {
 					leaderboard.topResults[index].wpm = Number(wpm)
-					console.log("updated" + leaderboard)
 				}
 			} else {
 				leaderboard.topResults.push({

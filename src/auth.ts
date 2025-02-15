@@ -37,8 +37,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 				const user = await User.findOne({ email }).select("+password")
 
-				console.log(user)
-
 				if (!user) throw new CredentialsSignin({ cause: "Invalid Credentials" })
 
 				if (!user.password)
@@ -62,7 +60,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				try {
 					const { email, name, image, id } = user
 					await connectToDatabase()
-					console.log("oo")
+
 					const alreadyUser = await User.findOne({ email })
 
 					if (!alreadyUser)

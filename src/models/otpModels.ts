@@ -1,6 +1,6 @@
-export const runtime = "nodejs";
+export const runtime = "nodejs"
 
-import mongoose, {Schema} from "mongoose"
+import mongoose, { Schema } from "mongoose"
 
 interface OTP {
 	otp: string

@@ -1,5 +1,5 @@
 "use server"
-import {auth} from "@/auth"
+import { auth } from "@/auth"
 
 export const getUser = async () => {
 	try {

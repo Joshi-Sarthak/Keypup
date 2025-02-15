@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 import React, { use, useEffect, useRef, useState } from "react"
 import { useTestStore } from "@/lib/zustand/teststore"
@@ -59,7 +60,6 @@ function Main() {
 			useMultiplayerstore.getState().isMultiplayer &&
 			useMultiplayerstore.getState().isHost
 		) {
-			console.log(useTestStore.getState().initialWords)
 			socket.emit("startGame", useTestStore.getState().initialWords)
 		} else if (
 			useMultiplayerstore.getState().isMultiplayer &&
@@ -166,7 +166,7 @@ function Main() {
 		} else if (quotes) {
 			seedQuotes(quoteType)
 		} else {
-			seedWords(100)
+			seedWords(800)
 		}
 	}, [quoteType, quotes, seedQuotes, seedWords, totalWords, words])
 

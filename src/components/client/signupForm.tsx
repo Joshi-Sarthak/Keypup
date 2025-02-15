@@ -31,7 +31,6 @@ const SignupForm = () => {
 
 		// Validate inputs
 		if (!username || !email || !password || !confirmPassword) {
-			console.log(formData)
 			setError("Please fill out all fields.")
 			setLoading(false)
 			return

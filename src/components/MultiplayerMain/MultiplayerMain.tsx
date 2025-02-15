@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 import React, { use, useEffect, useRef, useState } from "react"
 import { useTestStore } from "@/lib/zustand/teststore"
@@ -87,7 +88,7 @@ function MultiplayerMain() {
 						useTimeStore.getState().decrementTime()
 					} else {
 						clearInterval(interval!)
-						console.log("lloopp")
+
 						useMultiplayerstore.getState().setisInGame(false)
 						useMultiplayerstore.getState().setisInResult(true)
 					}
@@ -125,8 +126,6 @@ function MultiplayerMain() {
 							useTestStore.getState().currWord.length &&
 						useTestStore.getState().typedWord ===
 							useTestStore.getState().currWord
-
-					console.log(isTestComplete)
 
 					if (isTestComplete) {
 						if (
@@ -171,7 +170,7 @@ function MultiplayerMain() {
 			} else if (quotes) {
 				seedQuotes(quoteType)
 			} else {
-				seedWords(100)
+				seedWords(800)
 			}
 		}
 	}, [quoteType, quotes, seedQuotes, seedWords, totalWords, words])

@@ -13,8 +13,8 @@ type testStore = {
 	typedWord: string
 	currWordIndex: number
 	correctChars: number
-	setInitialWords : (initialWords:string[]) => void
-	setCurrWord : (currWord:string) => void
+	setInitialWords: (initialWords: string[]) => void
+	setCurrWord: (currWord: string) => void
 	seedWords: (totalWords: number) => void
 	seedQuotes: (quoteType: quote) => void
 	setChar: (typedWordandChar: string) => void
@@ -47,14 +47,13 @@ export const useTestStore = create<testStore>((set) => ({
 	missingLetters: 0,
 	correctLetters: 0,
 
-	setCurrWord:((currWord:string)=>{
-		set({currWord})
-	}),
+	setCurrWord: (currWord: string) => {
+		set({ currWord })
+	},
 
 	setInitialWords: (initialWords: string[]) => {
-		set({ initialWords }); 
+		set({ initialWords })
 	},
-	
 
 	setLoadResult: (loadResult) => {
 		set({ loadResult })
@@ -77,7 +76,7 @@ export const useTestStore = create<testStore>((set) => ({
 		while (!selectedQuote) {
 			const index = Math.floor(Math.random() * quotesData.quotes.length)
 			const quote = quotesData.quotes[index]
-			const length = quote.text.length 
+			const length = quote.text.length
 
 			if (quoteType === "small" && length <= 100) {
 				selectedQuote = quote

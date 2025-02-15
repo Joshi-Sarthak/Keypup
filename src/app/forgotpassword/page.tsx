@@ -1,9 +1,8 @@
-import React from 'react'
-import { ForgotPasswordForm } from '@/components/client/ForgotPasswordForm'
+import React from "react"
+import { ForgotPasswordForm } from "@/components/client/ForgotPasswordForm"
 
 const Page = async () => {
-
-	return <ForgotPasswordForm/>
+	return <ForgotPasswordForm />
 }
 
 export default Page

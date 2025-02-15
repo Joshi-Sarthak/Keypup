@@ -11,7 +11,6 @@ const Page = async () => {
 
 	const email = session?.user.email
 	const user = await findUser(email as string)
-	console.log(user)
 
 	const {
 		multiplayerResults,
