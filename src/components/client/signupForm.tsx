@@ -18,6 +18,7 @@ const SignupForm = () => {
 	})
 	const [error, setError] = useState("")
 	const [OTPInputVisible, setOtpInputVisible] = useState(false)
+	const [otpLoading, setOtpLoading] = useState(false)
 	const [otpVerified, setOtpVerified] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [googleLoading, setGoogleLoading] = useState(false)
@@ -90,8 +91,10 @@ const SignupForm = () => {
 	}
 
 	const sendOtp = async () => {
+		setOtpLoading(true)
 		setError("") // Clear previous errors
 		if (!validator.isEmail(formData.email)) {
+			setOtpLoading(false)
 			return setError("Please enter a valid email address")
 		}
 		try {
@@ -107,17 +110,22 @@ const SignupForm = () => {
 			const data = await res.json()
 
 			if (!res.ok) {
+				setOtpLoading(false)
 				setError(data.msg || "Failed to send OTP, please try again.")
 			} else {
+				setOtpLoading(false)
 				setOtpInputVisible(true)
 			}
 		} catch (err) {
+			setOtpLoading(false)
 			setError("Failed to send OTP, please try again.")
 			console.error("OTP send error:", err)
 		}
 	}
 
 	const verifyOtp = async () => {
+		setLoading(true)
+		setOtpLoading(true)
 		setError("") // Clear previous errors
 		try {
 			const res = await fetch(`/api/auth/verify-otp`, {
@@ -132,11 +140,15 @@ const SignupForm = () => {
 			const data = await res.json()
 
 			if (!res.ok) {
+				setLoading(false)
+				setOtpLoading(false)
 				setError(data.msg || "Incorrect OTP, please try again.")
 			} else {
 				setOtpVerified(true)
 			}
 		} catch (err) {
+			setLoading(false)
+			setOtpLoading(false)
 			setError("Incorrect OTP, please try again.")
 			console.error("OTP verification error:", err)
 		}
@@ -226,7 +238,15 @@ const SignupForm = () => {
 							onClick={sendOtp}
 							className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-cente bg-transparent text-stone-500 dark:text-neutral-400 font-thin h-[calc(100%)] px-4 hover:text-stone-800 hover:dark:text-neutral-100 hover:bg-neutral-400 hover:dark:bg-neutral-700 hover:rounded-r-2xl transition-all duration-200"
 						>
-							Send OTP
+							{otpLoading ? (
+								<div className="flex justify-center items-center p-2 space-x-2">
+									<div className="w-2 h-2 bg-stone-200 animate-pulse rounded-full"></div>
+									<div className="w-2 h-2 bg-stone-400 animate-pulse rounded-full"></div>
+									<div className="w-2 h-2 bg-stone-600 animate-pulse rounded-full"></div>
+								</div>
+							) : (
+								"Send OTP"
+							)}
 						</button>
 					</div>
 				</div>
@@ -261,7 +281,15 @@ const SignupForm = () => {
 									onClick={verifyOtp}
 									className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-cente bg-transparent text-stone-500 dark:text-neutral-400 font-thin h-[calc(100%)] px-4 hover:text-stone-800 hover:dark:text-neutral-100 hover:bg-neutral-400 hover:dark:bg-neutral-700 hover:rounded-r-2xl transition-all duration-200"
 								>
-									Verify OTP
+									{otpLoading ? (
+										<div className="flex justify-center items-center p-2 space-x-2">
+											<div className="w-2 h-2 bg-stone-200 animate-pulse rounded-full"></div>
+											<div className="w-2 h-2 bg-stone-400 animate-pulse rounded-full"></div>
+											<div className="w-2 h-2 bg-stone-600 animate-pulse rounded-full"></div>
+										</div>
+									) : (
+										"Verify OTP"
+									)}
 								</button>
 							</div>
 						</div>

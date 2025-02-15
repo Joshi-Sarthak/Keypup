@@ -9,6 +9,7 @@ const ForgotPasswordForm = () => {
 	const [OTPInputVisible, setOtpInputVisible] = useState(false)
 	const [otpVerified, setOtpVerified] = useState(false)
 	const [loading, setLoading] = useState(false)
+	const [otpLoading, setOTPLoading] = useState(false)
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
@@ -28,8 +29,10 @@ const ForgotPasswordForm = () => {
 	}
 
 	const sendOtp = async () => {
+		setOTPLoading(true)
 		setError("") // Clear previous errors
 		if (!validator.isEmail(formData.email)) {
+			setOTPLoading(false)
 			return setError("Please enter a valid email address")
 		}
 		try {
@@ -45,17 +48,22 @@ const ForgotPasswordForm = () => {
 			const data = await res.json()
 
 			if (!res.ok) {
+				setOTPLoading(false)
 				setError(data.msg || "Failed to send OTP, please try again.")
 			} else {
+				setOTPLoading(false)
 				setOtpInputVisible(true)
 			}
 		} catch (err) {
+			setOTPLoading(false)
 			setError("Failed to send OTP, please try again.")
 			console.error("OTP send error:", err)
 		}
 	}
 
 	const verifyOtp = async () => {
+		setLoading(true)
+		setOTPLoading(true)
 		setError("") // Clear previous errors
 		try {
 			const res = await fetch(`/api/auth/verify-otp`, {
@@ -70,11 +78,17 @@ const ForgotPasswordForm = () => {
 			const data = await res.json()
 
 			if (!res.ok) {
+				setLoading(false)
+				setOTPLoading(false)
 				setError(data.msg || "Incorrect OTP, please try again.")
 			} else {
+				setLoading(false)
+				setOTPLoading(false)
 				setOtpVerified(true)
 			}
 		} catch (err) {
+			setLoading(false)
+			setOTPLoading(false)
 			setError("Incorrect OTP, please try again.")
 			console.error("OTP verification error:", err)
 		}
@@ -168,7 +182,15 @@ const ForgotPasswordForm = () => {
 							onClick={sendOtp}
 							className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-cente bg-transparent text-stone-500 dark:text-neutral-400 font-thin h-[calc(100%)] px-4 hover:text-stone-800 hover:dark:text-neutral-100 hover:bg-neutral-400 hover:dark:bg-neutral-700 hover:rounded-r-2xl transition-all duration-200"
 						>
-							Send OTP
+							{otpLoading ? (
+								<div className="flex justify-center items-center p-2 space-x-2">
+									<div className="w-2 h-2 bg-stone-200 animate-pulse rounded-full"></div>
+									<div className="w-2 h-2 bg-stone-400 animate-pulse rounded-full"></div>
+									<div className="w-2 h-2 bg-stone-600 animate-pulse rounded-full"></div>
+								</div>
+							) : (
+								"Send OTP"
+							)}
 						</button>
 					</div>
 				</div>
@@ -203,7 +225,15 @@ const ForgotPasswordForm = () => {
 									onClick={verifyOtp}
 									className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-cente bg-transparent text-stone-500 dark:text-neutral-400 font-thin h-[calc(100%)] px-4 hover:text-stone-800 hover:dark:text-neutral-100 hover:bg-neutral-400 hover:dark:bg-neutral-700 hover:rounded-r-2xl transition-all duration-200"
 								>
-									Verify OTP
+									{otpLoading ? (
+										<div className="flex justify-center items-center p-2 space-x-2">
+											<div className="w-2 h-2 bg-stone-200 animate-pulse rounded-full"></div>
+											<div className="w-2 h-2 bg-stone-400 animate-pulse rounded-full"></div>
+											<div className="w-2 h-2 bg-stone-600 animate-pulse rounded-full"></div>
+										</div>
+									) : (
+										"Verify OTP"
+									)}
 								</button>
 							</div>
 						</div>
