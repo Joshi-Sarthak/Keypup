@@ -1,6 +1,5 @@
 export const runtime = "nodejs"
 
-
 import { getUser } from "@/lib/getUser"
 import { connectToDatabase } from "@/lib/utils"
 import { User } from "@/models/userModel"
@@ -41,32 +40,25 @@ export async function POST(req: NextRequest) {
 
 		PlayerResult.map((result: PlayerResult) => {
 			if (result.email === email) {
-				
 				const wpm =
 					Math.round(result.correctChars * 60) / (5 * result.totalTime)
 
-				if (PlayerResult[0].email === email && emailTicked == false) {
-					
-					user.multiplayerResults.wins += 1
-					emailTicked = true
-				} else {
-					
-					user.multiplayerResults.losses += 1
-				}
-
-				user.multiplayerResults.averageWPM = parseFloat(
-					(
-						(user.multiplayerResults.averageWPM *
-							(user.multiplayerResults.wins +
-								user.multiplayerResults.losses) +
-							wpm) /
+				user.multiplayerResults.averageWPM = Math.round(
+					(user.multiplayerResults.averageWPM *
+						(user.multiplayerResults.wins +
+							user.multiplayerResults.losses) +
+						wpm) /
 						(user.multiplayerResults.wins +
 							user.multiplayerResults.losses +
 							1)
-					).toFixed(0)
 				)
 
-				
+				if (PlayerResult[0].email === email && emailTicked === false) {
+					user.multiplayerResults.wins += 1
+					emailTicked = true
+				} else {
+					user.multiplayerResults.losses += 1
+				}
 			}
 		})
 
