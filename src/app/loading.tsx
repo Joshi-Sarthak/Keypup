@@ -15,7 +15,6 @@ function loading() {
 			>
 				<Image src={Logo} alt="Logo" width={75} height={75} />
 			</motion.div>
-			<div className="text-stone-500 dark:text-neutral-400 mt-2">Loading</div>
 		</div>
 	)
 }
