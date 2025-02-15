@@ -97,6 +97,7 @@ function Navbar() {
 								useTimeStore.getState().setTime(0)
 								useTestStore.getState().reset()
 								useMultiplayerstore.getState().setisMultiplayer(true)
+								localStorage.removeItem("resultsSaved")
 							}}
 							className="group ml-0 md:ml-4 flex items-center transition-all duration-200 mb-4 md:mb-0"
 						>

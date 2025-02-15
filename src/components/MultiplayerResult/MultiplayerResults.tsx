@@ -1,10 +1,5 @@
-"use client"
-
 import React, { useEffect, useState } from "react"
 import { PiMedalFill } from "react-icons/pi"
-import { FaA } from "react-icons/fa6"
-import { FaRegClock } from "react-icons/fa"
-import { BiSolidQuoteAltLeft } from "react-icons/bi"
 import { socket } from "@/lib/sockets"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
 import { useTestStore } from "@/lib/zustand/teststore"
@@ -23,64 +18,56 @@ interface PlayerResult {
 }
 
 export default function MultiplayerResults({ email }: { email: string }) {
-	let totalTime = 0
-	if (!useGamesStore.getState().time) {
-		totalTime = useTimeStore.getState().timer || 1
-	} else {
-		totalTime = useGamesStore.getState().totalTime || 1
-	}
+	let totalTime = useGamesStore.getState().time
+		? useGamesStore.getState().totalTime || 1
+		: useTimeStore.getState().timer || 1
 
 	const mode = useMultiplayerstore((state) => state.mode)
 	const subType = useMultiplayerstore((state) => state.subType)
 	const correctChars = useTestStore((state) => state.correctChars)
 	const rawChars = useTestStore((state) => state.rawChars)
 	const [results, setResults] = useState<PlayerResult[]>([])
-	const [selectedMode, setSelectedMode] = useState<string>("words")
 
 	useEffect(() => {
 		socket.emit("endGame", mode, subType, correctChars, rawChars, totalTime)
 
 		socket.on("gameResults", (gameResults: PlayerResult[]) => {
-			// Sort results by WPM in descending order
 			const sortedResults = [...gameResults].sort(
 				(a, b) =>
 					Math.round((b.correctChars * 60) / (5 * b.totalTime)) -
 					Math.round((a.correctChars * 60) / (5 * a.totalTime))
 			)
 
-			const saveMultiplayerResult = async () => {
-				try {
-					const res = await fetch(`/api/saveMultiplayerResult`, {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({
-							PlayerResult: sortedResults,
-						}),
-						credentials: "include",
-					})
-
-					const data = await res.json()
-					if (!res.ok) {
-						console.log("Failed to save result", data)
-					}
-				} catch (err) {
-					console.error("Result error:", err)
-				}
-			}
-
 			setResults(sortedResults)
-			saveMultiplayerResult()
+
+			// Save results only if not already saved in this session
+			console.log(localStorage.getItem("resultsSaved"))
+			if (!localStorage.getItem("resultsSaved")) {
+				console.log("Saving results")
+				localStorage.setItem("resultsSaved", "true")
+				saveMultiplayerResult(sortedResults)
+			}
 		})
 
 		return () => {
-			socket.off("endGameResults")
+			socket.off("gameResults")
 		}
 	}, [])
 
-	//const overallWPM = Math.round((correctChars * 60) / (5 * totalTime))
-	//const rawWPM = Math.round((rawChars * 60) / (5 * totalTime))
+	const saveMultiplayerResult = async (sortedResults: PlayerResult[]) => {
+		try {
+			const res = await fetch(`/api/saveMultiplayerResult`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ PlayerResult: sortedResults }),
+				credentials: "include",
+			})
+			const data = await res.json()
+			if (!res.ok) console.log("Failed to save result", data)
+		} catch (err) {
+			console.error("Result error:", err)
+		}
+	}
 
 	return (
 		<div className="flex flex-col items-center w-full mt-3">
@@ -95,9 +82,7 @@ export default function MultiplayerResults({ email }: { email: string }) {
 			) : (
 				<div className="w-full md:w-4/5 lg:w-3/4 flex justify-center px-4 sm:px-6">
 					<div className="w-full flex flex-col">
-						<div
-							className={`w-full border border-stone-300 dark:border-neutral-600 rounded-xl sm:rounded-3xl py-1 px-2 sm:px-4 bg-white dark:bg-[#242120]`}
-						>
+						<div className="w-full border border-stone-300 dark:border-neutral-600 rounded-xl sm:rounded-3xl py-1 px-2 sm:px-4 bg-white dark:bg-[#242120]">
 							{/* Table Header */}
 							<div className="grid grid-cols-4 text-sm sm:text-lg font-medium pt-1 pb-3 border-b border-stone-200 dark:border-neutral-700 text-center bg-white dark:bg-[#242120] text-purple-600">
 								<span className="px-1 sm:px-2">Rank</span>
@@ -116,11 +101,11 @@ export default function MultiplayerResults({ email }: { email: string }) {
 									}`}
 								>
 									<span className="flex justify-center items-center">
-										{idx == 0 ? (
+										{idx === 0 ? (
 											<PiMedalFill className="text-yellow-400 w-5 h-5" />
-										) : idx == 1 ? (
+										) : idx === 1 ? (
 											<PiMedalFill className="text-gray-300 w-5 h-5" />
-										) : idx == 2 ? (
+										) : idx === 2 ? (
 											<PiMedalFill className="text-[#CD7F32] w-5 h-5" />
 										) : (
 											idx + 1

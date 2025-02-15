@@ -47,6 +47,7 @@ function Room({ name, email }: { name: string; email: string }) {
 	}
 
 	function handleJoinRoom() {
+		useMultiplayerstore.getState().setisHost(false)
 		if (!socket.connected) {
 			socket.connect()
 			useMultiplayerstore.getState().setisInWaitingRoom(true)
