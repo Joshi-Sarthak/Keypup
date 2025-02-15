@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { credentialsSignup } from "@/actions/Signup"
+import { credentialsSignup } from "@/actions/signup"
 import { useRouter } from "next/navigation"
 import googleSignin from "@/google/signin"
 import validator from "validator"

@@ -1,4 +1,4 @@
-export const runtime = "nodejs";
+export const runtime = "nodejs"
 
 import mongoose from "mongoose"
 
@@ -29,14 +29,13 @@ const userSchema = new mongoose.Schema({
 		default: [],
 	},
 	multiplayerResults: {
-		type: 
-			{
-				wins: { type: Number, required: true },
-				losses: { type: Number, required: true },
-				averageWPM: { type: Number, required: true },
-			},
-		default: {wins:0,losses:0,averageWPM:0},
+		type: {
+			wins: { type: Number, required: true },
+			losses: { type: Number, required: true },
+			averageWPM: { type: Number, required: true },
+		},
+		default: { wins: 0, losses: 0, averageWPM: 0 },
 	},
 })
 
-export const User = mongoose.models?.User || mongoose.model("User", userSchema)
+export const User = mongoose.models?.User || mongoose.model("User",userSchema)
