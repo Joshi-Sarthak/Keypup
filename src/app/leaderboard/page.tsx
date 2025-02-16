@@ -5,6 +5,7 @@ import { PiMedalFill } from "react-icons/pi"
 import { FaA } from "react-icons/fa6"
 import { FaRegClock } from "react-icons/fa"
 import { BiSolidQuoteAltLeft } from "react-icons/bi"
+import { socket } from "@/lib/sockets"
 
 interface TopResult {
 	playerName: string
@@ -21,6 +22,10 @@ interface LeaderboardMode {
 export default function Page() {
 	const [leaderboard, setLeaderboard] = useState<LeaderboardMode[]>([])
 	const [selectedMode, setSelectedMode] = useState<string>("words")
+
+	useEffect(() => {
+		socket.disconnect()
+	}, [])
 
 	useEffect(() => {
 		const fetchLeaderboard = async () => {

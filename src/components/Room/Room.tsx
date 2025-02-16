@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { socket } from "@/lib/sockets"
 import { useRouter } from "next/navigation"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
@@ -20,6 +20,10 @@ function Room({ name, email }: { name: string; email: string }) {
 		}
 		return result
 	}
+
+	useEffect(() => {
+		socket.disconnect()
+	}, [])
 
 	async function handleCreateRoom({ email }: { email: string }) {
 		if (!socket.connected) {

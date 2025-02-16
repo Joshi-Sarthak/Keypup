@@ -21,6 +21,7 @@ const Page = async () => {
 		recentResult: result[]
 		allResults: result[]
 	} = user
+	
 
 	return (
 		<div className="w-full flex flex-row max-lg:flex-col">

@@ -1,5 +1,6 @@
 import { multiplayerResults, result } from "@/lib/types/types"
-import React from "react"
+import React, { useEffect } from "react"
+import { socket } from "@/lib/sockets"
 
 interface ProfileComponentProps {
 	data: result[] | multiplayerResults
@@ -21,6 +22,9 @@ function findDetails(data: result[], toFind: string): number | null {
 }
 
 function ProfileComponent({ data, type, heading }: ProfileComponentProps) {
+	useEffect(() => {
+		socket.disconnect()
+	}, [])
 	return (
 		<div className="w-full">
 			<h2 className="text-2xl tracking-widest text-stone-500 dark:text-neutral-500 text-center mt-4 mb-2 max-lg:text-xl">

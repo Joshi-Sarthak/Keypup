@@ -56,6 +56,10 @@ function Main() {
 	}
 
 	useEffect(() => {
+		socket.disconnect()
+	}, [])
+
+	useEffect(() => {
 		useTimeStore.getState().setIsTestRecording(false)
 		if (time) {
 			let interval: NodeJS.Timeout | null = null
@@ -189,6 +193,8 @@ function Main() {
 			if (timeoutId.current) clearTimeout(timeoutId.current)
 		}
 	}, [])
+
+	
 
 	useEffect(() => {
 		if (cursorRef.current && activeWord.current && measureRef.current) {
