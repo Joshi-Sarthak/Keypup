@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react"
 import { PiMedalFill } from "react-icons/pi"
 import { socket } from "@/lib/sockets"
@@ -5,6 +6,8 @@ import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useTimeStore } from "@/lib/zustand/timestore"
 import { useGamesStore } from "@/lib/zustand/gamestore"
+import { VscDebugRestart } from "react-icons/vsc"
+import { useRouter } from "next/navigation"
 
 interface PlayerResult {
 	id: string
@@ -27,11 +30,31 @@ export default function MultiplayerResults({ email }: { email: string }) {
 	const correctChars = useTestStore((state) => state.correctChars)
 	const rawChars = useTestStore((state) => state.rawChars)
 	const [results, setResults] = useState<PlayerResult[]>([])
+	const reset = useTestStore((state) => state.reset)
+
+	const [isHovered, setIsHovered] = useState(false)
+	const [room, setRoom] = useState("")
+	const router = useRouter()
+
+	const Restart = () => {
+		useTimeStore.getState().setIsTimerRunning(false)
+		useTimeStore.getState().setTime(useGamesStore.getState().totalTime as number)
+		reset()
+		useTestStore.getState().setLoadResult(false)
+		useMultiplayerstore.setState({
+			inGame: false,
+			inResult: false,
+			inWaitingRoom: true,
+		})
+
+		router.push(`/multiplayer/${room}`)
+	}
 
 	useEffect(() => {
 		socket.emit("endGame", mode, subType, correctChars, rawChars, totalTime)
 
-		socket.on("gameResults", (gameResults: PlayerResult[]) => {
+		socket.on("gameResults", (gameResults: PlayerResult[], roomCode: string) => {
+			setRoom(roomCode)
 			const sortedResults = [...gameResults].sort(
 				(a, b) =>
 					Math.round((b.correctChars * 60) / (5 * b.totalTime)) -
@@ -126,6 +149,21 @@ export default function MultiplayerResults({ email }: { email: string }) {
 									</span>
 								</div>
 							))}
+						</div>
+						<VscDebugRestart
+							onClick={Restart}
+							onMouseEnter={() => setIsHovered(true)}
+							onMouseLeave={() => setIsHovered(false)}
+							className="w-8 h-8 text-stone-400 dark:text-neutral-600 hover:text-stone-500 hover:dark:text-neutral-500 transition-all duration-200 ease-in-out mx-auto mt-8"
+						/>
+						<div
+							className={`text-center text-xs tracking-widest text-stone-500 dark:text-neutral-500 transition-opacity duration-300 ease-in-out ${
+								isHovered
+									? "opacity-100"
+									: "opacity-0 pointer-events-none"
+							}`}
+						>
+							Restart Test
 						</div>
 					</div>
 				</div>

@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation"
 interface User {
 	id: string
 	name: string
+	email: string
 }
 
 function WaitingRoom({ id, name, email }: { id: string; name: string; email: string }) {
@@ -27,6 +28,12 @@ function WaitingRoom({ id, name, email }: { id: string; name: string; email: str
 
 		// Handle users in the room
 		const handleRoomUsers = (data: User[]) => {
+			console.log(data[0].email, email)
+
+			if (data[0].email == email) {
+				useMultiplayerstore.setState({ isHost: true })
+			}
+
 			setUsers(data) // Update users directly
 		}
 
