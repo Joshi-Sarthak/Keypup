@@ -37,7 +37,7 @@ function WaitingRoom({ id, name, email }: { id: string; name: string; email: str
 				console.log("Host")
 			}
 
-			setUsers(data) // Update users directly
+			setUsers(data) 
 		}
 
 		socket.on("room_users", handleRoomUsers)

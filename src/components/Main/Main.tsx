@@ -56,23 +56,6 @@ function Main() {
 	}
 
 	useEffect(() => {
-		if (
-			useMultiplayerstore.getState().isMultiplayer &&
-			useMultiplayerstore.getState().isHost
-		) {
-			socket.emit("startGame", useTestStore.getState().initialWords)
-		} else if (
-			useMultiplayerstore.getState().isMultiplayer &&
-			!useMultiplayerstore.getState().isHost
-		) {
-			useTestStore
-				.getState()
-				.setInitialWords(useMultiplayerstore.getState().initialWords)
-			useTestStore.getState().setCurrWord(useTestStore.getState().initialWords[0])
-		}
-	}, [useTestStore.getState().initialWords])
-
-	useEffect(() => {
 		useTimeStore.getState().setIsTestRecording(false)
 		if (time) {
 			let interval: NodeJS.Timeout | null = null
