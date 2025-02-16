@@ -41,12 +41,13 @@ function WaitingRoom({ id, name, email }: { id: string; name: string; email: str
 
 		const handleNonHostStartGame = (initialWords: string[]) => {
 			useMultiplayerstore.getState().setInitialWords(initialWords)
-
 			useMultiplayerstore.getState().setisInWaitingRoom(false)
 			useMultiplayerstore.getState().setisInGame(true)
 		}
 
-		socket.on("startNonHostGame", handleNonHostStartGame)
+		if (!useMultiplayerstore.getState().isHost) {
+			socket.on("startNonHostGame", handleNonHostStartGame)
+		}
 
 		// Cleanup on component unmount
 		return () => {
