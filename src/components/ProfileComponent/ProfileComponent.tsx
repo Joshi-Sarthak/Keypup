@@ -1,3 +1,4 @@
+"use client"
 import { multiplayerResults, result } from "@/lib/types/types"
 import React, { useEffect } from "react"
 import { socket } from "@/lib/sockets"
