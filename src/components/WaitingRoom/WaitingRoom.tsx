@@ -32,6 +32,9 @@ function WaitingRoom({ id, name, email }: { id: string; name: string; email: str
 
 			if (data[0].email == email) {
 				useMultiplayerstore.setState({ isHost: true })
+				useMultiplayerstore.getState().setisInWaitingRoom(true)
+				useMultiplayerstore.getState().setisInGame(false)
+				console.log("Host")
 			}
 
 			setUsers(data) // Update users directly
