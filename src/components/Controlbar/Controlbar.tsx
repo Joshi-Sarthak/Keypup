@@ -33,6 +33,13 @@ function Controlbar() {
 	}
 
 	useEffect(() => {
+		setIsDisabled(
+			useMultiplayerstore.getState().isMultiplayer &&
+				!useMultiplayerstore.getState().isHost
+		)
+	}, [useMultiplayerstore.getState().isHost])
+
+	useEffect(() => {
 		if (!isDisabled) {
 			socket.emit(
 				"changeMode",
