@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { use, useEffect, useState } from "react"
+import dynamic from "next/dynamic"
 import { PiMedalFill } from "react-icons/pi"
 import { FaA } from "react-icons/fa6"
 import { FaRegClock } from "react-icons/fa"
@@ -19,10 +20,7 @@ interface LeaderboardMode {
 	topResults: TopResult[]
 }
 
-
-export const dynamic = "force-dynamic"
-
-export default function Page() {
+const Leaderboard = () => {
 	const [leaderboard, setLeaderboard] = useState<LeaderboardMode[]>([])
 	const [selectedMode, setSelectedMode] = useState<string>("words")
 
@@ -33,15 +31,7 @@ export default function Page() {
 	useEffect(() => {
 		const fetchLeaderboard = async () => {
 			try {
-				const res = await fetch("/api/leaderboard", {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
-					cache: "no-store",
-				})
-
+				const res = await fetch("/api/leaderboard", { cache: "no-store" }) // Force fresh data
 				const data = await res.json()
 
 				if (!res.ok) {
@@ -77,7 +67,7 @@ export default function Page() {
 						<BiSolidQuoteAltLeft className="w-4 h-4 mr-2" />
 						<span>Quotes</span>
 					</li>
-					<li
+					<li 
 						className="flex items-center cursor-pointer transition-all duration-300"
 						onClick={() => setSelectedMode("words")}
 						style={{ color: selectedMode === "words" ? "#7e22ce" : "" }}
@@ -103,9 +93,7 @@ export default function Page() {
 			) : (
 				<div className="w-full md:w-4/5 lg:w-3/4 flex justify-center">
 					<div className="w-full flex flex-col">
-						<div
-							className={`w-full border border-stone-300 dark:border-neutral-600 rounded-xl sm:rounded-3xl py-1 px-2 sm:px-4 bg-white dark:bg-[#242120]`}
-						>
+						<div className="w-full border border-stone-300 dark:border-neutral-600 rounded-xl sm:rounded-3xl py-1 px-2 sm:px-4 bg-white dark:bg-[#242120]">
 							{/* Table Header */}
 							<div className="grid grid-cols-5 text-sm sm:text-lg font-medium pt-1 pb-3 border-b border-stone-200 dark:border-neutral-700 text-center bg-white dark:bg-[#242120] text-purple-600">
 								<span className="px-1 sm:px-2">Rank</span>
@@ -142,16 +130,10 @@ export default function Page() {
 													idx + 1
 												)}
 											</span>
-											<span
-												className="px-1 truncate"
-												title={result.playerName}
-											>
+											<span className="px-1 truncate">
 												{result.playerName}
 											</span>
-											<span
-												className="px-1 truncate"
-												title={result.subType}
-											>
+											<span className="px-1 truncate">
 												{result.subType}
 											</span>
 											<span className="px-1">
@@ -173,3 +155,6 @@ export default function Page() {
 		</div>
 	)
 }
+
+// Force Client-Side Rendering (avoids build issues)
+export default dynamic(() => Promise.resolve(Leaderboard), { ssr: false })
