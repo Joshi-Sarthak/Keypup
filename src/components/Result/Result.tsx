@@ -102,8 +102,8 @@ export default function Result() {
 		}
 	}, [])
 
-	const overallWPM = Math.round((correctChars * 60) / (5 * totalTime))
-	const rawWPM = Math.round((rawChars * 60) / (5 * totalTime))
+	const overallWPM = Math.max(0, Math.round((correctChars * 60) / (5 * totalTime)))
+	const rawWPM = Math.max(0, Math.round((rawChars * 60) / (5 * totalTime)))
 
 	useEffect(() => {
 		const saveResult = async () => {
@@ -140,7 +140,10 @@ export default function Result() {
 		let cumulativeChars = 0
 		return correctCharsForEachSecond.map((chars, index) => {
 			cumulativeChars += chars
-			const cumulativeWPM = Math.round((cumulativeChars * 60) / (5 * (index + 1)))
+			const cumulativeWPM = Math.max(
+				0,
+				Math.round((cumulativeChars * 60) / (5 * (index + 1)))
+			)
 			return { second: index + 1, wpm: cumulativeWPM }
 		})
 	}, [correctCharsForEachSecond])
@@ -149,7 +152,10 @@ export default function Result() {
 		let cumulativeChars = 0
 		return rawCharsForEachSecond.map((chars, index) => {
 			cumulativeChars += chars
-			const cumulativeWPM = Math.round((cumulativeChars * 60) / (5 * (index + 1)))
+			const cumulativeWPM = Math.max(
+				0,
+				Math.round((cumulativeChars * 60) / (5 * (index + 1)))
+			)
 			return { second: index + 1, wpm: cumulativeWPM }
 		})
 	}, [rawCharsForEachSecond])
