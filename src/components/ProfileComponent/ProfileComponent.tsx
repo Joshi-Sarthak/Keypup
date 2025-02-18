@@ -3,6 +3,7 @@ import { multiplayerResults, result } from "@/lib/types/types"
 import React, { useEffect } from "react"
 import { socket } from "@/lib/sockets"
 
+
 interface ProfileComponentProps {
 	data: result[] | multiplayerResults
 	type: "multiplayer" | "all" | "recent"
