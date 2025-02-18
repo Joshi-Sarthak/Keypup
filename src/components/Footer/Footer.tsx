@@ -15,12 +15,12 @@ function Footer() {
 
 				{/* Links and Contact */}
 				<div className="flex flex-wrap items-center justify-center md:justify-end text-sm gap-4 md:gap-6">
-					<a
-						href="#"
+					<Link
+						href="/about"
 						className="font-light text-stone-400 hover:text-stone-500 dark:text-neutral-600 hover:dark:text-neutral-500 transition-all duration-200"
 					>
-						About
-					</a>
+						About Us
+					</Link>
 					<a
 						href="mailto:keypup.service@gmail.com"
 						className="font-light text-stone-400 hover:text-stone-500 dark:text-neutral-600 hover:dark:text-neutral-500 transition-all duration-200 text-center"
