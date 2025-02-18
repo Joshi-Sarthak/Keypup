@@ -247,7 +247,7 @@ export default function Result() {
 						</span>
 					</div>
 				</div>
-				<div className="w-[90rem] h-[20rem] max-lg:hidden max-2xl:w-[50rem]">
+				<div className="w-[80rem] h-[20rem] max-lg:hidden max-2xl::w-[50rem]">
 					{isClient ? (
 						<Line data={chartData} options={chartOptions} />
 					) : (
