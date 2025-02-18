@@ -19,6 +19,8 @@ interface LeaderboardMode {
 	topResults: TopResult[]
 }
 
+export const dynamic = "force-dynamic"
+
 export default function Page() {
 	const [leaderboard, setLeaderboard] = useState<LeaderboardMode[]>([])
 	const [selectedMode, setSelectedMode] = useState<string>("words")
@@ -36,6 +38,7 @@ export default function Page() {
 						"Content-Type": "application/json",
 					},
 					credentials: "include",
+					cache: "no-store",
 				})
 
 				const data = await res.json()
