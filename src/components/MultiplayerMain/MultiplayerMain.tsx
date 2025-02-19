@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client"
-import React, { use, useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useTimeStore } from "@/lib/zustand/timestore"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
-import { VscDebugRestart } from "react-icons/vsc"
 import { useGamesStore } from "@/lib/zustand/gamestore"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
 import { socket } from "@/lib/sockets"
@@ -16,7 +15,7 @@ function MultiplayerMain() {
 	const currWordIndex = useTestStore((state) => state.currWordIndex)
 	const seedWords = useTestStore((state) => state.seedWords)
 	const seedQuotes = useTestStore((state) => state.seedQuotes)
-	const reset = useTestStore((state) => state.reset)
+
 	const isDisabled =
 		useMultiplayerstore.getState().isMultiplayer &&
 		!useMultiplayerstore.getState().isHost
@@ -48,6 +47,15 @@ function MultiplayerMain() {
 	// Track correct characters typed each second
 	const correctCharsPerSecond = useRef(0)
 	const rawCharsPerSecond = useRef(0)
+
+	const forceOpenKeyboard = () => {
+		const input = document.createElement("input")
+		input.style.position = "absolute"
+		input.style.opacity = "0"
+		document.body.appendChild(input)
+
+		input.focus()
+	}
 
 	useEffect(() => {
 		if (
@@ -258,8 +266,8 @@ function MultiplayerMain() {
 	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : []
 
 	return (
-		<div>
-			<div className="flex justify-center w-full mt-28">
+		<div onClick={forceOpenKeyboard}>
+			<div className="flex justify-center w-full mt-12 lg:mt-28">
 				<div className="w-3/4 flex flex-col">
 					{time && (
 						<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">

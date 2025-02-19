@@ -6,7 +6,6 @@ import { useTimeStore } from "@/lib/zustand/timestore"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
 import { VscDebugRestart } from "react-icons/vsc"
 import { useGamesStore } from "@/lib/zustand/gamestore"
-import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
 import { socket } from "@/lib/sockets"
 
 function Main() {
@@ -53,6 +52,15 @@ function Main() {
 		useTimeStore.getState().setTime(useGamesStore.getState().totalTime as number)
 		reset()
 		useTestStore.getState().setLoadResult(false)
+	}
+
+	const forceOpenKeyboard = () => {
+		const input = document.createElement("input")
+		input.style.position = "absolute"
+		input.style.opacity = "0"
+		document.body.appendChild(input)
+
+		input.focus()
 	}
 
 	useEffect(() => {
@@ -242,8 +250,8 @@ function Main() {
 	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : []
 
 	return (
-		<div>
-			<div className="flex justify-center w-full mt-28">
+		<div onClick={forceOpenKeyboard}>
+			<div className="flex justify-center w-full mt-12 lg:mt-28">
 				<div className="w-3/4 flex flex-col items-center">
 					{time && (
 						<span className="ml-2 text-3xl font-medium text-purple-700 mb-1 self-start">
