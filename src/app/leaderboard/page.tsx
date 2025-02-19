@@ -7,6 +7,9 @@ import { FaA } from "react-icons/fa6"
 import { FaRegClock } from "react-icons/fa"
 import { BiSolidQuoteAltLeft } from "react-icons/bi"
 import { socket } from "@/lib/sockets"
+import { motion } from "framer-motion"
+import Logo from "../../../public/logo_purple.svg"
+import Image from "next/image"
 
 interface TopResult {
 	playerName: string
@@ -67,7 +70,7 @@ const Leaderboard = () => {
 						<BiSolidQuoteAltLeft className="w-4 h-4 mr-2" />
 						<span>Quotes</span>
 					</li>
-					<li 
+					<li
 						className="flex items-center cursor-pointer transition-all duration-300"
 						onClick={() => setSelectedMode("words")}
 						style={{ color: selectedMode === "words" ? "#7e22ce" : "" }}
@@ -88,7 +91,15 @@ const Leaderboard = () => {
 
 			{leaderboard.length === 0 ? (
 				<div className="text-center text-lg sm:text-xl text-stone-500 mb-8">
-					No Results Available
+					<div className="flex flex-col justify-center items-center mt-16">
+						<motion.div
+							initial={{ rotate: "0deg" }}
+							animate={{ rotate: "360deg" }}
+							transition={{ duration: 2, repeat: Infinity }}
+						>
+							<Image src={Logo} alt="Logo" width={75} height={75} />
+						</motion.div>
+					</div>
 				</div>
 			) : (
 				<div className="w-full md:w-4/5 lg:w-3/4 flex justify-center">
