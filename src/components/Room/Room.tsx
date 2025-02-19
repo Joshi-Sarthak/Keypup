@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react"
 import { socket } from "@/lib/sockets"
 import { useRouter } from "next/navigation"
 import { useMultiplayerstore } from "@/lib/zustand/multiplayerstore"
-import { auth } from "@/auth"
 
 function Room({ name, email }: { name: string; email: string }) {
 	const [roomCode, setRoomCode] = useState<string | null>(null)
 	const [inputMessage, setInputMessage] = useState<string>("")
 	const [loading, setLoading] = useState<boolean>(false)
+	const [createRoomLoading, setCreateRoomLoading] = useState<boolean>(false)
 	const [error, setError] = useState<string>("")
 	const router = useRouter()
 
@@ -27,6 +27,7 @@ function Room({ name, email }: { name: string; email: string }) {
 	}, [])
 
 	async function handleCreateRoom({ email }: { email: string }) {
+		setCreateRoomLoading(true)
 		if (!socket.connected) {
 			socket.connect()
 			const GenroomCode = generateRoomCode()
@@ -36,6 +37,7 @@ function Room({ name, email }: { name: string; email: string }) {
 			useMultiplayerstore.setState({ inResult: false })
 			useMultiplayerstore.setState({ inGame: false })
 			socket.emit("create_room", GenroomCode, name, email)
+			setCreateRoomLoading(false)
 			router.push(`/multiplayer/${GenroomCode}`)
 		} else {
 			socket.disconnect()
@@ -47,6 +49,7 @@ function Room({ name, email }: { name: string; email: string }) {
 			useMultiplayerstore.setState({ inResult: false })
 			useMultiplayerstore.setState({ inGame: false })
 			socket.emit("create_room", GenroomCode, name, email)
+			setCreateRoomLoading(false)
 			router.push(`/multiplayer/${GenroomCode}`)
 		}
 	}
@@ -110,8 +113,17 @@ function Room({ name, email }: { name: string; email: string }) {
 				<button
 					className="font-medium text-stone-500 w-full max-w-[200px] mt-8 py-2 rounded-2xl flex justify-center items-center tracking-wide bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 					onClick={() => handleCreateRoom({ email })}
+					disabled={createRoomLoading}
 				>
-					Create room
+					{createRoomLoading ? (
+						<div className="flex justify-center items-center p-2 space-x-2">
+							<div className="w-2 h-2 bg-stone-200 animate-pulse rounded-full"></div>
+							<div className="w-2 h-2 bg-stone-400 animate-pulse rounded-full"></div>
+							<div className="w-2 h-2 bg-stone-600 animate-pulse rounded-full"></div>
+						</div>
+					) : (
+						"Create room"
+					)}
 				</button>
 			</div>
 
@@ -140,6 +152,7 @@ function Room({ name, email }: { name: string; email: string }) {
 				<button
 					className="font-medium text-stone-500 w-full max-w-[200px] mt-8 py-2 rounded-2xl flex justify-center items-center tracking-wide bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 					onClick={handleJoinRoom}
+					disabled={loading}
 				>
 					{loading ? (
 						<div className="flex justify-center items-center p-2 space-x-2">
