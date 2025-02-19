@@ -9,6 +9,7 @@ import { auth } from "@/auth"
 function Room({ name, email }: { name: string; email: string }) {
 	const [roomCode, setRoomCode] = useState<string | null>(null)
 	const [inputMessage, setInputMessage] = useState<string>("")
+	const [loading, setLoading] = useState<boolean>(false)
 	const [error, setError] = useState<string>("")
 	const router = useRouter()
 
@@ -52,6 +53,7 @@ function Room({ name, email }: { name: string; email: string }) {
 
 	function handleJoinRoom() {
 		useMultiplayerstore.getState().setisHost(false)
+		setLoading(true)
 		if (!socket.connected) {
 			socket.connect()
 			useMultiplayerstore.getState().setisInWaitingRoom(true)
@@ -60,8 +62,10 @@ function Room({ name, email }: { name: string; email: string }) {
 			socket.emit("check_room", inputMessage)
 			socket.on("room_exists", (data: boolean) => {
 				if (data) {
+					setLoading(false)
 					router.push(`/multiplayer/${inputMessage}`)
 				} else {
+					setLoading(false)
 					setError("Room does not exist!")
 				}
 			})
@@ -74,8 +78,10 @@ function Room({ name, email }: { name: string; email: string }) {
 			socket.emit("check_room", inputMessage)
 			socket.on("room_exists", (data: boolean) => {
 				if (data) {
+					setLoading(false)
 					router.push(`/multiplayer/${inputMessage}`)
 				} else {
+					setLoading(false)
 					setError("Room does not exist!")
 				}
 			})
@@ -135,7 +141,15 @@ function Room({ name, email }: { name: string; email: string }) {
 					className="font-medium text-stone-500 w-full max-w-[200px] mt-8 py-2 rounded-2xl flex justify-center items-center tracking-wide bg-transparent hover:dark:border-stone-400 border dark:border-stone-800 border-neutral-100 hover:border-stone-600 hover:text-stone-600 dark:text-neutral-500 hover:dark:text-neutral-100 transition-all duration-400"
 					onClick={handleJoinRoom}
 				>
-					Join room
+					{loading ? (
+						<div className="flex justify-center items-center p-2 space-x-2">
+							<div className="w-2 h-2 bg-stone-200 animate-pulse rounded-full"></div>
+							<div className="w-2 h-2 bg-stone-400 animate-pulse rounded-full"></div>
+							<div className="w-2 h-2 bg-stone-600 animate-pulse rounded-full"></div>
+						</div>
+					) : (
+						"Join room"
+					)}
 				</button>
 			</div>
 		</div>
