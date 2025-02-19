@@ -194,8 +194,6 @@ function Main() {
 		}
 	}, [])
 
-	
-
 	useEffect(() => {
 		if (cursorRef.current && activeWord.current && measureRef.current) {
 			measureRef.current.textContent = typedWord
@@ -348,6 +346,19 @@ function Main() {
 				}`}
 			>
 				Restart Test
+			</div>
+			<div className="text-stone-500 dark:text-neutral-500 text-center mt-4 opacity-80">
+				<span className="border border-stone-500 dark:border-neutral-500 rounded-md p-2">
+					Ctrl
+				</span>{" "}
+				+{" "}
+				<span className="border border-stone-500 dark:border-neutral-500 rounded-md py-2 px-3">
+					b
+				</span>{" "}
+				-{" "}
+				<span className="text-stone-500 dark:text-neutral-500 ">
+					Restart Test
+				</span>
 			</div>
 		</div>
 	)
