@@ -8,6 +8,7 @@ import { VscDebugRestart } from "react-icons/vsc"
 import { useGamesStore } from "@/lib/zustand/gamestore"
 import { socket } from "@/lib/sockets"
 
+
 function Main() {
 	const initialWords = useTestStore((state) => state.initialWords)
 	const typedWord = useTestStore((state) => state.typedWord)
