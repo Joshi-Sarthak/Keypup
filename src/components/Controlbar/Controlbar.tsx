@@ -149,6 +149,7 @@ function Controlbar() {
 							if (!isDisabled) {
 								setTime(true, 15)
 								useTimeStore.getState().setTime(15)
+								useTimeStore.getState().setIsTimerRunning(false)
 								setSelected(15)
 							}
 						}}
