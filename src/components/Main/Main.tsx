@@ -57,8 +57,9 @@ function Main() {
 	const inputRef = useRef<HTMLInputElement | null>(null)
 
 	const forceOpenKeyboard = () => {
+		inputRef.current?.blur()
 		if (inputRef.current) {
-			inputRef.current.focus()
+			inputRef.current?.focus()
 		}
 	}
 
@@ -196,14 +197,10 @@ function Main() {
 			}
 		}
 
-		const handleBeforeInput = (e: InputEvent) => {
-			if (e.inputType === "deleteContentBackward") {
-				handleKeyDown({ ctrlKey: false, key: "Backspace" } as KeyboardEvent)
-			}
-		}
-
 		const handleInput = (e: InputEvent) => {
 			if (!/firefox/i.test(navigator.userAgent)) {
+				forceOpenKeyboard()
+
 				if (!useTimeStore.getState().isTimerRunning) {
 					useTimeStore.getState().setIsTimerRunning(true)
 				}
@@ -231,17 +228,27 @@ function Main() {
 			}
 		}
 
+		const handleBeforeInput = (e: InputEvent) => {
+			if (e.inputType === "deleteContentBackward") {
+				handleKeyDown({ ctrlKey: false, key: "Backspace" } as KeyboardEvent)
+			}
+		}
+
 		document.addEventListener("keydown", handleKeyDown)
-		document.addEventListener("beforeinput", handleBeforeInput as EventListener)
 		document.addEventListener("input", handleInput as EventListener)
+		if (/firefox/i.test(navigator.userAgent)) {
+			document.addEventListener("beforeinput", handleBeforeInput as EventListener)
+		}
 
 		return () => {
 			document.removeEventListener("keydown", handleKeyDown)
-			document.removeEventListener(
-				"beforeinput",
-				handleBeforeInput as EventListener
-			)
 			document.removeEventListener("input", handleInput as EventListener)
+			if (/firefox/i.test(navigator.userAgent)) {
+				document.removeEventListener(
+					"beforeinput",
+					handleBeforeInput as EventListener
+				)
+			}
 
 			if (timeoutId.current) clearTimeout(timeoutId.current)
 		}
@@ -297,6 +304,7 @@ function Main() {
 	return (
 		<div onClick={forceOpenKeyboard}>
 			<input
+				autoCapitalize="off"
 				ref={inputRef}
 				type="text"
 				className="absolute opacity-0 w-0 h-0"
@@ -305,7 +313,7 @@ function Main() {
 						if (inputRef.current) {
 							inputRef.current.focus()
 						}
-					}, 50)
+					}, 1)
 				}}
 			/>
 
