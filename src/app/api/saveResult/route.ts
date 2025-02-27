@@ -105,6 +105,8 @@ export async function POST(req: NextRequest) {
 
 				if (leaderboard.topResults[index].wpm < Number(wpm)) {
 					leaderboard.topResults[index].wpm = Number(wpm)
+					leaderboard.topResults[index].rawSpeed = Number(rawSpeed)
+					leaderboard.topResults[index].playerName = user.name
 				}
 			} else {
 				leaderboard.topResults.push({
