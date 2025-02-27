@@ -64,9 +64,7 @@ export default function MultiplayerResults({ email }: { email: string }) {
 			setResults(sortedResults)
 
 			// Save results only if not already saved in this session
-			console.log(localStorage.getItem("resultsSaved"))
 			if (!localStorage.getItem("resultsSaved")) {
-				console.log("Saving results")
 				localStorage.setItem("resultsSaved", "true")
 				saveMultiplayerResult(sortedResults)
 			}
@@ -81,7 +79,10 @@ export default function MultiplayerResults({ email }: { email: string }) {
 		try {
 			const res = await fetch(`/api/saveMultiplayerResult`, {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+					saveResultKey: process.env.NEXT_PUBLIC_API_SECRET_KEY as string,
+				},
 				body: JSON.stringify({ PlayerResult: sortedResults }),
 				credentials: "include",
 			})
