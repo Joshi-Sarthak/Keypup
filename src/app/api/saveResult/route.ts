@@ -11,12 +11,6 @@ export async function POST(req: NextRequest) {
 	try {
 		await connectToDatabase()
 
-		const apiSecret = req.headers.get("saveResultKey")
-
-		if (apiSecret !== process.env.NEXT_PUBLIC_API_SECRET_KEY) {
-			return NextResponse.json({ error: "Unauthorized access" }, { status: 403 })
-		}
-
 		const { email } = (await getUser()) as Usertype
 
 		const user = await User.findOne({ email })

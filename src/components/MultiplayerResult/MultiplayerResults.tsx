@@ -81,8 +81,7 @@ export default function MultiplayerResults({ email }: { email: string }) {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					saveResultKey: process.env.NEXT_PUBLIC_API_SECRET_KEY as string,
-				},
+ 				},
 				body: JSON.stringify({ PlayerResult: sortedResults }),
 				credentials: "include",
 			})
