@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useEffect } from "react"
+import { useEffect } from "react"
 import Controlbar from "@/components/Controlbar/Controlbar"
 import Main from "@/components/Main/Main"
 import Result from "@/components/Result/Result"

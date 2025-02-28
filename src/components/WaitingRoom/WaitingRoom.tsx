@@ -28,13 +28,11 @@ function WaitingRoom({ id, name, email }: { id: string; name: string; email: str
 
 		// Handle users in the room
 		const handleRoomUsers = (data: User[]) => {
-			console.log(data[0].email, email)
 
 			if (data[0].email == email) {
 				useMultiplayerstore.setState({ isHost: true })
 				useMultiplayerstore.getState().setisInWaitingRoom(true)
 				useMultiplayerstore.getState().setisInGame(false)
-				console.log("Host")
 			}
 
 			setUsers(data) 

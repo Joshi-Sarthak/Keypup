@@ -1,6 +1,6 @@
 "use client"
 
-import React, { use, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import dynamic from "next/dynamic"
 import { PiMedalFill } from "react-icons/pi"
 import { FaA } from "react-icons/fa6"
