@@ -275,9 +275,13 @@ export default function Result() {
 					<span className="text-lg font-normal text-stone-400 dark:text-neutral-500">
 						characters
 					</span>
+
 					<span className="text-4xl text-purple-600 ">
 						{correctLetters}/{rawChars - correctLetters}/{extraLetters}/
 						{missingLetters}
+					</span>
+					<span className="text-stone-500 dark:text-neutral-500 max-lg:text-sm">
+						Correct / Wrong / Extra / Missing
 					</span>
 				</div>
 				<div className="flex flex-col max-lg:items-center max-lg:mt-4">

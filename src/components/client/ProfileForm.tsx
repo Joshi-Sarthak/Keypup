@@ -7,6 +7,9 @@ import { getUser } from "@/lib/getUser"
 import { DeleteAccount } from "@/actions/deleteAccount"
 import { User } from "next-auth"
 import bcryptjs from "bcryptjs"
+import Image from "next/image"
+import { motion } from "framer-motion"
+import Logo from "../../../public/logo_purple.svg"
 
 const ProfileForm = ({ email }: { email: string }) => {
 	const [user, setUser] = useState({
@@ -15,6 +18,7 @@ const ProfileForm = ({ email }: { email: string }) => {
 	})
 	const [success, setSuccess] = useState(false)
 	const [loading, setLoading] = useState(false)
+	const [globalLoading, setGlobalLoading] = useState(false)
 	const [updatingPassword, setUpdatingPassword] = useState(false)
 	const [error, setError] = useState("")
 	const [formData, setFormData] = useState({
@@ -24,6 +28,7 @@ const ProfileForm = ({ email }: { email: string }) => {
 	})
 
 	const getUserData = async () => {
+		setGlobalLoading(true)
 		setError("") // Clear any previous errors
 		try {
 			const userData = (await getUser()) as User
@@ -41,9 +46,11 @@ const ProfileForm = ({ email }: { email: string }) => {
 
 			const user = await res.json()
 			setUser({ name: user.name, email: userData.email as string })
+			setGlobalLoading(false)
 		} catch (err) {
 			console.error("Error fetching user data:", err)
 			setError("Failed to load user data. Please try again.")
+			setGlobalLoading(false)
 		}
 	}
 
@@ -155,6 +162,18 @@ const ProfileForm = ({ email }: { email: string }) => {
 			console.error("Profile update error:", err)
 			setError("An unexpected error occurred. Please try again.")
 		}
+	}
+
+	if (globalLoading) {
+		;<div className="flex flex-col justify-center items-center h-[70vh]">
+			<motion.div
+				initial={{ rotate: "0deg" }}
+				animate={{ rotate: "360deg" }}
+				transition={{ duration: 2, repeat: Infinity }}
+			>
+				<Image src={Logo} alt="Logo" width={75} height={75} />
+			</motion.div>
+		</div>
 	}
 
 	return (
