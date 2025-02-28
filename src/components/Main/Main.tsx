@@ -7,6 +7,7 @@ import { RecordTest } from "@/lib/TestHelpers/recordTest"
 import { VscDebugRestart } from "react-icons/vsc"
 import { useGamesStore } from "@/lib/zustand/gamestore"
 import { socket } from "@/lib/sockets"
+import { useRouter } from "next/navigation"
 
 function Main() {
 	const initialWords = useTestStore((state) => state.initialWords)
@@ -25,6 +26,8 @@ function Main() {
 	const quotes = useGamesStore((state) => state.quotes)
 	const quoteType = useGamesStore((state) => state.quotesType)
 	const totalWords = useGamesStore((state) => state.totalWords)
+
+	const router = useRouter()
 
 	const [isHovered, setIsHovered] = useState(false)
 	const [isBlinking, setIsBlinking] = useState(false)
@@ -409,7 +412,9 @@ function Main() {
 				</div>
 			</div>
 			<VscDebugRestart
-				onClick={Restart}
+				onClick={() => {
+					window.location.reload()
+				}}
 				onMouseEnter={() => setIsHovered(true)}
 				onMouseLeave={() => setIsHovered(false)}
 				className="w-8 h-8 text-stone-400 dark:text-neutral-600 hover:text-stone-500 hover:dark:text-neutral-500 transition-all duration-200 ease-in-out mx-auto mt-8"
