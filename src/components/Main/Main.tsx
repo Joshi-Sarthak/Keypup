@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client"
-import React, {  useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useTestStore } from "@/lib/zustand/teststore"
 import { useTimeStore } from "@/lib/zustand/timestore"
 import { RecordTest } from "@/lib/TestHelpers/recordTest"
@@ -174,7 +174,7 @@ function Main() {
 				useTimeStore.getState().setIsTimerRunning(true)
 			}
 
-			if (e.ctrlKey && e.key === "b") {
+			if ((e.ctrlKey || e.metaKey) && e.key === "b") {
 				Restart()
 			} else if (e.key.length === 1 || e.key === "Backspace") {
 				setIsBackspacing(e.key === "Backspace")
