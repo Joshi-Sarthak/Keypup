@@ -266,9 +266,9 @@ function MultiplayerMain() {
 		setHasKey("keyboard" in navigator)
 	}, [])
 
-	if (!hasKey && hasTouch) {
+	if ((!hasKey && hasTouch) || window.screen.width < 765) {
 		return (
-			<div className="flex flex-row justify-center text-center mt-32 p-4 text-2xl text-stone-500">
+			<div className="flex flex-row justify-center text-center mt-32 p-4 md text-2xl text-stone-500">
 				<div>
 					Keypup is not available on touch devices. Please use a PC for the
 					best experience.
