@@ -47,6 +47,8 @@ function MultiplayerMain() {
 	// Track correct characters typed each second
 	const correctCharsPerSecond = useRef(0)
 	const rawCharsPerSecond = useRef(0)
+	const [hasTouch, setHasTouch] = useState(false)
+	const [hasKey, setHasKey] = useState(true)
 
 	useEffect(() => {
 		if (
@@ -255,6 +257,25 @@ function MultiplayerMain() {
 			})
 		}
 	}, [typedWord])
+
+	useEffect(() => {
+		setHasTouch(
+			navigator.maxTouchPoints > 0 ||
+				window.matchMedia("(pointer: coarse)").matches
+		)
+		setHasKey("keyboard" in navigator)
+	}, [])
+
+	if (!hasKey && hasTouch) {
+		return (
+			<div className="flex flex-row justify-center text-center mt-32 p-4 text-2xl text-stone-500">
+				<div>
+					Keypup is not available on touch devices. Please use a PC for the
+					best experience.
+				</div>
+			</div>
+		)
+	}
 
 	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : []
 

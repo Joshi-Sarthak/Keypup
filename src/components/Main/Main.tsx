@@ -18,6 +18,8 @@ function Main() {
 	const seedWords = useTestStore((state) => state.seedWords)
 	const seedQuotes = useTestStore((state) => state.seedQuotes)
 	const reset = useTestStore((state) => state.reset)
+	const [hasTouch, setHasTouch] = useState(false)
+	const [hasKey, setHasKey] = useState(true)
 
 	const timer = useTimeStore((state) => state.timer)
 
@@ -246,6 +248,24 @@ function Main() {
 
 	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : []
 
+	useEffect(() => {
+		setHasTouch(
+			navigator.maxTouchPoints > 0 ||
+				window.matchMedia("(pointer: coarse)").matches
+		)
+		setHasKey("keyboard" in navigator)
+	}, [])
+
+	if (!hasKey && hasTouch) {
+		return (
+			<div className="flex flex-row justify-center text-center mt-32 p-4 text-2xl text-stone-500">
+				<div>
+					Keypup is not available on touch devices. Please use a PC for the
+					best experience.
+				</div>
+			</div>
+		)
+	}
 	return (
 		<div>
 			<div className="flex justify-center w-full mt-12 lg:mt-28">
