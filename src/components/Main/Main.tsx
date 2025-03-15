@@ -18,6 +18,8 @@ function Main() {
 	const seedWords = useTestStore((state) => state.seedWords)
 	const seedQuotes = useTestStore((state) => state.seedQuotes)
 	const reset = useTestStore((state) => state.reset)
+	const [hasTouch, setHasTouch] = useState(false)
+	const [hasKey, setHasKey] = useState(true)
 
 	const timer = useTimeStore((state) => state.timer)
 
@@ -55,15 +57,6 @@ function Main() {
 		useTimeStore.getState().setTime(useGamesStore.getState().totalTime as number)
 		reset()
 		useTestStore.getState().setLoadResult(false)
-	}
-
-	const inputRef = useRef<HTMLInputElement | null>(null)
-
-	const forceOpenKeyboard = () => {
-		inputRef.current?.blur()
-		if (inputRef.current) {
-			inputRef.current?.focus()
-		}
 	}
 
 	useEffect(() => {
@@ -200,59 +193,10 @@ function Main() {
 			}
 		}
 
-		const handleInput = (e: InputEvent) => {
-			if (!/firefox/i.test(navigator.userAgent)) {
-				forceOpenKeyboard()
-
-				if (!useTimeStore.getState().isTimerRunning) {
-					useTimeStore.getState().setIsTimerRunning(true)
-				}
-
-				let key = e.data // `data` contains typed character
-
-				if (!key) return // Ignore empty inputs
-
-				setIsBackspacing(false)
-
-				if (key.length === 1) {
-					RecordTest(key, activeLetter.current, activeWord.current)
-					rawCharsPerSecond.current += 1
-				}
-
-				setIsBlinking(false)
-
-				if (timeoutId.current) {
-					clearTimeout(timeoutId.current)
-				}
-
-				timeoutId.current = setTimeout(() => {
-					setIsBlinking(true)
-				}, 500)
-			}
-		}
-
-		const handleBeforeInput = (e: InputEvent) => {
-			if (e.inputType === "deleteContentBackward") {
-				handleKeyDown({ ctrlKey: false, key: "Backspace" } as KeyboardEvent)
-			}
-		}
-
 		document.addEventListener("keydown", handleKeyDown)
-		document.addEventListener("input", handleInput as EventListener)
-		if (/firefox/i.test(navigator.userAgent)) {
-			document.addEventListener("beforeinput", handleBeforeInput as EventListener)
-		}
 
 		return () => {
 			document.removeEventListener("keydown", handleKeyDown)
-			document.removeEventListener("input", handleInput as EventListener)
-			if (/firefox/i.test(navigator.userAgent)) {
-				document.removeEventListener(
-					"beforeinput",
-					handleBeforeInput as EventListener
-				)
-			}
-
 			if (timeoutId.current) clearTimeout(timeoutId.current)
 		}
 	}, [])
@@ -304,22 +248,26 @@ function Main() {
 
 	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : []
 
-	return (
-		<div onClick={forceOpenKeyboard}>
-			<input
-				autoCapitalize="off"
-				ref={inputRef}
-				type="text"
-				className="absolute opacity-0 w-0 h-0"
-				onBlur={() => {
-					setTimeout(() => {
-						if (inputRef.current) {
-							inputRef.current.focus()
-						}
-					}, 1)
-				}}
-			/>
+	useEffect(() => {
+		setHasTouch(
+			navigator.maxTouchPoints > 0 ||
+				window.matchMedia("(pointer: coarse)").matches
+		)
+		setHasKey("keyboard" in navigator)
+	}, [])
 
+	if (!hasKey && hasTouch) {
+		return (
+			<div className="flex flex-row justify-center text-center mt-32 p-4 text-2xl text-stone-500">
+				<div>
+					Keypup is not available on touch devices. Please use a PC for the
+					best experience.
+				</div>
+			</div>
+		)
+	}
+	return (
+		<div>
 			<div className="flex justify-center w-full mt-12 lg:mt-28">
 				<div className="w-3/4 flex flex-col items-center">
 					{time && (
@@ -413,7 +361,7 @@ function Main() {
 			</div>
 			<VscDebugRestart
 				onClick={() => {
-					window.location.reload()
+					Restart()
 				}}
 				onMouseEnter={() => setIsHovered(true)}
 				onMouseLeave={() => setIsHovered(false)}
