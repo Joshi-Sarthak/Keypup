@@ -48,15 +48,6 @@ function MultiplayerMain() {
 	const correctCharsPerSecond = useRef(0)
 	const rawCharsPerSecond = useRef(0)
 
-	const inputRef = useRef<HTMLInputElement | null>(null)
-
-	const forceOpenKeyboard = () => {
-		inputRef.current?.blur()
-		if (inputRef.current) {
-			inputRef.current?.focus()
-		}
-	}
-
 	useEffect(() => {
 		if (
 			useMultiplayerstore.getState().isMultiplayer &&
@@ -213,60 +204,10 @@ function MultiplayerMain() {
 			}
 		}
 
-		const handleInput = (e: InputEvent) => {
-			if (!/firefox/i.test(navigator.userAgent)) {
-				forceOpenKeyboard()
-
-				if (!useTimeStore.getState().isTimerRunning) {
-					useTimeStore.getState().setIsTimerRunning(true)
-				}
-
-				let key = e.data // `data` contains typed character
-
-				if (!key) return // Ignore empty inputs
-
-				setIsBackspacing(false)
-
-				if (key.length === 1) {
-					RecordTest(key, activeLetter.current, activeWord.current)
-					rawCharsPerSecond.current += 1
-				}
-
-				setIsBlinking(false)
-
-				if (timeoutId.current) {
-					clearTimeout(timeoutId.current)
-				}
-
-				timeoutId.current = setTimeout(() => {
-					setIsBlinking(true)
-				}, 500)
-			}
-		}
-
-		const handleBeforeInput = (e: InputEvent) => {
-			if (e.inputType === "deleteContentBackward") {
-				handleKeyDown({ ctrlKey: false, key: "Backspace" } as KeyboardEvent)
-			}
-		}
-
 		document.addEventListener("keydown", handleKeyDown)
-		document.addEventListener("input", handleInput as EventListener)
-		if (/firefox/i.test(navigator.userAgent)) {
-			document.addEventListener("beforeinput", handleBeforeInput as EventListener)
-		}
 
 		return () => {
 			document.removeEventListener("keydown", handleKeyDown)
-			document.removeEventListener("input", handleInput as EventListener)
-			if (/firefox/i.test(navigator.userAgent)) {
-				document.removeEventListener(
-					"beforeinput",
-					handleBeforeInput as EventListener
-				)
-			}
-
-			if (timeoutId.current) clearTimeout(timeoutId.current)
 		}
 	}, [])
 
@@ -318,20 +259,7 @@ function MultiplayerMain() {
 	const extraLetters = currWord ? typedWord.slice(currWord.length).split("") : []
 
 	return (
-		<div onClick={forceOpenKeyboard}>
-			<input
-				autoCapitalize="off"
-				ref={inputRef}
-				type="text"
-				className="absolute opacity-0 w-0 h-0"
-				onBlur={() => {
-					setTimeout(() => {
-						if (inputRef.current) {
-							inputRef.current.focus()
-						}
-					}, 1)
-				}}
-			/>
+		<div>
 			<div className="flex justify-center w-full mt-12 lg:mt-28">
 				<div className="w-3/4 flex flex-col">
 					{time && (
