@@ -254,6 +254,10 @@ function Main() {
 				window.matchMedia("(pointer: coarse)").matches
 		)
 		setHasKey("keyboard" in navigator)
+		if (window.screen.width < 765) {
+			setHasKey(false)
+			setHasTouch(true)
+		}
 	}, [])
 
 	if (!hasKey && hasTouch) {
